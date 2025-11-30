@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import logoLight from "@/assets/dotr-logo-light.jpg";
+import logoDark from "@/assets/dotr-logo-dark.jpg";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,8 +36,12 @@ export const Header = () => {
     >
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-foreground">DOTR</span>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={theme === "dark" ? logoDark : logoLight} 
+              alt="DOTR - DHINOJA OmniTech Resolutions" 
+              className="h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
