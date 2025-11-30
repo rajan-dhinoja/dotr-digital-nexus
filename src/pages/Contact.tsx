@@ -39,20 +39,20 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      content: "hello@dotr.agency",
-      link: "mailto:hello@dotr.agency",
+      content: "dhinojaomnitechresolutions@gmail.com",
+      link: "mailto:dhinojaomnitechresolutions@gmail.com",
     },
     {
       icon: Phone,
       title: "Phone",
-      content: "+1 (555) 123-4567",
-      link: "tel:+15551234567",
+      content: "+91 90236 80848",
+      link: "tel:+919023680848",
     },
     {
       icon: MapPin,
       title: "Office",
-      content: "123 Innovation St, Tech City, TC 12345",
-      link: "#",
+      content: "Ahmedabad, Gujarat",
+      link: "https://maps.google.com/?q=Ahmedabad,Gujarat",
     },
   ];
 
