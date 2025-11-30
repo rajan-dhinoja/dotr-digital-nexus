@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin, Youtube, Github } from "lucide-react";
+import { useTheme } from "next-themes";
+import logoLight from "@/assets/dotr-logo-light.jpg";
+import logoDark from "@/assets/dotr-logo-dark.jpg";
 
 export const Footer = () => {
+  const { theme } = useTheme();
+  
   const services = [
     { name: "Designing", href: "/services/designing" },
     { name: "Development", href: "/services/development" },
@@ -22,10 +27,12 @@ export const Footer = () => {
   ];
 
   const social = [
-    { icon: Facebook, href: "#" },
-    { icon: Twitter, href: "#" },
-    { icon: Linkedin, href: "#" },
-    { icon: Instagram, href: "#" },
+    { icon: Instagram, href: "https://www.instagram.com/d_ot_r/", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/dhinoja.omnitech.resolution", label: "Facebook" },
+    { icon: Linkedin, href: "https://www.linkedin.com/company/dhinoja-omnitech-resolutions/", label: "LinkedIn" },
+    { icon: Twitter, href: "https://x.com/d_ot_r", label: "Twitter" },
+    { icon: Youtube, href: "https://www.youtube.com/@d_ot_r", label: "YouTube" },
+    { icon: Github, href: "https://github.com/d-ot-r", label: "GitHub" },
   ];
 
   return (
@@ -35,7 +42,11 @@ export const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
-              <span className="text-2xl font-bold text-foreground">DOTR</span>
+              <img 
+                src={theme === "dark" ? logoDark : logoLight} 
+                alt="DOTR - DHINOJA OmniTech Resolutions" 
+                className="h-12 w-auto"
+              />
             </Link>
             <p className="text-muted-foreground mb-4 max-w-sm">
               Full-service tech & creative agency delivering exceptional digital experiences
@@ -44,15 +55,19 @@ export const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Mail className="h-4 w-4" />
-                <span className="text-sm">hello@dotr.agency</span>
+                <a href="mailto:dhinojaomnitechresolutions@gmail.com" className="text-sm hover:text-primary transition-colors">
+                  dhinojaomnitechresolutions@gmail.com
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <a href="tel:+919023680848" className="text-sm hover:text-primary transition-colors">
+                  +91 90236 80848
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <MapPin className="h-4 w-4" />
-                <span className="text-sm">123 Innovation St, Tech City</span>
+                <span className="text-sm">Ahmedabad, Gujarat</span>
               </div>
             </div>
           </div>
@@ -112,7 +127,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} DOTR Agency. All rights reserved.
+            © {new Date().getFullYear()} DOTR - DHINOJA OmniTech Resolutions. All rights reserved.
           </p>
           <div className="flex items-center space-x-4">
             {social.map((item, index) => (
@@ -122,6 +137,7 @@ export const Footer = () => {
                 className="text-muted-foreground hover:text-primary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={item.label}
               >
                 <item.icon className="h-5 w-5" />
               </a>
