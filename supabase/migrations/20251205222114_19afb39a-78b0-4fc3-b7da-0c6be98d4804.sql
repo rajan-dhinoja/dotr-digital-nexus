@@ -1,0 +1,24 @@
+-- Insert Blog Categories with proper UUIDs
+INSERT INTO blog_categories (id, name, slug, description) VALUES
+('f1f2f3f4-1111-1111-aaaa-111111111111', 'Design', 'design', 'UI/UX, branding, and visual design insights'),
+('f1f2f3f4-2222-2222-aaaa-222222222222', 'Development', 'development', 'Web and software development best practices'),
+('f1f2f3f4-3333-3333-aaaa-333333333333', 'Marketing', 'marketing', 'Digital marketing strategies and trends'),
+('f1f2f3f4-4444-4444-aaaa-444444444444', 'Technology', 'technology', 'Latest tech trends and innovations');
+
+-- Insert Blog Posts with proper UUIDs
+INSERT INTO blog_posts (id, title, slug, excerpt, content, cover_image_url, status, published_at) VALUES
+('a1a2a3a4-1111-1111-aaaa-111111111111', 'The Future of UI Design in 2024', 'future-of-ui-design-2024', 'Exploring the latest trends shaping user interface design and what to expect in the coming year.', 'User interface design continues to evolve at a rapid pace. In this article, we explore the key trends that are shaping the future of UI design, from AI-powered personalization to immersive 3D experiences. Designers must stay ahead of these trends to create compelling digital experiences that resonate with modern users.', 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '2 days'),
+('a1a2a3a4-2222-2222-aaaa-222222222222', 'Building Scalable Web Applications', 'building-scalable-web-applications', 'Best practices for architecting web applications that can grow with your business needs.', 'Scalability is crucial for modern web applications. This comprehensive guide covers microservices architecture, database optimization, caching strategies, and cloud infrastructure best practices. Learn how to build applications that can handle millions of users without compromising performance.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '5 days'),
+('a1a2a3a4-3333-3333-aaaa-333333333333', 'SEO Strategies That Actually Work', 'seo-strategies-that-work', 'Proven SEO techniques to improve your search rankings and drive organic traffic.', 'Search engine optimization remains one of the most effective ways to drive organic traffic. This article breaks down the latest SEO strategies, from technical optimization to content marketing, that will help your website rank higher in search results and attract more qualified leads.', 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '7 days'),
+('a1a2a3a4-4444-4444-aaaa-444444444444', 'The Rise of AI in Creative Industries', 'ai-in-creative-industries', 'How artificial intelligence is transforming creative workflows and enabling new possibilities.', 'Artificial intelligence is revolutionizing the creative industry. From AI-generated art to automated video editing, we explore how creative professionals can leverage these tools to enhance their workflows while maintaining their unique creative vision.', 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '10 days'),
+('a1a2a3a4-5555-5555-aaaa-555555555555', 'Mobile-First Design Principles', 'mobile-first-design-principles', 'Why designing for mobile first leads to better user experiences across all devices.', 'Mobile-first design is no longer optional—it is essential. This guide covers the principles of mobile-first design, responsive techniques, and how to create seamless experiences that work beautifully on screens of all sizes.', 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '14 days'),
+('a1a2a3a4-6666-6666-aaaa-666666666666', 'Content Marketing in the Age of AI', 'content-marketing-age-of-ai', 'Adapting your content strategy for an AI-driven digital landscape.', 'The content marketing landscape is evolving with AI. Learn how to create content that stands out, leverages AI tools effectively, and builds authentic connections with your audience in an increasingly automated world.', 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&h=400&fit=crop', 'published', NOW() - INTERVAL '21 days');
+
+-- Link Blog Posts to Categories
+INSERT INTO blog_post_categories (blog_post_id, category_id) VALUES
+('a1a2a3a4-1111-1111-aaaa-111111111111', 'f1f2f3f4-1111-1111-aaaa-111111111111'),
+('a1a2a3a4-2222-2222-aaaa-222222222222', 'f1f2f3f4-2222-2222-aaaa-222222222222'),
+('a1a2a3a4-3333-3333-aaaa-333333333333', 'f1f2f3f4-3333-3333-aaaa-333333333333'),
+('a1a2a3a4-4444-4444-aaaa-444444444444', 'f1f2f3f4-4444-4444-aaaa-444444444444'),
+('a1a2a3a4-5555-5555-aaaa-555555555555', 'f1f2f3f4-1111-1111-aaaa-111111111111'),
+('a1a2a3a4-6666-6666-aaaa-666666666666', 'f1f2f3f4-3333-3333-aaaa-333333333333');

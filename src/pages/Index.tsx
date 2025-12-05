@@ -3,69 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, Palette, Code, TrendingUp, Video, Star, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-main.jpg";
+import { useServiceCategories } from "@/hooks/useServices";
+import { useProjects } from "@/hooks/useProjects";
+import { useTestimonials } from "@/hooks/useTestimonials";
+
+const iconMap: Record<string, React.ElementType> = {
+  designing: Palette,
+  development: Code,
+  marketing: TrendingUp,
+  creative: Video,
+};
 
 const Index = () => {
-  const services = [
-    {
-      icon: Palette,
-      title: "Designing",
-      description: "Brand identity, UI/UX design, and visual storytelling that captivates audiences.",
-      link: "/services/designing",
-    },
-    {
-      icon: Code,
-      title: "Development",
-      description: "Custom web & software solutions built with cutting-edge technologies.",
-      link: "/services/development",
-    },
-    {
-      icon: TrendingUp,
-      title: "Marketing",
-      description: "Data-driven strategies that amplify your reach and drive growth.",
-      link: "/services/marketing",
-    },
-    {
-      icon: Video,
-      title: "Creative",
-      description: "Multimedia production, animation, and content that tells your story.",
-      link: "/services/creative",
-    },
-  ];
-
-  const portfolio = [
-    {
-      title: "E-Commerce Platform",
-      category: "Development",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-    },
-    {
-      title: "Brand Redesign",
-      category: "Designing",
-      image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
-    },
-    {
-      title: "Marketing Campaign",
-      category: "Marketing",
-      image: "https://images.unsplash.com/photo-1533750516457-a7f992034fec?w=800&q=80",
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "CEO, TechStart",
-      content: "DOTR transformed our vision into reality with exceptional design and flawless execution.",
-      rating: 5,
-    },
-    {
-      name: "Michael Chen",
-      role: "Founder, Innovate Labs",
-      content: "The team's creativity and technical expertise exceeded all expectations. Highly recommended!",
-      rating: 5,
-    },
-  ];
+  const { data: categories, isLoading: loadingCategories } = useServiceCategories();
+  const { data: projects, isLoading: loadingProjects } = useProjects(3);
+  const { data: testimonials, isLoading: loadingTestimonials } = useTestimonials(2);
 
   return (
     <div className="min-h-screen bg-background">
@@ -115,23 +70,39 @@ const Index = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
-              <Card key={index} className="border-border hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6">
-                  <service.icon className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link
-                    to={service.link}
-                    className="text-primary hover:text-primary/80 font-medium inline-flex items-center"
-                  >
-                    Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+            {loadingCategories ? (
+              [...Array(4)].map((_, i) => (
+                <Card key={i} className="border-border">
+                  <CardContent className="pt-6">
+                    <Skeleton className="h-12 w-12 mb-4" />
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <Skeleton className="h-16 w-full mb-4" />
+                    <Skeleton className="h-5 w-24" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              categories?.map((category) => {
+                const IconComponent = iconMap[category.slug] || Palette;
+                return (
+                  <Card key={category.id} className="border-border hover:shadow-lg transition-shadow">
+                    <CardContent className="pt-6">
+                      <IconComponent className="h-12 w-12 text-primary mb-4" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                        {category.name}
+                      </h3>
+                      <p className="text-muted-foreground mb-4">{category.description}</p>
+                      <Link
+                        to={`/services/${category.slug}`}
+                        className="text-primary hover:text-primary/80 font-medium inline-flex items-center"
+                      >
+                        Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
@@ -146,23 +117,38 @@ const Index = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {portfolio.map((item, index) => (
-              <Link key={index} to="/portfolio" className="group">
-                <Card className="overflow-hidden border-border hover:shadow-xl transition-all">
-                  <div className="aspect-video overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
+            {loadingProjects ? (
+              [...Array(3)].map((_, i) => (
+                <Card key={i} className="overflow-hidden border-border">
+                  <Skeleton className="aspect-video" />
                   <CardContent className="pt-4">
-                    <p className="text-sm text-primary font-medium mb-1">{item.category}</p>
-                    <h3 className="text-xl font-semibold text-foreground">{item.title}</h3>
+                    <Skeleton className="h-4 w-20 mb-1" />
+                    <Skeleton className="h-6 w-48" />
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
+              ))
+            ) : (
+              projects?.map((project) => {
+                const category = project.project_services?.[0]?.services?.services_categories?.name || "Project";
+                return (
+                  <Link key={project.id} to="/portfolio" className="group">
+                    <Card className="overflow-hidden border-border hover:shadow-xl transition-all">
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={project.cover_image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                      <CardContent className="pt-4">
+                        <p className="text-sm text-primary font-medium mb-1">{category}</p>
+                        <h3 className="text-xl font-semibold text-foreground">{project.title}</h3>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })
+            )}
           </div>
           <div className="text-center mt-12">
             <Button size="lg" variant="outline" asChild>
@@ -184,22 +170,37 @@ const Index = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-border">
-                <CardContent className="pt-6">
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground mb-4">"{testimonial.content}"</p>
-                  <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {loadingTestimonials ? (
+              [...Array(2)].map((_, i) => (
+                <Card key={i} className="border-border">
+                  <CardContent className="pt-6">
+                    <Skeleton className="h-5 w-28 mb-4" />
+                    <Skeleton className="h-20 w-full mb-4" />
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-4 w-24 mt-1" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              testimonials?.map((testimonial) => (
+                <Card key={testimonial.id} className="border-border">
+                  <CardContent className="pt-6">
+                    <div className="flex mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground mb-4">"{testimonial.testimonial_text}"</p>
+                    <div>
+                      <p className="font-semibold text-foreground">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {testimonial.designation}, {testimonial.company}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>

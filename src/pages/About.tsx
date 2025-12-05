@@ -1,16 +1,13 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Target, Users, Lightbulb, Award } from "lucide-react";
 import aboutBg from "@/assets/about-bg.jpg";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 const About = () => {
-  const team = [
-    { name: "Alex Rodriguez", role: "CEO & Founder", department: "Leadership" },
-    { name: "Sarah Chen", role: "Creative Director", department: "Design" },
-    { name: "Marcus Johnson", role: "Head of Development", department: "Engineering" },
-    { name: "Emma Thompson", role: "Marketing Director", department: "Marketing" },
-  ];
+  const { data: teamMembers, isLoading: loadingTeam } = useTeamMembers();
 
   const values = [
     {
@@ -148,18 +145,41 @@ const About = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            {team.map((member, index) => (
-              <Card key={index} className="border-border text-center">
-                <CardContent className="pt-6">
-                  <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-primary text-sm font-medium mb-1">{member.role}</p>
-                  <p className="text-muted-foreground text-sm">{member.department}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {loadingTeam ? (
+              [...Array(4)].map((_, i) => (
+                <Card key={i} className="border-border text-center">
+                  <CardContent className="pt-6">
+                    <Skeleton className="w-24 h-24 rounded-full mx-auto mb-4" />
+                    <Skeleton className="h-5 w-32 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-24 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-20 mx-auto" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              teamMembers?.map((member) => (
+                <Card key={member.id} className="border-border text-center">
+                  <CardContent className="pt-6">
+                    {member.profile_image_url ? (
+                      <img
+                        src={member.profile_image_url}
+                        alt={member.name}
+                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4" />
+                    )}
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      {member.name}
+                    </h3>
+                    <p className="text-primary text-sm font-medium mb-1">{member.title}</p>
+                    {member.bio && (
+                      <p className="text-muted-foreground text-sm line-clamp-2">{member.bio}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>
