@@ -9,12 +9,15 @@ import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
 import Designing from "./pages/services/Designing";
 import Development from "./pages/services/Development";
 import Marketing from "./pages/services/Marketing";
 import Creative from "./pages/services/Creative";
 import Portfolio from "./pages/Portfolio";
+import ProjectDetail from "./pages/ProjectDetail";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -23,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminServices from "./pages/admin/Services";
+import AdminServiceCategories from "./pages/admin/ServiceCategories";
 import AdminProjects from "./pages/admin/Projects";
 import AdminBlogPosts from "./pages/admin/BlogPosts";
 import AdminTeam from "./pages/admin/Team";
@@ -44,12 +48,15 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/:category" element={<ServiceDetail />} />
               <Route path="/services/designing" element={<Designing />} />
               <Route path="/services/development" element={<Development />} />
               <Route path="/services/marketing" element={<Marketing />} />
               <Route path="/services/creative" element={<Creative />} />
               <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/portfolio/:slug" element={<ProjectDetail />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -59,6 +66,7 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/services" element={<ProtectedRoute><AdminServices /></ProtectedRoute>} />
+              <Route path="/admin/service-categories" element={<ProtectedRoute><AdminServiceCategories /></ProtectedRoute>} />
               <Route path="/admin/projects" element={<ProtectedRoute><AdminProjects /></ProtectedRoute>} />
               <Route path="/admin/blog" element={<ProtectedRoute><AdminBlogPosts /></ProtectedRoute>} />
               <Route path="/admin/team" element={<ProtectedRoute><AdminTeam /></ProtectedRoute>} />

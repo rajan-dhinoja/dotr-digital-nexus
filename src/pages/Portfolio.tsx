@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,32 +55,31 @@ const Portfolio = () => {
                 ).filter(Boolean) || [];
 
                 return (
-                  <Card
-                    key={project.id}
-                    className="border-border overflow-hidden hover:shadow-xl transition-all group cursor-pointer"
-                  >
-                    <div className="aspect-video overflow-hidden">
-                      <img
-                        src={project.cover_image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <CardContent className="pt-6">
-                      <Badge className="mb-2">{category}</Badge>
-                      <h3 className="text-xl font-semibold text-foreground mb-2">
-                        {project.title}
-                      </h3>
-                      <p className="text-muted-foreground mb-4">{project.summary}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {serviceNames.slice(0, 3).map((tag, tagIndex) => (
-                          <Badge key={tagIndex} variant="outline">
-                            {tag}
-                          </Badge>
-                        ))}
+                  <Link key={project.id} to={`/portfolio/${project.slug}`}>
+                    <Card className="border-border overflow-hidden hover:shadow-xl transition-all group cursor-pointer h-full">
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={project.cover_image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
+                      <CardContent className="pt-6">
+                        <Badge className="mb-2">{category}</Badge>
+                        <h3 className="text-xl font-semibold text-foreground mb-2">
+                          {project.title}
+                        </h3>
+                        <p className="text-muted-foreground mb-4">{project.summary}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {serviceNames.slice(0, 3).map((tag, tagIndex) => (
+                            <Badge key={tagIndex} variant="outline">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 );
               })
             )}

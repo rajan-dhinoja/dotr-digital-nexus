@@ -16,6 +16,7 @@ import {
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/service-categories', label: 'Service Categories', icon: Briefcase },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
   { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
   { href: '/admin/blog', label: 'Blog Posts', icon: FileText },

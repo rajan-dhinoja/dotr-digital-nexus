@@ -4,11 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
@@ -106,61 +108,75 @@ export default function AdminProjects() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Project' : 'Add Project'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Title</Label>
-                <Input name="title" defaultValue={editing?.title} required />
-              </div>
-              <div className="space-y-2">
-                <Label>Slug</Label>
-                <Input name="slug" defaultValue={editing?.slug} required />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Client Name</Label>
-              <Input name="client_name" defaultValue={editing?.client_name ?? ''} />
-            </div>
-            <div className="space-y-2">
-              <Label>Summary</Label>
-              <Textarea name="summary" defaultValue={editing?.summary ?? ''} rows={2} />
-            </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} />
-            </div>
-            <div className="space-y-2">
-              <Label>Achievements</Label>
-              <Textarea name="achievements" defaultValue={editing?.achievements ?? ''} rows={2} />
-            </div>
-            <div className="space-y-2">
-              <Label>Project URL</Label>
-              <Input name="project_url" defaultValue={editing?.project_url ?? ''} />
-            </div>
-            <div className="space-y-2">
-              <Label>Cover Image</Label>
-              <ImageUpload
-                bucket="project-images"
-                value={editing?.cover_image_url ?? undefined}
-                onChange={(url) => {
-                  const input = document.querySelector<HTMLInputElement>('input[name="cover_image_url"]');
-                  if (input) input.value = url ?? '';
-                }}
-              />
-              <input type="hidden" name="cover_image_url" defaultValue={editing?.cover_image_url ?? ''} />
-            </div>
-            <div className="space-y-2">
-              <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
-            </div>
-            <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-              {saveMutation.isPending ? 'Saving...' : 'Save'}
-            </Button>
-          </form>
+          
+          <Tabs defaultValue="details">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="gallery" disabled={!editing}>Gallery</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="details">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input name="title" defaultValue={editing?.title} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Slug</Label>
+                    <Input name="slug" defaultValue={editing?.slug} required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Client Name</Label>
+                  <Input name="client_name" defaultValue={editing?.client_name ?? ''} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Summary</Label>
+                  <Textarea name="summary" defaultValue={editing?.summary ?? ''} rows={2} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Achievements</Label>
+                  <Textarea name="achievements" defaultValue={editing?.achievements ?? ''} rows={2} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Project URL</Label>
+                  <Input name="project_url" defaultValue={editing?.project_url ?? ''} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Cover Image</Label>
+                  <ImageUpload
+                    bucket="project-images"
+                    value={editing?.cover_image_url ?? undefined}
+                    onChange={(url) => {
+                      const input = document.querySelector<HTMLInputElement>('input[name="cover_image_url"]');
+                      if (input) input.value = url ?? '';
+                    }}
+                  />
+                  <input type="hidden" name="cover_image_url" defaultValue={editing?.cover_image_url ?? ''} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Display Order</Label>
+                  <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+                </div>
+                <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+                  {saveMutation.isPending ? 'Saving...' : 'Save'}
+                </Button>
+              </form>
+            </TabsContent>
+            
+            <TabsContent value="gallery">
+              {editing && <ProjectGalleryManager projectId={editing.id} />}
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </AdminLayout>
