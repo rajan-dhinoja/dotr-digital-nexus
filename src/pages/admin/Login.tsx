@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,16 @@ export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, user, isEditor, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Redirect when user is authenticated and has editor role
+  useEffect(() => {
+    if (!authLoading && user && isEditor) {
+      navigate('/admin');
+    }
+  }, [user, isEditor, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,11 +30,9 @@ export default function AdminLogin() {
     
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      navigate('/admin');
+      setLoading(false);
     }
-    
-    setLoading(false);
+    // Don't navigate here - useEffect handles it after role check completes
   };
 
   return (
