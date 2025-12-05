@@ -2,7 +2,9 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { uploadFile, BucketName } from '@/lib/storage';
+import { validateImageFile, MAX_FILE_SIZE, ALLOWED_IMAGE_TYPES } from '@/lib/validations/admin';
 import { Upload, X, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadProps {
   bucket: BucketName;
@@ -13,17 +15,50 @@ interface ImageUploadProps {
 export function ImageUpload({ bucket, value, onChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    const url = await uploadFile(bucket, file);
-    if (url) {
-      onChange(url);
+    // Validate file before upload
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast({
+        title: 'Invalid file',
+        description: validation.error,
+        variant: 'destructive',
+      });
+      // Reset the input
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+      return;
     }
+
+    setUploading(true);
+    const result = await uploadFile(bucket, file);
+    
+    if (result.error) {
+      toast({
+        title: 'Upload failed',
+        description: result.error,
+        variant: 'destructive',
+      });
+    } else if (result.url) {
+      onChange(result.url);
+    }
+    
     setUploading(false);
+    
+    // Reset the input
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    return (bytes / 1024 / 1024).toFixed(1) + 'MB';
   };
 
   return (
@@ -52,6 +87,9 @@ export function ImageUpload({ bucket, value, onChange }: ImageUploadProps) {
             <>
               <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">Click to upload</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Max {formatFileSize(MAX_FILE_SIZE)} • JPEG, PNG, GIF, WebP
+              </p>
             </>
           )}
         </div>
@@ -59,7 +97,7 @@ export function ImageUpload({ bucket, value, onChange }: ImageUploadProps) {
       <Input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={ALLOWED_IMAGE_TYPES.join(',')}
         className="hidden"
         onChange={handleUpload}
         disabled={uploading}

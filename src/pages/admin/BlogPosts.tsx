@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { blogPostSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type BlogPost = Tables<'blog_posts'>;
@@ -32,7 +33,7 @@ export default function AdminBlogPosts() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (post: Partial<BlogPost>) => {
+    mutationFn: async (post: Partial<BlogPost> & { published_at?: string | null }) => {
       if (editing) {
         const { error } = await supabase.from('blog_posts').update(post).eq('id', editing.id);
         if (error) throw error;
@@ -64,16 +65,28 @@ export default function AdminBlogPosts() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const status = form.get('status') as 'draft' | 'published' | 'archived';
-    saveMutation.mutate({
-      title: form.get('title') as string,
-      slug: form.get('slug') as string,
-      excerpt: form.get('excerpt') as string || null,
-      content: form.get('content') as string,
-      cover_image_url: form.get('cover_image_url') as string || null,
-      status,
-      published_at: status === 'published' ? new Date().toISOString() : null,
+    
+    const validation = validateFormData(blogPostSchema, form, {
+      title: (v) => v?.toString() ?? '',
+      slug: (v) => v?.toString() ?? '',
+      excerpt: (v) => v?.toString() || null,
+      content: (v) => v?.toString() ?? '',
+      cover_image_url: (v) => v?.toString() || null,
+      status: (v) => v?.toString() ?? 'draft',
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    const validatedData = (validation as { success: true; data: typeof validation.data }).data;
+    const data = {
+      ...validatedData,
+      published_at: validatedData.status === 'published' ? new Date().toISOString() : null,
+    };
+
+    saveMutation.mutate(data);
   };
 
   const columns = [
@@ -125,11 +138,11 @@ export default function AdminBlogPosts() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input name="title" defaultValue={editing?.title} required />
+                <Input name="title" defaultValue={editing?.title} required maxLength={300} />
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
-                <Input name="slug" defaultValue={editing?.slug} required />
+                <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
               </div>
             </div>
             <div className="space-y-2">
@@ -147,11 +160,11 @@ export default function AdminBlogPosts() {
             </div>
             <div className="space-y-2">
               <Label>Excerpt</Label>
-              <Textarea name="excerpt" defaultValue={editing?.excerpt ?? ''} rows={2} />
+              <Textarea name="excerpt" defaultValue={editing?.excerpt ?? ''} rows={2} maxLength={500} />
             </div>
             <div className="space-y-2">
               <Label>Content</Label>
-              <Textarea name="content" defaultValue={editing?.content ?? ''} rows={10} required />
+              <Textarea name="content" defaultValue={editing?.content ?? ''} rows={10} required maxLength={100000} />
             </div>
             <div className="space-y-2">
               <Label>Cover Image</Label>

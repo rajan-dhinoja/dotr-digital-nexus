@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { projectSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Project = Tables<'projects'>;
@@ -64,17 +65,25 @@ export default function AdminProjects() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    saveMutation.mutate({
-      title: form.get('title') as string,
-      slug: form.get('slug') as string,
-      client_name: form.get('client_name') as string || null,
-      summary: form.get('summary') as string || null,
-      description: form.get('description') as string || null,
-      achievements: form.get('achievements') as string || null,
-      project_url: form.get('project_url') as string || null,
-      cover_image_url: form.get('cover_image_url') as string || null,
-      display_order: Number(form.get('display_order')) || 0,
+    
+    const validation = validateFormData(projectSchema, form, {
+      title: (v) => v?.toString() ?? '',
+      slug: (v) => v?.toString() ?? '',
+      client_name: (v) => v?.toString() || null,
+      summary: (v) => v?.toString() || null,
+      description: (v) => v?.toString() || null,
+      achievements: (v) => v?.toString() || null,
+      project_url: (v) => v?.toString() || null,
+      cover_image_url: (v) => v?.toString() || null,
+      display_order: (v) => Number(v) || 0,
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
   };
 
   const columns = [
@@ -124,32 +133,32 @@ export default function AdminProjects() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Title</Label>
-                    <Input name="title" defaultValue={editing?.title} required />
+                    <Input name="title" defaultValue={editing?.title} required maxLength={200} />
                   </div>
                   <div className="space-y-2">
                     <Label>Slug</Label>
-                    <Input name="slug" defaultValue={editing?.slug} required />
+                    <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Client Name</Label>
-                  <Input name="client_name" defaultValue={editing?.client_name ?? ''} />
+                  <Input name="client_name" defaultValue={editing?.client_name ?? ''} maxLength={200} />
                 </div>
                 <div className="space-y-2">
                   <Label>Summary</Label>
-                  <Textarea name="summary" defaultValue={editing?.summary ?? ''} rows={2} />
+                  <Textarea name="summary" defaultValue={editing?.summary ?? ''} rows={2} maxLength={500} />
                 </div>
                 <div className="space-y-2">
                   <Label>Description</Label>
-                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} />
+                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} maxLength={10000} />
                 </div>
                 <div className="space-y-2">
                   <Label>Achievements</Label>
-                  <Textarea name="achievements" defaultValue={editing?.achievements ?? ''} rows={2} />
+                  <Textarea name="achievements" defaultValue={editing?.achievements ?? ''} rows={2} maxLength={2000} />
                 </div>
                 <div className="space-y-2">
                   <Label>Project URL</Label>
-                  <Input name="project_url" defaultValue={editing?.project_url ?? ''} />
+                  <Input name="project_url" defaultValue={editing?.project_url ?? ''} type="url" />
                 </div>
                 <div className="space-y-2">
                   <Label>Cover Image</Label>
@@ -165,7 +174,7 @@ export default function AdminProjects() {
                 </div>
                 <div className="space-y-2">
                   <Label>Display Order</Label>
-                  <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+                  <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
                 </div>
                 <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
                   {saveMutation.isPending ? 'Saving...' : 'Save'}

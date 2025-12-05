@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { testimonialSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Testimonial = Tables<'testimonials'>;
@@ -61,14 +62,22 @@ export default function AdminTestimonials() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    saveMutation.mutate({
-      name: form.get('name') as string,
-      designation: form.get('designation') as string || null,
-      company: form.get('company') as string || null,
-      testimonial_text: form.get('testimonial_text') as string,
-      photo_url: form.get('photo_url') as string || null,
-      display_order: Number(form.get('display_order')) || 0,
+    
+    const validation = validateFormData(testimonialSchema, form, {
+      name: (v) => v?.toString() ?? '',
+      designation: (v) => v?.toString() || null,
+      company: (v) => v?.toString() || null,
+      testimonial_text: (v) => v?.toString() ?? '',
+      photo_url: (v) => v?.toString() || null,
+      display_order: (v) => Number(v) || 0,
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
   };
 
   const columns = [
@@ -108,28 +117,28 @@ export default function AdminTestimonials() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Name</Label>
-                <Input name="name" defaultValue={editing?.name} required />
+                <Input name="name" defaultValue={editing?.name} required maxLength={100} />
               </div>
               <div className="space-y-2">
                 <Label>Designation</Label>
-                <Input name="designation" defaultValue={editing?.designation ?? ''} />
+                <Input name="designation" defaultValue={editing?.designation ?? ''} maxLength={100} />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Company</Label>
-              <Input name="company" defaultValue={editing?.company ?? ''} />
+              <Input name="company" defaultValue={editing?.company ?? ''} maxLength={100} />
             </div>
             <div className="space-y-2">
               <Label>Testimonial</Label>
-              <Textarea name="testimonial_text" defaultValue={editing?.testimonial_text} rows={4} required />
+              <Textarea name="testimonial_text" defaultValue={editing?.testimonial_text} rows={4} required maxLength={2000} />
             </div>
             <div className="space-y-2">
               <Label>Photo URL</Label>
-              <Input name="photo_url" defaultValue={editing?.photo_url ?? ''} />
+              <Input name="photo_url" defaultValue={editing?.photo_url ?? ''} type="url" />
             </div>
             <div className="space-y-2">
               <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}

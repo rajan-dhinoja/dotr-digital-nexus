@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { serviceCategorySchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type ServiceCategory = Tables<'services_categories'>;
@@ -61,12 +62,20 @@ export default function AdminServiceCategories() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    saveMutation.mutate({
-      name: form.get('name') as string,
-      slug: form.get('slug') as string,
-      description: form.get('description') as string || null,
-      display_order: Number(form.get('display_order')) || 0,
+    
+    const validation = validateFormData(serviceCategorySchema, form, {
+      name: (v) => v?.toString() ?? '',
+      slug: (v) => v?.toString() ?? '',
+      description: (v) => v?.toString() || null,
+      display_order: (v) => Number(v) || 0,
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
   };
 
   const columns = [
@@ -100,19 +109,19 @@ export default function AdminServiceCategories() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label>Name</Label>
-              <Input name="name" defaultValue={editing?.name} required />
+              <Input name="name" defaultValue={editing?.name} required maxLength={100} />
             </div>
             <div className="space-y-2">
               <Label>Slug</Label>
-              <Input name="slug" defaultValue={editing?.slug} required />
+              <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
             </div>
             <div className="space-y-2">
               <Label>Description</Label>
-              <Textarea name="description" defaultValue={editing?.description ?? ''} rows={3} />
+              <Textarea name="description" defaultValue={editing?.description ?? ''} rows={3} maxLength={500} />
             </div>
             <div className="space-y-2">
               <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}
