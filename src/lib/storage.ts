@@ -1,0 +1,28 @@
+import { supabase } from '@/integrations/supabase/client';
+
+export type BucketName = 'service-images' | 'project-images' | 'team-profiles' | 'blog-images';
+
+export async function uploadFile(bucket: BucketName, file: File, path?: string): Promise<string | null> {
+  const fileName = path || `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
+  
+  const { error } = await supabase.storage.from(bucket).upload(fileName, file, {
+    cacheControl: '3600',
+    upsert: true,
+  });
+
+  if (error) {
+    console.error('Upload error:', error);
+    return null;
+  }
+
+  const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
+  return publicUrl;
+}
+
+export async function deleteFile(bucket: BucketName, url: string): Promise<boolean> {
+  const path = url.split(`${bucket}/`)[1];
+  if (!path) return false;
+
+  const { error } = await supabase.storage.from(bucket).remove([path]);
+  return !error;
+}
