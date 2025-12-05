@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { teamMemberSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type TeamMember = Tables<'team_members'>;
@@ -62,14 +63,34 @@ export default function AdminTeam() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    saveMutation.mutate({
-      name: form.get('name') as string,
-      title: form.get('title') as string,
-      bio: form.get('bio') as string || null,
-      profile_image_url: form.get('profile_image_url') as string || null,
-      social_links: JSON.parse(form.get('social_links') as string || '{}'),
-      display_order: Number(form.get('display_order')) || 0,
+    
+    // Parse social links JSON safely
+    let socialLinks = null;
+    const socialLinksStr = form.get('social_links')?.toString() || '';
+    if (socialLinksStr.trim()) {
+      try {
+        socialLinks = JSON.parse(socialLinksStr);
+      } catch {
+        toast({ title: 'Validation Error', description: 'Social Links must be valid JSON', variant: 'destructive' });
+        return;
+      }
+    }
+    
+    const validation = validateFormData(teamMemberSchema, form, {
+      name: (v) => v?.toString() ?? '',
+      title: (v) => v?.toString() ?? '',
+      bio: (v) => v?.toString() || null,
+      profile_image_url: (v) => v?.toString() || null,
+      social_links: () => socialLinks,
+      display_order: (v) => Number(v) || 0,
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
   };
 
   const columns = [
@@ -111,16 +132,16 @@ export default function AdminTeam() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Name</Label>
-                <Input name="name" defaultValue={editing?.name} required />
+                <Input name="name" defaultValue={editing?.name} required maxLength={100} />
               </div>
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input name="title" defaultValue={editing?.title} required />
+                <Input name="title" defaultValue={editing?.title} required maxLength={100} />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Bio</Label>
-              <Textarea name="bio" defaultValue={editing?.bio ?? ''} rows={3} />
+              <Textarea name="bio" defaultValue={editing?.bio ?? ''} rows={3} maxLength={2000} />
             </div>
             <div className="space-y-2">
               <Label>Profile Image</Label>
@@ -145,7 +166,7 @@ export default function AdminTeam() {
             </div>
             <div className="space-y-2">
               <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}

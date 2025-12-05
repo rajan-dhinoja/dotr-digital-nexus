@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { serviceSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Service = Tables<'services'>;
@@ -72,15 +73,23 @@ export default function AdminServices() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    saveMutation.mutate({
-      title: form.get('title') as string,
-      slug: form.get('slug') as string,
-      category_id: form.get('category_id') as string,
-      short_summary: form.get('short_summary') as string,
-      description: form.get('description') as string,
-      image_url: form.get('image_url') as string || null,
-      display_order: Number(form.get('display_order')) || 0,
+    
+    const validation = validateFormData(serviceSchema, form, {
+      title: (v) => v?.toString() ?? '',
+      slug: (v) => v?.toString() ?? '',
+      category_id: (v) => v?.toString() ?? '',
+      short_summary: (v) => v?.toString() || null,
+      description: (v) => v?.toString() || null,
+      image_url: (v) => v?.toString() || null,
+      display_order: (v) => Number(v) || 0,
     });
+
+    if (!validation.success) {
+      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+      return;
+    }
+
+    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
   };
 
   const columns = [
@@ -120,11 +129,11 @@ export default function AdminServices() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input name="title" defaultValue={editing?.title} required />
+                <Input name="title" defaultValue={editing?.title} required maxLength={200} />
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
-                <Input name="slug" defaultValue={editing?.slug} required />
+                <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
               </div>
             </div>
             <div className="space-y-2">
@@ -142,11 +151,11 @@ export default function AdminServices() {
             </div>
             <div className="space-y-2">
               <Label>Short Summary</Label>
-              <Input name="short_summary" defaultValue={editing?.short_summary ?? ''} />
+              <Input name="short_summary" defaultValue={editing?.short_summary ?? ''} maxLength={500} />
             </div>
             <div className="space-y-2">
               <Label>Description</Label>
-              <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} />
+              <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} maxLength={10000} />
             </div>
             <div className="space-y-2">
               <Label>Image</Label>
@@ -162,7 +171,7 @@ export default function AdminServices() {
             </div>
             <div className="space-y-2">
               <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} />
+              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}
