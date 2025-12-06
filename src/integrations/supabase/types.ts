@@ -285,36 +285,66 @@ export type Database = {
         Row: {
           category_id: string
           created_at: string
+          delivery_time: string | null
           description: string | null
           display_order: number
+          faqs: Json | null
+          features: Json | null
+          hero_image_url: string | null
+          icon_name: string | null
           id: string
           image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
+          pricing_info: string | null
+          process_steps: Json | null
           short_summary: string | null
           slug: string
+          technologies: string[] | null
           title: string
           updated_at: string
         }
         Insert: {
           category_id: string
           created_at?: string
+          delivery_time?: string | null
           description?: string | null
           display_order?: number
+          faqs?: Json | null
+          features?: Json | null
+          hero_image_url?: string | null
+          icon_name?: string | null
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pricing_info?: string | null
+          process_steps?: Json | null
           short_summary?: string | null
           slug: string
+          technologies?: string[] | null
           title: string
           updated_at?: string
         }
         Update: {
           category_id?: string
           created_at?: string
+          delivery_time?: string | null
           description?: string | null
           display_order?: number
+          faqs?: Json | null
+          features?: Json | null
+          hero_image_url?: string | null
+          icon_name?: string | null
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pricing_info?: string | null
+          process_steps?: Json | null
           short_summary?: string | null
           slug?: string
+          technologies?: string[] | null
           title?: string
           updated_at?: string
         }
