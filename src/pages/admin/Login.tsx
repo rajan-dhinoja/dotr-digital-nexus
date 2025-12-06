@@ -30,9 +30,8 @@ export default function AdminLogin() {
     
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
-      setLoading(false);
     }
-    // Don't navigate here - useEffect handles it after role check completes
+    setLoading(false);
   };
 
   return (
