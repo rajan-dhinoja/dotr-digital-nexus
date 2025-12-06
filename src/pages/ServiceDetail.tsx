@@ -100,31 +100,39 @@ export default function ServiceDetail() {
             ) : data && data.services.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                 {data.services.map((service) => (
-                  <Card 
-                    key={service.id} 
-                    className="border-border hover:shadow-lg transition-shadow"
+                  <Link 
+                    key={service.id}
+                    to={`/services/${category}/${service.slug}`}
+                    className="group"
                   >
-                    <CardContent className="pt-6">
-                      {service.image_url ? (
-                        <img
-                          src={service.image_url}
-                          alt={service.title}
-                          className="w-full h-40 object-cover rounded-md mb-4"
-                        />
-                      ) : (
-                        <CheckCircle className="h-12 w-12 text-primary mb-4" />
-                      )}
-                      <h3 className="text-2xl font-semibold text-foreground mb-3">
-                        {service.title}
-                      </h3>
-                      {service.short_summary && (
-                        <p className="text-muted-foreground mb-2">{service.short_summary}</p>
-                      )}
-                      {service.description && (
-                        <p className="text-sm text-muted-foreground">{service.description}</p>
-                      )}
-                    </CardContent>
-                  </Card>
+                    <Card className="border-border hover:shadow-lg hover:border-primary/30 transition-all duration-300 h-full">
+                      <CardContent className="pt-6">
+                        {service.image_url ? (
+                          <img
+                            src={service.image_url}
+                            alt={service.title}
+                            className="w-full h-40 object-cover rounded-md mb-4 group-hover:scale-[1.02] transition-transform"
+                          />
+                        ) : (
+                          <div className="w-full h-40 bg-muted rounded-md mb-4 flex items-center justify-center">
+                            <CheckCircle className="h-12 w-12 text-primary/50" />
+                          </div>
+                        )}
+                        <h3 className="text-2xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                          {service.title}
+                        </h3>
+                        {service.short_summary && (
+                          <p className="text-muted-foreground mb-2">{service.short_summary}</p>
+                        )}
+                        {service.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-2">{service.description}</p>
+                        )}
+                        <div className="mt-4 flex items-center text-primary text-sm font-medium">
+                          Learn More <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             ) : data ? (
