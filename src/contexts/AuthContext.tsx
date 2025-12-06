@@ -22,14 +22,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const checkRole = async (userId: string) => {
-    const { data } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId);
-    
-    if (data) {
-      setIsAdmin(data.some(r => r.role === 'admin'));
-      setIsEditor(data.some(r => r.role === 'admin' || r.role === 'editor'));
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+      
+      if (error) {
+        console.error('Error checking role:', error);
+        setIsAdmin(false);
+        setIsEditor(false);
+        return;
+      }
+      
+      if (data && data.length > 0) {
+        setIsAdmin(data.some(r => r.role === 'admin'));
+        setIsEditor(data.some(r => r.role === 'admin' || r.role === 'editor'));
+      } else {
+        setIsAdmin(false);
+        setIsEditor(false);
+      }
+    } catch (err) {
+      console.error('Error in checkRole:', err);
+      setIsAdmin(false);
+      setIsEditor(false);
     }
   };
 
