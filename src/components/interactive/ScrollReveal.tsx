@@ -45,11 +45,11 @@ export const ScrollReveal = ({
     <div
       ref={ref}
       className={cn(
-        "opacity-0",
+        !isVisible && "opacity-0",
         isVisible && `animate-${animation}`,
         className
       )}
-      style={{ animationDelay: `${delay}ms` }}
+      style={{ animationDelay: `${delay}ms`, animationFillMode: "forwards" }}
     >
       {children}
     </div>
