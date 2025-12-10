@@ -62,7 +62,7 @@ const Blog = () => {
                     <Card className="border-border overflow-hidden hover:shadow-xl transition-all group cursor-pointer h-full">
                       <div className="aspect-video overflow-hidden">
                         <img
-                          src={post.cover_image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
+                          src={post.cover_image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
                           alt={post.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         />

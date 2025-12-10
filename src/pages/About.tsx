@@ -307,9 +307,9 @@ const About = () => {
                 <ScrollReveal key={member.id} animation="slide-up" delay={index * 100}>
                   <TiltCard className="glass-card rounded-2xl overflow-hidden group">
                     <div className="aspect-square overflow-hidden relative">
-                      {member.profile_image_url ? (
+                      {member.image_url ? (
                         <img
-                          src={member.profile_image_url}
+                          src={member.image_url}
                           alt={member.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
@@ -326,7 +326,7 @@ const About = () => {
                       <h3 className="text-lg font-display font-semibold text-foreground mb-1">
                         {member.name}
                       </h3>
-                      <p className="text-primary text-sm font-medium mb-2">{member.title}</p>
+                      <p className="text-primary text-sm font-medium mb-2">{member.role}</p>
                       {member.bio && (
                         <p className="text-muted-foreground text-sm line-clamp-2">{member.bio}</p>
                       )}

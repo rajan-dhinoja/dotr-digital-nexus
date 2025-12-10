@@ -1,34 +1,15 @@
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { format } from "date-fns";
+import { useBlogPostBySlug } from "@/hooks/useBlogPosts";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-
-  const { data: post, isLoading } = useQuery({
-    queryKey: ["blog-post", slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("blog_posts")
-        .select(`
-          *,
-          blog_post_categories(category_id, blog_categories(*)),
-          team_members(*)
-        `)
-        .eq("slug", slug)
-        .eq("status", "published")
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!slug,
-  });
+  const { data: post, isLoading } = useBlogPostBySlug(slug || "");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -44,31 +25,18 @@ export default function BlogPost() {
               <Skeleton className="h-10 w-3/4" />
               <Skeleton className="h-6 w-1/2" />
               <Skeleton className="h-64 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
             </div>
           ) : post ? (
             <article>
-              {post.cover_image_url && (
-                <img
-                  src={post.cover_image_url}
-                  alt={post.title}
-                  className="w-full h-64 md:h-96 object-cover rounded-lg mb-8"
-                />
+              {post.cover_image && (
+                <img src={post.cover_image} alt={post.title} className="w-full h-64 md:h-96 object-cover rounded-lg mb-8" />
               )}
-
               <div className="flex flex-wrap gap-2 mb-4">
-                {post.blog_post_categories?.map((pc: any) => (
-                  <Badge key={pc.category_id} variant="secondary">
-                    {pc.blog_categories?.name}
-                  </Badge>
+                {post.blog_post_categories?.map((pc) => (
+                  <Badge key={pc.category_id} variant="secondary">{pc.blog_categories?.name}</Badge>
                 ))}
               </div>
-
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {post.title}
-              </h1>
-
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{post.title}</h1>
               <div className="flex items-center gap-4 text-muted-foreground mb-8">
                 {post.team_members && (
                   <div className="flex items-center gap-2">
@@ -83,17 +51,13 @@ export default function BlogPost() {
                   </div>
                 )}
               </div>
-
               <div className="prose prose-lg max-w-none text-foreground">
-                {post.content.split("\n").map((paragraph: string, i: number) => (
-                  <p key={i}>{paragraph}</p>
-                ))}
+                {post.content?.split("\n").map((p, i) => <p key={i}>{p}</p>)}
               </div>
             </article>
           ) : (
             <div className="text-center py-16">
               <h2 className="text-2xl font-bold text-foreground mb-2">Post Not Found</h2>
-              <p className="text-muted-foreground">The blog post you're looking for doesn't exist.</p>
             </div>
           )}
         </div>
