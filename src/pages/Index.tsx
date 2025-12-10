@@ -207,14 +207,14 @@ const Index = () => {
               ))
             ) : (
               projects?.map((project, index) => {
-                const category = project.project_services?.[0]?.services?.services_categories?.name || "Project";
+                const category = project.technologies?.[0] || "Project";
                 return (
                   <ScrollReveal key={project.id} animation="slide-up" delay={index * 100}>
                     <Link to={`/portfolio/${project.slug}`} className="group block">
                       <TiltCard className="overflow-hidden rounded-2xl">
                         <div className="relative aspect-[4/3] overflow-hidden">
                           <img
-                            src={project.cover_image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
+                            src={project.cover_image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"}
                             alt={project.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />

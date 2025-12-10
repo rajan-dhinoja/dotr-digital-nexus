@@ -2,15 +2,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface Testimonial {
-  id: string;
-  name: string;
-  designation?: string | null;
-  company?: string | null;
-  testimonial_text: string;
-  photo_url?: string | null;
-}
+import type { Testimonial } from "@/hooks/useTestimonials";
 
 interface TestimonialCarouselProps {
   testimonials: Testimonial[];
@@ -59,7 +51,7 @@ export const TestimonialCarousel = ({
         
         <div className="relative z-10">
           <div className="flex mb-6">
-            {[...Array(5)].map((_, i) => (
+            {[...Array(current.rating || 5)].map((_, i) => (
               <Star key={i} className="h-5 w-5 fill-primary text-primary" />
             ))}
           </div>
@@ -70,7 +62,7 @@ export const TestimonialCarousel = ({
               isAnimating && "opacity-0 translate-y-4"
             )}
           >
-            "{current.testimonial_text}"
+            "{current.content}"
           </p>
           
           <div
@@ -79,21 +71,21 @@ export const TestimonialCarousel = ({
               isAnimating && "opacity-0 translate-y-4"
             )}
           >
-            {current.photo_url ? (
+            {current.author_image ? (
               <img
-                src={current.photo_url}
-                alt={current.name}
+                src={current.author_image}
+                alt={current.author_name}
                 className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/20"
               />
             ) : (
               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg">
-                {current.name.charAt(0)}
+                {current.author_name.charAt(0)}
               </div>
             )}
             <div>
-              <p className="font-semibold text-foreground">{current.name}</p>
+              <p className="font-semibold text-foreground">{current.author_name}</p>
               <p className="text-sm text-muted-foreground">
-                {current.designation}{current.company && `, ${current.company}`}
+                {current.author_role}{current.author_company && `, ${current.author_company}`}
               </p>
             </div>
           </div>

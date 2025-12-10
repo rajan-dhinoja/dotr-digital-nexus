@@ -1,14 +1,39 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
 
-export type BlogPost = Tables<"blog_posts"> & {
+export interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image: string | null;
+  author_id: string | null;
+  is_published: boolean | null;
+  published_at: string | null;
+  read_time: number | null;
+  views: number | null;
+  created_at: string;
+  updated_at: string;
+  team_members?: {
+    id: string;
+    name: string;
+    role: string;
+    image_url: string | null;
+  };
   blog_post_categories?: {
     category_id: string;
-    blog_categories?: Tables<"blog_categories">;
+    blog_categories: BlogCategory;
   }[];
-  team_members?: Tables<"team_members">;
-};
+}
 
 export const useBlogPosts = (limit?: number) => {
   return useQuery({
@@ -18,13 +43,13 @@ export const useBlogPosts = (limit?: number) => {
         .from("blog_posts")
         .select(`
           *,
+          team_members(id, name, role, image_url),
           blog_post_categories(
             category_id,
             blog_categories(*)
-          ),
-          team_members(*)
+          )
         `)
-        .eq("status", "published")
+        .eq("is_published", true)
         .order("published_at", { ascending: false });
       
       if (limit) {
@@ -39,6 +64,30 @@ export const useBlogPosts = (limit?: number) => {
   });
 };
 
+export const useBlogPostBySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["blog-post", slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select(`
+          *,
+          team_members(id, name, role, image_url),
+          blog_post_categories(
+            category_id,
+            blog_categories(*)
+          )
+        `)
+        .eq("slug", slug)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data as BlogPost | null;
+    },
+    enabled: !!slug,
+  });
+};
+
 export const useBlogCategories = () => {
   return useQuery({
     queryKey: ["blog-categories"],
@@ -49,7 +98,7 @@ export const useBlogCategories = () => {
         .order("name");
       
       if (error) throw error;
-      return data as Tables<"blog_categories">[];
+      return data as BlogCategory[];
     },
   });
 };

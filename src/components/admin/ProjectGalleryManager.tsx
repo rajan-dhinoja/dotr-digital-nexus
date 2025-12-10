@@ -6,9 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2, Plus } from 'lucide-react';
-import type { Tables } from '@/integrations/supabase/types';
 
-type GalleryImage = Tables<'project_gallery_images'>;
+interface GalleryImage {
+  id: string;
+  project_id: string;
+  image_url: string;
+  caption: string | null;
+  display_order: number | null;
+  created_at: string;
+}
 
 interface Props {
   projectId: string;
@@ -24,18 +30,18 @@ export function ProjectGalleryManager({ projectId }: Props) {
     queryKey: ['project-gallery', projectId],
     queryFn: async () => {
       const { data } = await supabase
-        .from('project_gallery_images')
+        .from('project_gallery')
         .select('*')
         .eq('project_id', projectId)
         .order('display_order');
-      return data ?? [];
+      return (data ?? []) as GalleryImage[];
     },
   });
 
   const addMutation = useMutation({
     mutationFn: async () => {
       if (!newImageUrl) return;
-      const { error } = await supabase.from('project_gallery_images').insert({
+      const { error } = await supabase.from('project_gallery').insert({
         project_id: projectId,
         image_url: newImageUrl,
         caption: newCaption || null,
@@ -53,7 +59,7 @@ export function ProjectGalleryManager({ projectId }: Props) {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('project_gallery_images').delete().eq('id', id);
+      const { error } = await supabase.from('project_gallery').delete().eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
