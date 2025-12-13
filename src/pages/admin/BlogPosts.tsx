@@ -8,12 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
-import { blogPostSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type BlogPost = Tables<'blog_posts'>;
@@ -21,6 +20,8 @@ type BlogPost = Tables<'blog_posts'>;
 export default function AdminBlogPosts() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BlogPost | null>(null);
+  const [coverImage, setCoverImage] = useState<string>('');
+  const [isPublished, setIsPublished] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -33,7 +34,7 @@ export default function AdminBlogPosts() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (post: Partial<BlogPost> & { published_at?: string | null }) => {
+    mutationFn: async (post: Partial<BlogPost>) => {
       if (editing) {
         const { error } = await supabase.from('blog_posts').update(post).eq('id', editing.id);
         if (error) throw error;
@@ -46,6 +47,8 @@ export default function AdminBlogPosts() {
       queryClient.invalidateQueries({ queryKey: ['admin-blog-posts'] });
       setOpen(false);
       setEditing(null);
+      setCoverImage('');
+      setIsPublished(false);
       toast({ title: editing ? 'Post updated' : 'Post created' });
     },
     onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
@@ -62,28 +65,35 @@ export default function AdminBlogPosts() {
     },
   });
 
+  const handleEdit = (post: BlogPost) => {
+    setEditing(post);
+    setCoverImage(post.cover_image ?? '');
+    setIsPublished(post.is_published ?? false);
+    setOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    const validation = validateFormData(blogPostSchema, form, {
-      title: (v) => v?.toString() ?? '',
-      slug: (v) => v?.toString() ?? '',
-      excerpt: (v) => v?.toString() || null,
-      content: (v) => v?.toString() ?? '',
-      cover_image_url: (v) => v?.toString() || null,
-      status: (v) => v?.toString() ?? 'draft',
-    });
+    const title = form.get('title')?.toString() ?? '';
+    const slug = form.get('slug')?.toString() ?? '';
+    const excerpt = form.get('excerpt')?.toString() || null;
+    const content = form.get('content')?.toString() ?? '';
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!title || !slug || !content) {
+      toast({ title: 'Validation Error', description: 'Title, slug, and content are required', variant: 'destructive' });
       return;
     }
 
-    const validatedData = (validation as { success: true; data: typeof validation.data }).data;
-    const data = {
-      ...validatedData,
-      published_at: validatedData.status === 'published' ? new Date().toISOString() : null,
+    const data: Partial<BlogPost> = {
+      title,
+      slug,
+      excerpt,
+      content,
+      cover_image: coverImage || null,
+      is_published: isPublished,
+      published_at: isPublished ? new Date().toISOString() : null,
     };
 
     saveMutation.mutate(data);
@@ -91,18 +101,20 @@ export default function AdminBlogPosts() {
 
   const columns = [
     {
-      key: 'cover_image_url',
+      key: 'cover_image',
       label: 'Image',
-      render: (p: BlogPost) => p.cover_image_url ? (
-        <img src={p.cover_image_url} alt="" className="h-10 w-16 object-cover rounded" />
+      render: (p: BlogPost) => p.cover_image ? (
+        <img src={p.cover_image} alt="" className="h-10 w-16 object-cover rounded" />
       ) : '-',
     },
     { key: 'title', label: 'Title' },
     {
-      key: 'status',
+      key: 'is_published',
       label: 'Status',
       render: (p: BlogPost) => (
-        <Badge variant={p.status === 'published' ? 'default' : 'secondary'}>{p.status}</Badge>
+        <Badge variant={p.is_published ? 'default' : 'secondary'}>
+          {p.is_published ? 'Published' : 'Draft'}
+        </Badge>
       ),
     },
     {
@@ -116,7 +128,7 @@ export default function AdminBlogPosts() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Blog Posts</h1>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
+        <Button onClick={() => { setEditing(null); setCoverImage(''); setIsPublished(false); setOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" /> Add Post
         </Button>
       </div>
@@ -125,7 +137,7 @@ export default function AdminBlogPosts() {
         data={posts}
         columns={columns}
         loading={isLoading}
-        onEdit={(p) => { setEditing(p); setOpen(true); }}
+        onEdit={handleEdit}
         onDelete={(p) => deleteMutation.mutate(p.id)}
       />
 
@@ -145,18 +157,13 @@ export default function AdminBlogPosts() {
                 <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <Select name="status" defaultValue={editing?.status ?? 'draft'}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="is_published"
+                checked={isPublished}
+                onCheckedChange={setIsPublished}
+              />
+              <Label htmlFor="is_published">Published</Label>
             </div>
             <div className="space-y-2">
               <Label>Excerpt</Label>
@@ -170,13 +177,9 @@ export default function AdminBlogPosts() {
               <Label>Cover Image</Label>
               <ImageUpload
                 bucket="blog-images"
-                value={editing?.cover_image_url ?? undefined}
-                onChange={(url) => {
-                  const input = document.querySelector<HTMLInputElement>('input[name="cover_image_url"]');
-                  if (input) input.value = url ?? '';
-                }}
+                value={coverImage || undefined}
+                onChange={(url) => setCoverImage(url ?? '')}
               />
-              <input type="hidden" name="cover_image_url" defaultValue={editing?.cover_image_url ?? ''} />
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}

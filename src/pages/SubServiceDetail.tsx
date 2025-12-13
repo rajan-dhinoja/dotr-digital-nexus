@@ -37,7 +37,7 @@ export default function SubServiceDetail() {
     queryFn: async () => {
       // First get the category
       const { data: cat, error: catError } = await supabase
-        .from("services_categories")
+        .from("service_categories")
         .select("*")
         .eq("slug", category)
         .maybeSingle();
@@ -77,7 +77,9 @@ export default function SubServiceDetail() {
     ? (Array.isArray(data.service.faqs) ? data.service.faqs : []) as unknown as FAQ[]
     : [];
 
-  const technologies: string[] = data?.service?.technologies ?? [];
+  const technologies: string[] = data?.service?.technologies
+    ? (Array.isArray(data.service.technologies) ? data.service.technologies : []) as unknown as string[]
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -97,12 +99,12 @@ export default function SubServiceDetail() {
         ) : data ? (
           <>
             <ServiceHero
-              title={data.service.title}
-              summary={data.service.short_summary}
+              title={data.service.name}
+              summary={data.service.tagline}
               categoryName={data.category.name}
               categorySlug={data.category.slug}
-              iconName={data.service.icon_name}
-              heroImageUrl={data.service.hero_image_url}
+              iconName={data.service.icon}
+              heroImageUrl={data.service.image_url}
             />
 
             {/* Description Section */}
@@ -129,13 +131,13 @@ export default function SubServiceDetail() {
               technologies={technologies} 
               description={data.service.description}
             />
-            <ServiceFAQ faqs={faqs} serviceTitle={data.service.title} />
+            <ServiceFAQ faqs={faqs} serviceTitle={data.service.name} />
             <ServicePricing 
-              pricingInfo={data.service.pricing_info}
-              deliveryTime={data.service.delivery_time}
-              serviceTitle={data.service.title}
+              pricingInfo={data.service.pricing}
+              deliveryTime={null}
+              serviceTitle={data.service.name}
             />
-            <ServiceCTA serviceTitle={data.service.title} />
+            <ServiceCTA serviceTitle={data.service.name} />
           </>
         ) : (
           <div className="pt-32 pb-20 container mx-auto px-4 text-center">

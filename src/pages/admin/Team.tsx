@@ -8,10 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
-import { teamMemberSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type TeamMember = Tables<'team_members'>;
@@ -19,6 +19,8 @@ type TeamMember = Tables<'team_members'>;
 export default function AdminTeam() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<TeamMember | null>(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -44,6 +46,8 @@ export default function AdminTeam() {
       queryClient.invalidateQueries({ queryKey: ['admin-team'] });
       setOpen(false);
       setEditing(null);
+      setImageUrl('');
+      setIsFeatured(false);
       toast({ title: editing ? 'Member updated' : 'Member added' });
     },
     onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
@@ -60,49 +64,51 @@ export default function AdminTeam() {
     },
   });
 
+  const handleEdit = (member: TeamMember) => {
+    setEditing(member);
+    setImageUrl(member.image_url ?? '');
+    setIsFeatured(member.is_featured ?? false);
+    setOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    // Parse social links JSON safely
-    let socialLinks = null;
-    const socialLinksStr = form.get('social_links')?.toString() || '';
-    if (socialLinksStr.trim()) {
-      try {
-        socialLinks = JSON.parse(socialLinksStr);
-      } catch {
-        toast({ title: 'Validation Error', description: 'Social Links must be valid JSON', variant: 'destructive' });
-        return;
-      }
-    }
-    
-    const validation = validateFormData(teamMemberSchema, form, {
-      name: (v) => v?.toString() ?? '',
-      title: (v) => v?.toString() ?? '',
-      bio: (v) => v?.toString() || null,
-      profile_image_url: (v) => v?.toString() || null,
-      social_links: () => socialLinks,
-      display_order: (v) => Number(v) || 0,
-    });
+    const name = form.get('name')?.toString() ?? '';
+    const role = form.get('role')?.toString() ?? '';
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!name || !role) {
+      toast({ title: 'Validation Error', description: 'Name and role are required', variant: 'destructive' });
       return;
     }
 
-    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
+    const data: Partial<TeamMember> = {
+      name,
+      role,
+      bio: form.get('bio')?.toString() || null,
+      email: form.get('email')?.toString() || null,
+      image_url: imageUrl || null,
+      linkedin_url: form.get('linkedin_url')?.toString() || null,
+      twitter_url: form.get('twitter_url')?.toString() || null,
+      github_url: form.get('github_url')?.toString() || null,
+      is_featured: isFeatured,
+      display_order: Number(form.get('display_order')) || 0,
+    };
+
+    saveMutation.mutate(data);
   };
 
   const columns = [
     {
-      key: 'profile_image_url',
+      key: 'image_url',
       label: 'Photo',
-      render: (m: TeamMember) => m.profile_image_url ? (
-        <img src={m.profile_image_url} alt="" className="h-10 w-10 rounded-full object-cover" />
+      render: (m: TeamMember) => m.image_url ? (
+        <img src={m.image_url} alt="" className="h-10 w-10 rounded-full object-cover" />
       ) : '-',
     },
     { key: 'name', label: 'Name' },
-    { key: 'title', label: 'Title' },
+    { key: 'role', label: 'Role' },
     { key: 'display_order', label: 'Order' },
   ];
 
@@ -110,7 +116,7 @@ export default function AdminTeam() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Team Members</h1>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
+        <Button onClick={() => { setEditing(null); setImageUrl(''); setIsFeatured(false); setOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" /> Add Member
         </Button>
       </div>
@@ -119,7 +125,7 @@ export default function AdminTeam() {
         data={members}
         columns={columns}
         loading={isLoading}
-        onEdit={(m) => { setEditing(m); setOpen(true); }}
+        onEdit={handleEdit}
         onDelete={(m) => deleteMutation.mutate(m.id)}
       />
 
@@ -135,9 +141,13 @@ export default function AdminTeam() {
                 <Input name="name" defaultValue={editing?.name} required maxLength={100} />
               </div>
               <div className="space-y-2">
-                <Label>Title</Label>
-                <Input name="title" defaultValue={editing?.title} required maxLength={100} />
+                <Label>Role</Label>
+                <Input name="role" defaultValue={editing?.role} required maxLength={100} />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input name="email" type="email" defaultValue={editing?.email ?? ''} maxLength={200} />
             </div>
             <div className="space-y-2">
               <Label>Bio</Label>
@@ -146,23 +156,28 @@ export default function AdminTeam() {
             <div className="space-y-2">
               <Label>Profile Image</Label>
               <ImageUpload
-                bucket="team-profiles"
-                value={editing?.profile_image_url ?? undefined}
-                onChange={(url) => {
-                  const input = document.querySelector<HTMLInputElement>('input[name="profile_image_url"]');
-                  if (input) input.value = url ?? '';
-                }}
+                bucket="team-images"
+                value={imageUrl || undefined}
+                onChange={(url) => setImageUrl(url ?? '')}
               />
-              <input type="hidden" name="profile_image_url" defaultValue={editing?.profile_image_url ?? ''} />
             </div>
-            <div className="space-y-2">
-              <Label>Social Links (JSON)</Label>
-              <Textarea
-                name="social_links"
-                defaultValue={JSON.stringify(editing?.social_links ?? {}, null, 2)}
-                rows={3}
-                placeholder='{"linkedin": "url", "twitter": "url"}'
-              />
+            <div className="grid grid-cols-3 gap-2">
+              <div className="space-y-2">
+                <Label>LinkedIn</Label>
+                <Input name="linkedin_url" defaultValue={editing?.linkedin_url ?? ''} type="url" />
+              </div>
+              <div className="space-y-2">
+                <Label>Twitter</Label>
+                <Input name="twitter_url" defaultValue={editing?.twitter_url ?? ''} type="url" />
+              </div>
+              <div className="space-y-2">
+                <Label>GitHub</Label>
+                <Input name="github_url" defaultValue={editing?.github_url ?? ''} type="url" />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch id="is_featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+              <Label htmlFor="is_featured">Featured</Label>
             </div>
             <div className="space-y-2">
               <Label>Display Order</Label>

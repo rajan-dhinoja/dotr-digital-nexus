@@ -86,7 +86,7 @@ const Services = () => {
                                 className="flex items-start text-foreground"
                               >
                                 <ArrowRight className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-1" />
-                                <span>{service.title}</span>
+                                <span>{service.name}</span>
                               </li>
                             ))}
                           </ul>

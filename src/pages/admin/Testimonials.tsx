@@ -3,14 +3,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
-import { testimonialSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Testimonial = Tables<'testimonials'>;
@@ -18,6 +19,8 @@ type Testimonial = Tables<'testimonials'>;
 export default function AdminTestimonials() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
+  const [authorImage, setAuthorImage] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -43,6 +46,8 @@ export default function AdminTestimonials() {
       queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] });
       setOpen(false);
       setEditing(null);
+      setAuthorImage('');
+      setIsFeatured(false);
       toast({ title: editing ? 'Testimonial updated' : 'Testimonial added' });
     },
     onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
@@ -59,34 +64,46 @@ export default function AdminTestimonials() {
     },
   });
 
+  const handleEdit = (testimonial: Testimonial) => {
+    setEditing(testimonial);
+    setAuthorImage(testimonial.author_image ?? '');
+    setIsFeatured(testimonial.is_featured ?? false);
+    setOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    const validation = validateFormData(testimonialSchema, form, {
-      name: (v) => v?.toString() ?? '',
-      designation: (v) => v?.toString() || null,
-      company: (v) => v?.toString() || null,
-      testimonial_text: (v) => v?.toString() ?? '',
-      photo_url: (v) => v?.toString() || null,
-      display_order: (v) => Number(v) || 0,
-    });
+    const author_name = form.get('author_name')?.toString() ?? '';
+    const content = form.get('content')?.toString() ?? '';
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!author_name || !content) {
+      toast({ title: 'Validation Error', description: 'Author name and content are required', variant: 'destructive' });
       return;
     }
 
-    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
+    const data: Partial<Testimonial> = {
+      author_name,
+      content,
+      author_role: form.get('author_role')?.toString() || null,
+      author_company: form.get('author_company')?.toString() || null,
+      author_image: authorImage || null,
+      rating: Number(form.get('rating')) || 5,
+      is_featured: isFeatured,
+      display_order: Number(form.get('display_order')) || 0,
+    };
+
+    saveMutation.mutate(data);
   };
 
   const columns = [
-    { key: 'name', label: 'Name' },
-    { key: 'company', label: 'Company' },
+    { key: 'author_name', label: 'Name' },
+    { key: 'author_company', label: 'Company' },
     {
-      key: 'testimonial_text',
+      key: 'content',
       label: 'Testimonial',
-      render: (t: Testimonial) => t.testimonial_text.slice(0, 50) + '...',
+      render: (t: Testimonial) => (t.content?.slice(0, 50) ?? '') + '...',
     },
     { key: 'display_order', label: 'Order' },
   ];
@@ -95,7 +112,7 @@ export default function AdminTestimonials() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Testimonials</h1>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
+        <Button onClick={() => { setEditing(null); setAuthorImage(''); setIsFeatured(false); setOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" /> Add Testimonial
         </Button>
       </div>
@@ -104,7 +121,7 @@ export default function AdminTestimonials() {
         data={testimonials}
         columns={columns}
         loading={isLoading}
-        onEdit={(t) => { setEditing(t); setOpen(true); }}
+        onEdit={handleEdit}
         onDelete={(t) => deleteMutation.mutate(t.id)}
       />
 
@@ -116,29 +133,43 @@ export default function AdminTestimonials() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Name</Label>
-                <Input name="name" defaultValue={editing?.name} required maxLength={100} />
+                <Label>Author Name</Label>
+                <Input name="author_name" defaultValue={editing?.author_name} required maxLength={100} />
               </div>
               <div className="space-y-2">
-                <Label>Designation</Label>
-                <Input name="designation" defaultValue={editing?.designation ?? ''} maxLength={100} />
+                <Label>Role</Label>
+                <Input name="author_role" defaultValue={editing?.author_role ?? ''} maxLength={100} />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Company</Label>
-              <Input name="company" defaultValue={editing?.company ?? ''} maxLength={100} />
+              <Input name="author_company" defaultValue={editing?.author_company ?? ''} maxLength={100} />
             </div>
             <div className="space-y-2">
-              <Label>Testimonial</Label>
-              <Textarea name="testimonial_text" defaultValue={editing?.testimonial_text} rows={4} required maxLength={2000} />
+              <Label>Testimonial Content</Label>
+              <Textarea name="content" defaultValue={editing?.content} rows={4} required maxLength={2000} />
             </div>
             <div className="space-y-2">
-              <Label>Photo URL</Label>
-              <Input name="photo_url" defaultValue={editing?.photo_url ?? ''} type="url" />
+              <Label>Author Photo</Label>
+              <ImageUpload
+                bucket="team-images"
+                value={authorImage || undefined}
+                onChange={(url) => setAuthorImage(url ?? '')}
+              />
             </div>
-            <div className="space-y-2">
-              <Label>Display Order</Label>
-              <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Rating (1-5)</Label>
+                <Input name="rating" type="number" min={1} max={5} defaultValue={editing?.rating ?? 5} />
+              </div>
+              <div className="space-y-2">
+                <Label>Display Order</Label>
+                <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch id="is_featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+              <Label htmlFor="is_featured">Featured</Label>
             </div>
             <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? 'Saving...' : 'Save'}

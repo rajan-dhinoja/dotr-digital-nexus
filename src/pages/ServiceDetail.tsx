@@ -22,7 +22,7 @@ export default function ServiceDetail() {
     queryKey: ["service-category", category],
     queryFn: async () => {
       const { data: cat, error: catError } = await supabase
-        .from("services_categories")
+        .from("service_categories")
         .select("*")
         .eq("slug", category)
         .single();
@@ -110,7 +110,7 @@ export default function ServiceDetail() {
                         {service.image_url ? (
                           <img
                             src={service.image_url}
-                            alt={service.title}
+                            alt={service.name}
                             className="w-full h-40 object-cover rounded-md mb-4 group-hover:scale-[1.02] transition-transform"
                           />
                         ) : (
@@ -119,10 +119,10 @@ export default function ServiceDetail() {
                           </div>
                         )}
                         <h3 className="text-2xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                          {service.title}
+                          {service.name}
                         </h3>
-                        {service.short_summary && (
-                          <p className="text-muted-foreground mb-2">{service.short_summary}</p>
+                        {service.tagline && (
+                          <p className="text-muted-foreground mb-2">{service.tagline}</p>
                         )}
                         {service.description && (
                           <p className="text-sm text-muted-foreground line-clamp-2">{service.description}</p>
