@@ -8,17 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, X, GripVertical } from 'lucide-react';
-import { serviceSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Service = Tables<'services'>;
-type Category = Tables<'services_categories'>;
+type Category = Tables<'service_categories'>;
 
 interface Feature {
   title: string;
@@ -51,6 +51,8 @@ export default function AdminServices() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [techInput, setTechInput] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -65,7 +67,7 @@ export default function AdminServices() {
   const { data: categories = [] } = useQuery({
     queryKey: ['service-categories'],
     queryFn: async () => {
-      const { data } = await supabase.from('services_categories').select('*').order('display_order');
+      const { data } = await supabase.from('service_categories').select('*').order('display_order');
       return data ?? [];
     },
   });
@@ -76,6 +78,8 @@ export default function AdminServices() {
     setFaqs([]);
     setTechnologies([]);
     setTechInput('');
+    setImageUrl('');
+    setIsFeatured(false);
   };
 
   const loadEditingData = (service: Service) => {
@@ -83,7 +87,10 @@ export default function AdminServices() {
     setFeatures((service.features as unknown as Feature[]) || []);
     setProcessSteps((service.process_steps as unknown as ProcessStep[]) || []);
     setFaqs((service.faqs as unknown as FAQ[]) || []);
-    setTechnologies(service.technologies || []);
+    const techs = service.technologies as unknown;
+    setTechnologies(Array.isArray(techs) ? techs as string[] : []);
+    setImageUrl(service.image_url ?? '');
+    setIsFeatured(service.is_featured ?? false);
     setOpen(true);
   };
 
@@ -122,35 +129,33 @@ export default function AdminServices() {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    const validation = validateFormData(serviceSchema, form, {
-      title: (v) => v?.toString() ?? '',
-      slug: (v) => v?.toString() ?? '',
-      category_id: (v) => v?.toString() ?? '',
-      short_summary: (v) => v?.toString() || null,
-      description: (v) => v?.toString() || null,
-      image_url: (v) => v?.toString() || null,
-      display_order: (v) => Number(v) || 0,
-    });
+    const name = form.get('name')?.toString() ?? '';
+    const slug = form.get('slug')?.toString() ?? '';
+    const category_id = form.get('category_id')?.toString() || null;
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!name || !slug) {
+      toast({ title: 'Validation Error', description: 'Name and slug are required', variant: 'destructive' });
       return;
     }
 
-    const extraFields = {
-      hero_image_url: form.get('hero_image_url')?.toString() || null,
-      icon_name: form.get('icon_name')?.toString() || 'Zap',
-      pricing_info: form.get('pricing_info')?.toString() || null,
-      delivery_time: form.get('delivery_time')?.toString() || null,
-      meta_title: form.get('meta_title')?.toString() || null,
-      meta_description: form.get('meta_description')?.toString() || null,
-      features: features as unknown as null,
-      process_steps: processSteps as unknown as null,
-      faqs: faqs as unknown as null,
-      technologies: technologies,
+    const data: Partial<Service> = {
+      name,
+      slug,
+      category_id,
+      tagline: form.get('tagline')?.toString() || null,
+      description: form.get('description')?.toString() || null,
+      icon: form.get('icon')?.toString() || null,
+      image_url: imageUrl || null,
+      is_featured: isFeatured,
+      display_order: Number(form.get('display_order')) || 0,
+      features: features as unknown as any,
+      process_steps: processSteps as unknown as any,
+      faqs: faqs as unknown as any,
+      technologies: technologies as unknown as any,
+      pricing: null,
     };
 
-    saveMutation.mutate({ ...(validation as { success: true; data: typeof validation.data }).data, ...extraFields } as Partial<Service>);
+    saveMutation.mutate(data);
   };
 
   const addFeature = () => {
@@ -207,7 +212,7 @@ export default function AdminServices() {
   };
 
   const columns = [
-    { key: 'title', label: 'Title' },
+    { key: 'name', label: 'Name' },
     { key: 'slug', label: 'Slug' },
     {
       key: 'category_id',
@@ -241,19 +246,18 @@ export default function AdminServices() {
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="features">Features</TabsTrigger>
                 <TabsTrigger value="process">Process</TabsTrigger>
                 <TabsTrigger value="faqs">FAQs</TabsTrigger>
-                <TabsTrigger value="seo">SEO & Pricing</TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Title *</Label>
-                    <Input name="title" defaultValue={editing?.title} required maxLength={200} />
+                    <Label>Name *</Label>
+                    <Input name="name" defaultValue={editing?.name} required maxLength={200} />
                   </div>
                   <div className="space-y-2">
                     <Label>Slug *</Label>
@@ -262,8 +266,8 @@ export default function AdminServices() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Category *</Label>
-                    <Select name="category_id" defaultValue={editing?.category_id}>
+                    <Label>Category</Label>
+                    <Select name="category_id" defaultValue={editing?.category_id ?? undefined}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
@@ -276,7 +280,7 @@ export default function AdminServices() {
                   </div>
                   <div className="space-y-2">
                     <Label>Icon</Label>
-                    <Select name="icon_name" defaultValue={editing?.icon_name || 'Zap'}>
+                    <Select name="icon" defaultValue={editing?.icon || 'Zap'}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select icon" />
                       </SelectTrigger>
@@ -289,38 +293,28 @@ export default function AdminServices() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Short Summary</Label>
-                  <Input name="short_summary" defaultValue={editing?.short_summary ?? ''} maxLength={500} />
+                  <Label>Tagline</Label>
+                  <Input name="tagline" defaultValue={editing?.tagline ?? ''} maxLength={500} />
                 </div>
                 <div className="space-y-2">
                   <Label>Description</Label>
                   <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} maxLength={10000} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Service Image</Label>
-                    <ImageUpload
-                      bucket="service-images"
-                      value={editing?.image_url ?? undefined}
-                      onChange={(url) => {
-                        const input = document.querySelector<HTMLInputElement>('input[name="image_url"]');
-                        if (input) input.value = url ?? '';
-                      }}
-                    />
-                    <input type="hidden" name="image_url" defaultValue={editing?.image_url ?? ''} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Hero Image</Label>
-                    <ImageUpload
-                      bucket="service-images"
-                      value={editing?.hero_image_url ?? undefined}
-                      onChange={(url) => {
-                        const input = document.querySelector<HTMLInputElement>('input[name="hero_image_url"]');
-                        if (input) input.value = url ?? '';
-                      }}
-                    />
-                    <input type="hidden" name="hero_image_url" defaultValue={editing?.hero_image_url ?? ''} />
-                  </div>
+                <div className="space-y-2">
+                  <Label>Service Image</Label>
+                  <ImageUpload
+                    bucket="service-images"
+                    value={imageUrl || undefined}
+                    onChange={(url) => setImageUrl(url ?? '')}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={isFeatured}
+                    onCheckedChange={setIsFeatured}
+                  />
+                  <Label htmlFor="is_featured">Featured</Label>
                 </div>
                 <div className="space-y-2">
                   <Label>Display Order</Label>
@@ -454,13 +448,13 @@ export default function AdminServices() {
                   </Card>
                 ))}
                 {processSteps.length === 0 && (
-                  <p className="text-muted-foreground text-center py-8">No process steps added yet.</p>
+                  <p className="text-muted-foreground text-center py-8">No process steps added yet. Click "Add Step" to start.</p>
                 )}
               </TabsContent>
 
               <TabsContent value="faqs" className="space-y-4 mt-4">
                 <div className="flex justify-between items-center">
-                  <Label className="text-lg">FAQs</Label>
+                  <Label className="text-lg">Frequently Asked Questions</Label>
                   <Button type="button" variant="outline" size="sm" onClick={addFaq}>
                     <Plus className="h-4 w-4 mr-1" /> Add FAQ
                   </Button>
@@ -490,29 +484,8 @@ export default function AdminServices() {
                   </Card>
                 ))}
                 {faqs.length === 0 && (
-                  <p className="text-muted-foreground text-center py-8">No FAQs added yet.</p>
+                  <p className="text-muted-foreground text-center py-8">No FAQs added yet. Click "Add FAQ" to start.</p>
                 )}
-              </TabsContent>
-
-              <TabsContent value="seo" className="space-y-4 mt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Pricing Info</Label>
-                    <Input name="pricing_info" defaultValue={editing?.pricing_info ?? ''} placeholder="e.g., Starting from $500" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Delivery Time</Label>
-                    <Input name="delivery_time" defaultValue={editing?.delivery_time ?? ''} placeholder="e.g., 2-4 weeks" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Meta Title (SEO)</Label>
-                  <Input name="meta_title" defaultValue={editing?.meta_title ?? ''} maxLength={60} placeholder="Page title for search engines" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Meta Description (SEO)</Label>
-                  <Textarea name="meta_description" defaultValue={editing?.meta_description ?? ''} maxLength={160} rows={2} placeholder="Description for search engines" />
-                </div>
               </TabsContent>
             </Tabs>
 

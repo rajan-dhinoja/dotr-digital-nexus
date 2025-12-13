@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
-import { projectSchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Project = Tables<'projects'>;
@@ -21,6 +21,8 @@ type Project = Tables<'projects'>;
 export default function AdminProjects() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
+  const [coverImage, setCoverImage] = useState<string>('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -46,6 +48,8 @@ export default function AdminProjects() {
       queryClient.invalidateQueries({ queryKey: ['admin-projects'] });
       setOpen(false);
       setEditing(null);
+      setCoverImage('');
+      setIsFeatured(false);
       toast({ title: editing ? 'Project updated' : 'Project created' });
     },
     onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
@@ -62,40 +66,52 @@ export default function AdminProjects() {
     },
   });
 
+  const handleEdit = (project: Project) => {
+    setEditing(project);
+    setCoverImage(project.cover_image ?? '');
+    setIsFeatured(project.is_featured ?? false);
+    setOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    const validation = validateFormData(projectSchema, form, {
-      title: (v) => v?.toString() ?? '',
-      slug: (v) => v?.toString() ?? '',
-      client_name: (v) => v?.toString() || null,
-      summary: (v) => v?.toString() || null,
-      description: (v) => v?.toString() || null,
-      achievements: (v) => v?.toString() || null,
-      project_url: (v) => v?.toString() || null,
-      cover_image_url: (v) => v?.toString() || null,
-      display_order: (v) => Number(v) || 0,
-    });
+    const title = form.get('title')?.toString() ?? '';
+    const slug = form.get('slug')?.toString() ?? '';
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!title || !slug) {
+      toast({ title: 'Validation Error', description: 'Title and slug are required', variant: 'destructive' });
       return;
     }
 
-    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
+    const data: Partial<Project> = {
+      title,
+      slug,
+      client: form.get('client')?.toString() || null,
+      description: form.get('description')?.toString() || null,
+      challenge: form.get('challenge')?.toString() || null,
+      solution: form.get('solution')?.toString() || null,
+      results: form.get('results')?.toString() || null,
+      project_url: form.get('project_url')?.toString() || null,
+      cover_image: coverImage || null,
+      is_featured: isFeatured,
+      display_order: Number(form.get('display_order')) || 0,
+    };
+
+    saveMutation.mutate(data);
   };
 
   const columns = [
     {
-      key: 'cover_image_url',
+      key: 'cover_image',
       label: 'Image',
-      render: (p: Project) => p.cover_image_url ? (
-        <img src={p.cover_image_url} alt="" className="h-10 w-16 object-cover rounded" />
+      render: (p: Project) => p.cover_image ? (
+        <img src={p.cover_image} alt="" className="h-10 w-16 object-cover rounded" />
       ) : '-',
     },
     { key: 'title', label: 'Title' },
-    { key: 'client_name', label: 'Client' },
+    { key: 'client', label: 'Client' },
     { key: 'display_order', label: 'Order' },
   ];
 
@@ -103,7 +119,7 @@ export default function AdminProjects() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
+        <Button onClick={() => { setEditing(null); setCoverImage(''); setIsFeatured(false); setOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" /> Add Project
         </Button>
       </div>
@@ -112,7 +128,7 @@ export default function AdminProjects() {
         data={projects}
         columns={columns}
         loading={isLoading}
-        onEdit={(p) => { setEditing(p); setOpen(true); }}
+        onEdit={handleEdit}
         onDelete={(p) => deleteMutation.mutate(p.id)}
       />
 
@@ -141,20 +157,24 @@ export default function AdminProjects() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Client Name</Label>
-                  <Input name="client_name" defaultValue={editing?.client_name ?? ''} maxLength={200} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Summary</Label>
-                  <Textarea name="summary" defaultValue={editing?.summary ?? ''} rows={2} maxLength={500} />
+                  <Label>Client</Label>
+                  <Input name="client" defaultValue={editing?.client ?? ''} maxLength={200} />
                 </div>
                 <div className="space-y-2">
                   <Label>Description</Label>
-                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={4} maxLength={10000} />
+                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={3} maxLength={10000} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Achievements</Label>
-                  <Textarea name="achievements" defaultValue={editing?.achievements ?? ''} rows={2} maxLength={2000} />
+                  <Label>Challenge</Label>
+                  <Textarea name="challenge" defaultValue={editing?.challenge ?? ''} rows={2} maxLength={2000} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Solution</Label>
+                  <Textarea name="solution" defaultValue={editing?.solution ?? ''} rows={2} maxLength={2000} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Results</Label>
+                  <Textarea name="results" defaultValue={editing?.results ?? ''} rows={2} maxLength={2000} />
                 </div>
                 <div className="space-y-2">
                   <Label>Project URL</Label>
@@ -164,13 +184,17 @@ export default function AdminProjects() {
                   <Label>Cover Image</Label>
                   <ImageUpload
                     bucket="project-images"
-                    value={editing?.cover_image_url ?? undefined}
-                    onChange={(url) => {
-                      const input = document.querySelector<HTMLInputElement>('input[name="cover_image_url"]');
-                      if (input) input.value = url ?? '';
-                    }}
+                    value={coverImage || undefined}
+                    onChange={(url) => setCoverImage(url ?? '')}
                   />
-                  <input type="hidden" name="cover_image_url" defaultValue={editing?.cover_image_url ?? ''} />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={isFeatured}
+                    onCheckedChange={setIsFeatured}
+                  />
+                  <Label htmlFor="is_featured">Featured</Label>
                 </div>
                 <div className="space-y-2">
                   <Label>Display Order</Label>

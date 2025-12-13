@@ -10,10 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
-import { serviceCategorySchema, validateFormData } from '@/lib/validations/admin';
 import type { Tables } from '@/integrations/supabase/types';
 
-type ServiceCategory = Tables<'services_categories'>;
+type ServiceCategory = Tables<'service_categories'>;
 
 export default function AdminServiceCategories() {
   const [open, setOpen] = useState(false);
@@ -24,7 +23,7 @@ export default function AdminServiceCategories() {
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['admin-service-categories'],
     queryFn: async () => {
-      const { data } = await supabase.from('services_categories').select('*').order('display_order');
+      const { data } = await supabase.from('service_categories').select('*').order('display_order');
       return data ?? [];
     },
   });
@@ -32,10 +31,10 @@ export default function AdminServiceCategories() {
   const saveMutation = useMutation({
     mutationFn: async (category: Partial<ServiceCategory>) => {
       if (editing) {
-        const { error } = await supabase.from('services_categories').update(category).eq('id', editing.id);
+        const { error } = await supabase.from('service_categories').update(category).eq('id', editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('services_categories').insert(category as any);
+        const { error } = await supabase.from('service_categories').insert(category as any);
         if (error) throw error;
       }
     },
@@ -50,7 +49,7 @@ export default function AdminServiceCategories() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('services_categories').delete().eq('id', id);
+      const { error } = await supabase.from('service_categories').delete().eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -63,19 +62,23 @@ export default function AdminServiceCategories() {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     
-    const validation = validateFormData(serviceCategorySchema, form, {
-      name: (v) => v?.toString() ?? '',
-      slug: (v) => v?.toString() ?? '',
-      description: (v) => v?.toString() || null,
-      display_order: (v) => Number(v) || 0,
-    });
+    const name = form.get('name')?.toString() ?? '';
+    const slug = form.get('slug')?.toString() ?? '';
 
-    if (!validation.success) {
-      toast({ title: 'Validation Error', description: (validation as { success: false; error: string }).error, variant: 'destructive' });
+    if (!name || !slug) {
+      toast({ title: 'Validation Error', description: 'Name and slug are required', variant: 'destructive' });
       return;
     }
 
-    saveMutation.mutate((validation as { success: true; data: typeof validation.data }).data);
+    const data: Partial<ServiceCategory> = {
+      name,
+      slug,
+      description: form.get('description')?.toString() || null,
+      icon: form.get('icon')?.toString() || null,
+      display_order: Number(form.get('display_order')) || 0,
+    };
+
+    saveMutation.mutate(data);
   };
 
   const columns = [
@@ -114,6 +117,10 @@ export default function AdminServiceCategories() {
             <div className="space-y-2">
               <Label>Slug</Label>
               <Input name="slug" defaultValue={editing?.slug} required maxLength={100} />
+            </div>
+            <div className="space-y-2">
+              <Label>Icon</Label>
+              <Input name="icon" defaultValue={editing?.icon ?? ''} maxLength={50} placeholder="e.g., Palette, Code" />
             </div>
             <div className="space-y-2">
               <Label>Description</Label>

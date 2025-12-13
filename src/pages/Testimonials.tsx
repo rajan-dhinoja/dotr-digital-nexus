@@ -10,7 +10,7 @@ const Testimonials = () => {
 
   // Extract unique companies for the "Trusted By" section
   const clients = testimonials
-    ?.map(t => t.company)
+    ?.map(t => t.author_company)
     .filter((company, index, self) => company && self.indexOf(company) === index)
     .slice(0, 8) || [];
 
@@ -55,17 +55,17 @@ const Testimonials = () => {
                 <Card key={testimonial.id} className="border-border hover:shadow-lg transition-shadow">
                   <CardContent className="pt-6">
                     <div className="flex mb-4">
-                      {[...Array(5)].map((_, i) => (
+                      {[...Array(testimonial.rating || 5)].map((_, i) => (
                         <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                       ))}
                     </div>
                     <p className="text-muted-foreground mb-6 italic">
-                      "{testimonial.testimonial_text}"
+                      "{testimonial.content}"
                     </p>
                     <div className="pt-4 border-t border-border">
-                      <p className="font-semibold text-foreground">{testimonial.name}</p>
+                      <p className="font-semibold text-foreground">{testimonial.author_name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {testimonial.designation}, {testimonial.company}
+                        {testimonial.author_role}{testimonial.author_company && `, ${testimonial.author_company}`}
                       </p>
                     </div>
                   </CardContent>

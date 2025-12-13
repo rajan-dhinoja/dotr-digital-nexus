@@ -2,15 +2,19 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, DollarSign, ArrowRight } from "lucide-react";
+import type { Json } from "@/integrations/supabase/types";
 
 interface ServicePricingProps {
-  pricingInfo?: string | null;
+  pricingInfo?: Json | null;
   deliveryTime?: string | null;
   serviceTitle: string;
 }
 
 export function ServicePricing({ pricingInfo, deliveryTime, serviceTitle }: ServicePricingProps) {
-  if (!pricingInfo && !deliveryTime) return null;
+  // Convert pricingInfo to string if it's a simple value
+  const pricingText = pricingInfo && typeof pricingInfo === 'string' ? pricingInfo : null;
+  
+  if (!pricingText && !deliveryTime) return null;
 
   return (
     <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -26,7 +30,7 @@ export function ServicePricing({ pricingInfo, deliveryTime, serviceTitle }: Serv
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {pricingInfo && (
+            {pricingText && (
               <Card className="border-border hover:border-primary/30 transition-colors">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -38,7 +42,7 @@ export function ServicePricing({ pricingInfo, deliveryTime, serviceTitle }: Serv
                     </h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    {pricingInfo}
+                    {pricingText}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     * Final pricing depends on project scope and requirements
