@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { validateImageFile } from '@/lib/validations/admin';
 
-export type BucketName = 'service-images' | 'project-images' | 'team-profiles' | 'blog-images';
+export type BucketName = 'service-images' | 'project-images' | 'team-images' | 'blog-images';
 
 export interface UploadResult {
   url: string | null;
