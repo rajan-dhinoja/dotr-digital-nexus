@@ -175,6 +175,48 @@ export type Database = {
         }
         Relationships: []
       }
+      page_sections: {
+        Row: {
+          content: Json | null
+          created_at: string | null
+          display_order: number | null
+          entity_id: string | null
+          id: string
+          is_active: boolean | null
+          page_type: string
+          section_type: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string | null
+          display_order?: number | null
+          entity_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          page_type: string
+          section_type: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string | null
+          display_order?: number | null
+          entity_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          page_type?: string
+          section_type?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       project_gallery: {
         Row: {
           caption: string | null
@@ -306,6 +348,42 @@ export type Database = {
           testimonial_role?: string | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      section_types: {
+        Row: {
+          allowed_pages: string[] | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          schema: Json | null
+          slug: string
+        }
+        Insert: {
+          allowed_pages?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          schema?: Json | null
+          slug: string
+        }
+        Update: {
+          allowed_pages?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          schema?: Json | null
+          slug?: string
         }
         Relationships: []
       }
