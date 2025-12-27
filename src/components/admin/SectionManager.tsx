@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
-import { LucideIcon } from 'lucide-react';
+import { useState, lazy, Suspense, createElement } from 'react';
+import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -35,10 +34,14 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
   const { data: sections = [], isLoading } = useAdminPageSections(pageType, entityId);
   const { saveMutation, deleteMutation, reorderMutation } = usePageSectionMutations(pageType, entityId);
 
+  // Static icon map to avoid importing entire lucide-react library
+  const iconMap: Record<string, LucideIcon> = {
+    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp
+  };
+
   const getIcon = (iconName?: string | null): LucideIcon => {
-    if (!iconName) return LucideIcons.Layers;
-    const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
-    return Icon || LucideIcons.Layers;
+    if (!iconName) return Layers;
+    return iconMap[iconName] || Layers;
   };
 
   const handleAddSection = () => {

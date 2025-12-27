@@ -49,6 +49,7 @@ export function useSectionTypes(pageType?: string) {
       
       return data as SectionType[];
     },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 }
 
@@ -73,6 +74,7 @@ export function usePageSections(pageType: string, entityId?: string) {
       if (error) throw error;
       return data as PageSection[];
     },
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 }
 
@@ -97,6 +99,7 @@ export function useAdminPageSections(pageType: string, entityId?: string) {
       return data as PageSection[];
     },
     enabled: !!pageType,
+    staleTime: 30 * 1000, // Cache for 30 seconds in admin
   });
 }
 
