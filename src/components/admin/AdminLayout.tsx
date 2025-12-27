@@ -12,10 +12,12 @@ import {
   Mail,
   LogOut,
   Settings,
+  LayoutGrid,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/page-sections', label: 'Page Sections', icon: LayoutGrid },
   { href: '/admin/service-categories', label: 'Service Categories', icon: Briefcase },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
   { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
