@@ -41,6 +41,7 @@ export const useProjects = (limit?: number) => {
       if (error) throw error;
       return data as Project[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -63,6 +64,7 @@ export const useFeaturedProjects = (limit?: number) => {
       if (error) throw error;
       return data as Project[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -80,6 +82,7 @@ export const useProjectBySlug = (slug: string) => {
       return data as Project | null;
     },
     enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -97,5 +100,6 @@ export const useProjectGallery = (projectId: string) => {
       return data;
     },
     enabled: !!projectId,
+    staleTime: 5 * 60 * 1000,
   });
 };

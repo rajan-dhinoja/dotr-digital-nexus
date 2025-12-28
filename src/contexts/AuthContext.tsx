@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,14 +14,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Cache roles in memory to avoid repeated DB calls
+const rolesCache = new Map<string, { isAdmin: boolean; isEditor: boolean; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
   const [loading, setLoading] = useState(true);
+  const initRef = useRef(false);
 
-  const checkRole = async (userId: string) => {
+  const checkRole = async (userId: string, forceRefresh = false) => {
+    // Check cache first
+    const cached = rolesCache.get(userId);
+    if (!forceRefresh && cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      setIsAdmin(cached.isAdmin);
+      setIsEditor(cached.isEditor);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('user_roles')
@@ -35,13 +48,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       
-      if (data && data.length > 0) {
-        setIsAdmin(data.some(r => r.role === 'admin'));
-        setIsEditor(data.some(r => r.role === 'admin' || r.role === 'editor'));
-      } else {
-        setIsAdmin(false);
-        setIsEditor(false);
-      }
+      const isAdminRole = data?.some(r => r.role === 'admin') ?? false;
+      const isEditorRole = data?.some(r => r.role === 'admin' || r.role === 'editor') ?? false;
+      
+      // Update cache
+      rolesCache.set(userId, { isAdmin: isAdminRole, isEditor: isEditorRole, timestamp: Date.now() });
+      
+      setIsAdmin(isAdminRole);
+      setIsEditor(isEditorRole);
     } catch (err) {
       console.error('Error in checkRole:', err);
       setIsAdmin(false);
@@ -50,6 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Prevent double initialization in strict mode
+    if (initRef.current) return;
+    initRef.current = true;
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -59,11 +77,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
-        await checkRole(session.user.id);
+        // Only force refresh on sign in
+        await checkRole(session.user.id, event === 'SIGNED_IN');
       } else {
         setIsAdmin(false);
         setIsEditor(false);

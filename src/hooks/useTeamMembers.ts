@@ -29,6 +29,7 @@ export const useTeamMembers = () => {
       if (error) throw error;
       return data as TeamMember[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -45,5 +46,6 @@ export const useFeaturedTeamMembers = () => {
       if (error) throw error;
       return data as TeamMember[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };

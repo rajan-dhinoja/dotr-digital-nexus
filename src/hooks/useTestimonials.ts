@@ -33,6 +33,7 @@ export const useTestimonials = (limit?: number) => {
       if (error) throw error;
       return data as Testimonial[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -55,5 +56,6 @@ export const useFeaturedTestimonials = (limit?: number) => {
       if (error) throw error;
       return data as Testimonial[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };

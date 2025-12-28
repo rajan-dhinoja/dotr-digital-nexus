@@ -61,6 +61,7 @@ export const useBlogPosts = (limit?: number) => {
       if (error) throw error;
       return data as BlogPost[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -85,6 +86,7 @@ export const useBlogPostBySlug = (slug: string) => {
       return data as BlogPost | null;
     },
     enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -100,5 +102,6 @@ export const useBlogCategories = () => {
       if (error) throw error;
       return data as BlogCategory[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
