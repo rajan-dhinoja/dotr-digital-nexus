@@ -45,6 +45,7 @@ export const useServiceCategories = () => {
       if (error) throw error;
       return data as ServiceCategory[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -60,6 +61,7 @@ export const useServices = () => {
       if (error) throw error;
       return data as Service[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -76,6 +78,7 @@ export const useFeaturedServices = () => {
       if (error) throw error;
       return data as Service[];
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -93,6 +96,7 @@ export const useServiceBySlug = (slug: string) => {
       return data as Service | null;
     },
     enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -119,5 +123,6 @@ export const useServicesWithCategories = () => {
         services: (services as Service[]).filter(s => s.category_id === category.id),
       }));
     },
+    staleTime: 5 * 60 * 1000,
   });
 };
