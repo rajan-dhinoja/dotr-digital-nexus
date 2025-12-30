@@ -3,33 +3,63 @@ import { Footer } from "@/components/layout/Footer";
 import { BackToTop } from "@/components/interactive/BackToTop";
 import { SectionRenderer } from "@/components/sections/SectionRenderer";
 import { usePageSections } from "@/hooks/usePageSections";
-import { Skeleton } from "@/components/ui/skeleton";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { FeaturesSection } from "@/components/sections/FeaturesSection";
+import { CTASection } from "@/components/sections/CTASection";
 
 const Index = () => {
   const { data: sections, isLoading } = usePageSections("home");
+
+  // Default content for when no dynamic sections exist
+  const hasContent = sections && sections.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
       {isLoading ? (
-        <div className="pt-20">
-          <Skeleton className="h-[70vh] w-full" />
-          <div className="container mx-auto px-4 py-20">
-            <Skeleton className="h-64 w-full" />
-          </div>
+        <div className="pt-20 min-h-[60vh] flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
-      ) : sections && sections.length > 0 ? (
+      ) : hasContent ? (
         <SectionRenderer sections={sections} />
       ) : (
-        <div className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="text-4xl font-bold text-foreground mb-4">Welcome to DOTR</h1>
-            <p className="text-muted-foreground">
-              Add sections to this page from the admin panel.
-            </p>
-          </div>
-        </div>
+        // Default sections when no dynamic content is configured
+        <>
+          <HeroSection 
+            title="Hero"
+            subtitle=""
+            content={{
+              headline: "Transform Your Business with DOTR",
+              subtitle: "Full-service tech & creative agency delivering exceptional digital experiences through design, development, marketing, and multimedia.",
+              cta_text: "Get Started",
+              cta_link: "/contact"
+            }}
+          />
+          <FeaturesSection
+            title="Our Services"
+            subtitle="We provide comprehensive digital solutions"
+            content={{
+              items: [
+                { title: "Web Development", description: "Custom websites and web applications built with modern technologies.", icon: "Code" },
+                { title: "AI & Automation", description: "Intelligent solutions to streamline your business processes.", icon: "Cpu" },
+                { title: "Digital Marketing", description: "Strategic marketing campaigns to grow your online presence.", icon: "TrendingUp" },
+              ]
+            }}
+          />
+          <CTASection
+            title="CTA"
+            subtitle=""
+            content={{
+              headline: "Ready to Get Started?",
+              description: "Let's discuss your project and create something amazing together.",
+              primary_cta_text: "Contact Us",
+              primary_cta_link: "/contact",
+              secondary_cta_text: "View Portfolio",
+              secondary_cta_link: "/portfolio"
+            }}
+          />
+        </>
       )}
 
       <Footer />
