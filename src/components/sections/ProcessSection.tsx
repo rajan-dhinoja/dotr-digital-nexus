@@ -1,5 +1,23 @@
-import * as LucideIcons from 'lucide-react';
+import { 
+  ArrowRight, Search, PenTool, Workflow, TrendingUp, 
+  CheckCircle, Settings, Zap, Users, Target, Rocket,
+  Code, Database, Shield, Clock, Lightbulb
+} from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
+
+// Static icon map to avoid importing entire lucide library
+const iconMap: Record<string, LucideIcon> = {
+  ArrowRight, Search, PenTool, Workflow, TrendingUp,
+  CheckCircle, Settings, Zap, Users, Target, Rocket,
+  Code, Database, Shield, Clock, Lightbulb,
+  // Lowercase versions
+  arrowright: ArrowRight, search: Search, pentool: PenTool, 
+  'pen-tool': PenTool, workflow: Workflow, trendingup: TrendingUp,
+  'trending-up': TrendingUp, checkcircle: CheckCircle, 
+  settings: Settings, zap: Zap, users: Users, target: Target,
+  rocket: Rocket, code: Code, database: Database, shield: Shield,
+  clock: Clock, lightbulb: Lightbulb,
+};
 
 interface ProcessStep {
   step?: number;
@@ -18,9 +36,8 @@ export function ProcessSection({ title, subtitle, content }: ProcessSectionProps
   const items = ((content as Record<string, unknown>).items as ProcessStep[]) || [];
 
   const getIcon = (iconName?: string): LucideIcon => {
-    if (!iconName) return LucideIcons.ArrowRight;
-    const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
-    return Icon || LucideIcons.ArrowRight;
+    if (!iconName) return ArrowRight;
+    return iconMap[iconName] || iconMap[iconName.toLowerCase()] || ArrowRight;
   };
 
   return (

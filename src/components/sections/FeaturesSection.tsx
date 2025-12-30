@@ -1,5 +1,23 @@
-import * as LucideIcons from 'lucide-react';
+import { 
+  Star, Code, Cpu, BarChart, Maximize, Zap, Shield, Users, 
+  Target, Rocket, Settings, Globe, Heart, Clock, CheckCircle,
+  Lightbulb, TrendingUp, Award, Briefcase, Database
+} from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
+
+// Static icon map to avoid importing entire lucide library
+const iconMap: Record<string, LucideIcon> = {
+  Star, Code, Cpu, BarChart, Maximize, Zap, Shield, Users,
+  Target, Rocket, Settings, Globe, Heart, Clock, CheckCircle,
+  Lightbulb, TrendingUp, Award, Briefcase, Database,
+  // Lowercase versions for flexibility
+  star: Star, code: Code, cpu: Cpu, barchart: BarChart, 
+  maximize: Maximize, zap: Zap, shield: Shield, users: Users,
+  target: Target, rocket: Rocket, settings: Settings, globe: Globe,
+  heart: Heart, clock: Clock, checkcircle: CheckCircle,
+  lightbulb: Lightbulb, trendingup: TrendingUp, award: Award,
+  briefcase: Briefcase, database: Database,
+};
 
 interface FeatureItem {
   title: string;
@@ -17,9 +35,9 @@ export function FeaturesSection({ title, subtitle, content }: FeaturesSectionPro
   const items = ((content as Record<string, unknown>).items as FeatureItem[]) || [];
 
   const getIcon = (iconName?: string): LucideIcon => {
-    if (!iconName) return LucideIcons.Star;
-    const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
-    return Icon || LucideIcons.Star;
+    if (!iconName) return Star;
+    // Try exact match, then lowercase
+    return iconMap[iconName] || iconMap[iconName.toLowerCase()] || Star;
   };
 
   return (

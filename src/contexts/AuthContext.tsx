@@ -17,6 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Cache roles in memory to avoid repeated DB calls
 const rolesCache = new Map<string, { isAdmin: boolean; isEditor: boolean; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const AUTH_TIMEOUT = 5000; // 5 second timeout for auth check
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -68,13 +69,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (initRef.current) return;
     initRef.current = true;
 
+    // Set a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        console.warn('Auth initialization timeout - forcing loading to false');
+        setLoading(false);
+      }
+    }, AUTH_TIMEOUT);
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkRole(session.user.id);
+        checkRole(session.user.id).finally(() => {
+          setLoading(false);
+          clearTimeout(timeoutId);
+        });
+      } else {
+        setLoading(false);
+        clearTimeout(timeoutId);
       }
+    }).catch((err) => {
+      console.error('Error getting session:', err);
       setLoading(false);
+      clearTimeout(timeoutId);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -91,7 +109,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
