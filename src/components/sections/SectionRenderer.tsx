@@ -10,6 +10,7 @@ import { CTASection } from './CTASection';
 import { GallerySection } from './GallerySection';
 import { TeamSection } from './TeamSection';
 import { PricingSection } from './PricingSection';
+import { FormSection } from './FormSection';
 
 interface SectionRendererProps {
   sections: PageSection[];
@@ -30,7 +31,7 @@ interface DynamicSectionProps {
 }
 
 function DynamicSection({ section }: DynamicSectionProps) {
-  const { section_type, title, subtitle, content } = section;
+  const { section_type, title, subtitle, content, id } = section;
   const contentObj = (content || {}) as Record<string, unknown>;
 
   switch (section_type) {
@@ -54,6 +55,8 @@ function DynamicSection({ section }: DynamicSectionProps) {
       return <TeamSection title={title} subtitle={subtitle} content={contentObj} />;
     case 'pricing':
       return <PricingSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'form':
+      return <FormSection title={title} subtitle={subtitle} content={contentObj} sectionId={id} />;
     default:
       return null;
   }

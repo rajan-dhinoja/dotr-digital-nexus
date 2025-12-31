@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, createElement } from 'react';
-import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +36,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
   // Static icon map to avoid importing entire lucide-react library
   const iconMap: Record<string, LucideIcon> = {
-    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp
+    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText
   };
 
   const getIcon = (iconName?: string | null): LucideIcon => {
@@ -92,19 +92,33 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
       contentItems = [];
     }
 
-    const contentData = {
-      headline: formData.get('headline')?.toString() || '',
-      subtitle: formData.get('content_subtitle')?.toString() || '',
-      cta_text: formData.get('cta_text')?.toString() || '',
-      cta_link: formData.get('cta_link')?.toString() || '',
-      background_image: formData.get('background_image')?.toString() || '',
-      description: formData.get('description')?.toString() || '',
-      primary_cta_text: formData.get('primary_cta_text')?.toString() || '',
-      primary_cta_link: formData.get('primary_cta_link')?.toString() || '',
-      secondary_cta_text: formData.get('secondary_cta_text')?.toString() || '',
-      secondary_cta_link: formData.get('secondary_cta_link')?.toString() || '',
-      items: contentItems,
-    };
+    // Build content based on section type
+    let contentData: Record<string, unknown>;
+    
+    if (editingSection.section_type === 'form') {
+      // Special handling for form sections
+      contentData = {
+        form_title: formData.get('headline')?.toString() || '',
+        form_description: formData.get('description')?.toString() || '',
+        submit_button_text: formData.get('cta_text')?.toString() || 'Submit',
+        success_message: formData.get('content_subtitle')?.toString() || 'Thank you! Your submission has been received.',
+        fields: contentItems,
+      };
+    } else {
+      contentData = {
+        headline: formData.get('headline')?.toString() || '',
+        subtitle: formData.get('content_subtitle')?.toString() || '',
+        cta_text: formData.get('cta_text')?.toString() || '',
+        cta_link: formData.get('cta_link')?.toString() || '',
+        background_image: formData.get('background_image')?.toString() || '',
+        description: formData.get('description')?.toString() || '',
+        primary_cta_text: formData.get('primary_cta_text')?.toString() || '',
+        primary_cta_link: formData.get('primary_cta_link')?.toString() || '',
+        secondary_cta_text: formData.get('secondary_cta_text')?.toString() || '',
+        secondary_cta_link: formData.get('secondary_cta_link')?.toString() || '',
+        items: contentItems,
+      };
+    }
 
     const data: Partial<PageSection> = {
       section_type: editingSection.section_type,
@@ -811,6 +825,9 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
         </>
       );
 
+    case 'form':
+      return <FormSectionEditor content={content} items={items} setItems={setItems} renderItemsInput={renderItemsInput} />;
+
     default:
       return (
         <div className="text-sm text-muted-foreground">
@@ -818,4 +835,296 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
         </div>
       );
   }
+}
+
+// Form Field Types
+const FIELD_TYPES = [
+  { value: 'text', label: 'Text Input' },
+  { value: 'email', label: 'Email' },
+  { value: 'phone', label: 'Phone' },
+  { value: 'textarea', label: 'Text Area' },
+  { value: 'select', label: 'Dropdown Select' },
+  { value: 'radio', label: 'Radio Buttons' },
+  { value: 'checkbox', label: 'Single Checkbox' },
+  { value: 'checkbox-group', label: 'Multi-Select Checkboxes' },
+  { value: 'url', label: 'URL' },
+  { value: 'number', label: 'Number' },
+  { value: 'date', label: 'Date' },
+];
+
+interface FormSectionEditorProps {
+  content: Record<string, unknown>;
+  items: Record<string, unknown>[];
+  setItems: React.Dispatch<React.SetStateAction<Record<string, unknown>[]>>;
+  renderItemsInput: () => React.ReactNode;
+}
+
+function FormSectionEditor({ content, items, setItems, renderItemsInput }: FormSectionEditorProps) {
+  const [editingFieldIndex, setEditingFieldIndex] = useState<number | null>(null);
+
+  // Map items to fields format
+  const fields = items as Array<{
+    field_type?: string;
+    label?: string;
+    name?: string;
+    placeholder?: string;
+    required?: boolean;
+    options?: string[];
+    width?: string;
+    validation?: { min?: number; max?: number };
+  }>;
+
+  const addField = () => {
+    const newField = {
+      field_type: 'text',
+      label: '',
+      name: '',
+      placeholder: '',
+      required: false,
+      options: [],
+      width: 'full',
+    };
+    setItems([...items, newField]);
+    setEditingFieldIndex(items.length);
+  };
+
+  const removeField = (index: number) => {
+    setItems(items.filter((_, i) => i !== index));
+    if (editingFieldIndex === index) {
+      setEditingFieldIndex(null);
+    }
+  };
+
+  const updateField = (index: number, updates: Record<string, unknown>) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], ...updates };
+    // Auto-generate name from label if not set
+    if (updates.label && !newItems[index].name) {
+      newItems[index].name = (updates.label as string).toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    }
+    setItems(newItems);
+  };
+
+  const moveField = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= items.length) return;
+    const newItems = [...items];
+    [newItems[index], newItems[newIndex]] = [newItems[newIndex], newItems[index]];
+    setItems(newItems);
+  };
+
+  const needsOptions = (fieldType: string) => ['select', 'radio', 'checkbox-group'].includes(fieldType);
+
+  return (
+    <>
+      {/* Hidden input for items */}
+      <input type="hidden" name="content_items" value={JSON.stringify(items.map(item => ({
+        ...item,
+        // Ensure fields array is properly formatted
+      })))} />
+
+      {/* Form Settings */}
+      <div className="space-y-4 border-b pb-4 mb-4">
+        <h4 className="font-medium text-sm">Form Settings</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Form Title</Label>
+            <Input name="headline" defaultValue={(content.form_title as string) || (content.headline as string) || ''} placeholder="Contact Us" />
+          </div>
+          <div className="space-y-2">
+            <Label>Submit Button Text</Label>
+            <Input name="cta_text" defaultValue={(content.submit_button_text as string) || (content.cta_text as string) || 'Submit'} />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Form Description</Label>
+          <Textarea name="description" defaultValue={(content.form_description as string) || (content.description as string) || ''} rows={2} placeholder="Optional description above the form" />
+        </div>
+        <div className="space-y-2">
+          <Label>Success Message</Label>
+          <Input name="content_subtitle" defaultValue={(content.success_message as string) || (content.subtitle as string) || 'Thank you! Your submission has been received.'} placeholder="Message shown after successful submission" />
+        </div>
+      </div>
+
+      {/* Form Fields Builder */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label>Form Fields</Label>
+          <Button type="button" variant="outline" size="sm" onClick={addField}>
+            <Plus className="h-4 w-4 mr-1" /> Add Field
+          </Button>
+        </div>
+
+        {fields.length === 0 ? (
+          <Card className="p-4 border-dashed">
+            <p className="text-sm text-muted-foreground text-center">No fields added yet. Click "Add Field" to start building your form.</p>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {fields.map((field, index) => (
+              <Card key={index} className="p-3">
+                {editingFieldIndex === index ? (
+                  // Editing Mode
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <Label className="text-xs font-medium">Editing Field {index + 1}</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingFieldIndex(null)}
+                      >
+                        Done
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Field Type</Label>
+                        <Select
+                          value={field.field_type || 'text'}
+                          onValueChange={(value) => updateField(index, { field_type: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FIELD_TYPES.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Width</Label>
+                        <Select
+                          value={field.width || 'full'}
+                          onValueChange={(value) => updateField(index, { width: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="full">Full Width</SelectItem>
+                            <SelectItem value="half">Half Width</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Label *</Label>
+                        <Input
+                          value={field.label || ''}
+                          onChange={(e) => updateField(index, { label: e.target.value })}
+                          placeholder="e.g., Full Name"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Field Name</Label>
+                        <Input
+                          value={field.name || ''}
+                          onChange={(e) => updateField(index, { name: e.target.value })}
+                          placeholder="e.g., full_name"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <Label className="text-xs">Placeholder</Label>
+                      <Input
+                        value={field.placeholder || ''}
+                        onChange={(e) => updateField(index, { placeholder: e.target.value })}
+                        placeholder="e.g., Enter your name"
+                      />
+                    </div>
+
+                    {needsOptions(field.field_type || 'text') && (
+                      <div className="space-y-1">
+                        <Label className="text-xs">Options (one per line)</Label>
+                        <Textarea
+                          value={(field.options || []).join('\n')}
+                          onChange={(e) => updateField(index, { options: e.target.value.split('\n').filter(Boolean) })}
+                          placeholder="Option 1&#10;Option 2&#10;Option 3"
+                          rows={4}
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={field.required || false}
+                        onCheckedChange={(checked) => updateField(index, { required: checked })}
+                      />
+                      <Label className="text-xs">Required field</Label>
+                    </div>
+                  </div>
+                ) : (
+                  // Preview Mode
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                      <div>
+                        <p className="text-sm font-medium">
+                          {field.label || 'Untitled Field'}
+                          {field.required && <span className="text-destructive ml-1">*</span>}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {FIELD_TYPES.find(t => t.value === field.field_type)?.label || 'Text Input'}
+                          {field.width === 'half' && ' • Half width'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => moveField(index, 'up')}
+                        disabled={index === 0}
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => moveField(index, 'down')}
+                        disabled={index === fields.length - 1}
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setEditingFieldIndex(index)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => removeField(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
 }
