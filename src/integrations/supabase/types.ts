@@ -14,11 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blog_categories: {
         Row: {
           created_at: string
           description: string | null
           id: string
+          is_active: boolean | null
           name: string
           slug: string
         }
@@ -26,6 +66,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
           name: string
           slug: string
         }
@@ -33,6 +74,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
           name?: string
           slug?: string
         }
@@ -213,6 +255,60 @@ export type Database = {
           },
         ]
       }
+      menu_items: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          label: string
+          menu_location: string
+          page_id: string | null
+          parent_id: string | null
+          target: string | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label: string
+          menu_location: string
+          page_id?: string | null
+          parent_id?: string | null
+          target?: string | null
+          url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          menu_location?: string
+          page_id?: string | null
+          parent_id?: string | null
+          target?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_sections: {
         Row: {
           content: Json | null
@@ -254,6 +350,68 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      pages: {
+        Row: {
+          content: Json | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          meta_description: string | null
+          meta_title: string | null
+          parent_id: string | null
+          show_in_nav: boolean | null
+          slug: string
+          template: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          parent_id?: string | null
+          show_in_nav?: boolean | null
+          slug: string
+          template?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          parent_id?: string | null
+          show_in_nav?: boolean | null
+          slug?: string
+          template?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_gallery: {
         Row: {
@@ -333,6 +491,7 @@ export type Database = {
           description: string | null
           display_order: number | null
           id: string
+          is_active: boolean | null
           is_featured: boolean | null
           project_url: string | null
           results: string | null
@@ -354,6 +513,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           id?: string
+          is_active?: boolean | null
           is_featured?: boolean | null
           project_url?: string | null
           results?: string | null
@@ -375,6 +535,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           id?: string
+          is_active?: boolean | null
           is_featured?: boolean | null
           project_url?: string | null
           results?: string | null
@@ -432,6 +593,7 @@ export type Database = {
           display_order: number | null
           icon: string | null
           id: string
+          is_active: boolean | null
           name: string
           slug: string
           updated_at: string
@@ -442,6 +604,7 @@ export type Database = {
           display_order?: number | null
           icon?: string | null
           id?: string
+          is_active?: boolean | null
           name: string
           slug: string
           updated_at?: string
@@ -452,6 +615,7 @@ export type Database = {
           display_order?: number | null
           icon?: string | null
           id?: string
+          is_active?: boolean | null
           name?: string
           slug?: string
           updated_at?: string
@@ -469,6 +633,7 @@ export type Database = {
           icon: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
           is_featured: boolean | null
           name: string
           pricing: Json | null
@@ -488,6 +653,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           name: string
           pricing?: Json | null
@@ -507,6 +673,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           name?: string
           pricing?: Json | null
@@ -559,6 +726,7 @@ export type Database = {
           github_url: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
           is_featured: boolean | null
           linkedin_url: string | null
           name: string
@@ -574,6 +742,7 @@ export type Database = {
           github_url?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           linkedin_url?: string | null
           name: string
@@ -589,6 +758,7 @@ export type Database = {
           github_url?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           linkedin_url?: string | null
           name?: string
@@ -608,6 +778,7 @@ export type Database = {
           created_at: string
           display_order: number | null
           id: string
+          is_active: boolean | null
           is_featured: boolean | null
           project_id: string | null
           rating: number | null
@@ -621,6 +792,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          is_active?: boolean | null
           is_featured?: boolean | null
           project_id?: string | null
           rating?: number | null
@@ -634,6 +806,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          is_active?: boolean | null
           is_featured?: boolean | null
           project_id?: string | null
           rating?: number | null

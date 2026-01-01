@@ -1,0 +1,305 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { AdminLayout } from '@/components/admin/AdminLayout';
+import { DataTable } from '@/components/admin/DataTable';
+import { VisibilityToggle, VisibilityBadge } from '@/components/admin/VisibilityToggle';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { useActivityLog } from '@/hooks/useActivityLog';
+import { Plus, Lock } from 'lucide-react';
+
+interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  content: Record<string, any> | null;
+  template: string | null;
+  parent_id: string | null;
+  is_active: boolean | null;
+  is_system: boolean | null;
+  show_in_nav: boolean | null;
+  display_order: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+const TEMPLATE_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: 'landing', label: 'Landing Page' },
+  { value: 'blank', label: 'Blank' },
+];
+
+export default function AdminPages() {
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Page | null>(null);
+  const [isActive, setIsActive] = useState(true);
+  const [showInNav, setShowInNav] = useState(true);
+  const { toast } = useToast();
+  const { logActivity } = useActivityLog();
+  const queryClient = useQueryClient();
+
+  const { data: pages = [], isLoading } = useQuery({
+    queryKey: ['admin-pages'],
+    queryFn: async () => {
+      const { data } = await supabase.from('pages').select('*').order('display_order');
+      return (data ?? []) as Page[];
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (page: Partial<Page>) => {
+      if (editing) {
+        const { error } = await supabase.from('pages').update(page).eq('id', editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('pages').insert(page as any);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+      logActivity({
+        action: editing ? 'update' : 'create',
+        entity_type: 'page',
+        entity_id: editing?.id,
+        entity_name: editing?.title,
+      });
+      setOpen(false);
+      setEditing(null);
+      toast({ title: editing ? 'Page updated' : 'Page created' });
+    },
+    onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('pages').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+      toast({ title: 'Page deleted' });
+    },
+  });
+
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+      const { error } = await supabase.from('pages').update({ is_active }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+    },
+  });
+
+  const handleEdit = (page: Page) => {
+    setEditing(page);
+    setIsActive(page.is_active ?? true);
+    setShowInNav(page.show_in_nav ?? true);
+    setOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    
+    const title = form.get('title')?.toString() ?? '';
+    const slug = form.get('slug')?.toString() ?? '';
+
+    if (!title || !slug) {
+      toast({ title: 'Validation Error', description: 'Title and slug are required', variant: 'destructive' });
+      return;
+    }
+
+    const data: Partial<Page> = {
+      title,
+      slug,
+      description: form.get('description')?.toString() || null,
+      meta_title: form.get('meta_title')?.toString() || null,
+      meta_description: form.get('meta_description')?.toString() || null,
+      template: form.get('template')?.toString() || 'default',
+      parent_id: form.get('parent_id')?.toString() || null,
+      is_active: isActive,
+      show_in_nav: showInNav,
+      display_order: Number(form.get('display_order')) || 0,
+    };
+
+    saveMutation.mutate(data);
+  };
+
+  const columns = [
+    { 
+      key: 'title', 
+      label: 'Title',
+      render: (p: Page) => (
+        <div className="flex items-center gap-2">
+          {p.title}
+          {p.is_system && (
+            <Badge variant="outline" className="gap-1">
+              <Lock className="h-3 w-3" />
+              System
+            </Badge>
+          )}
+        </div>
+      ),
+    },
+    { key: 'slug', label: 'Slug' },
+    { key: 'template', label: 'Template' },
+    { 
+      key: 'is_active', 
+      label: 'Status',
+      render: (p: Page) => (
+        <VisibilityToggle
+          isActive={p.is_active ?? true}
+          onToggle={(value) => toggleVisibilityMutation.mutate({ id: p.id, is_active: value })}
+          disabled={toggleVisibilityMutation.isPending}
+        />
+      ),
+    },
+    { key: 'display_order', label: 'Order' },
+  ];
+
+  return (
+    <AdminLayout>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Pages</h1>
+          <p className="text-muted-foreground">Manage website pages and their visibility</p>
+        </div>
+        <Button onClick={() => { setEditing(null); setIsActive(true); setShowInNav(true); setOpen(true); }}>
+          <Plus className="h-4 w-4 mr-2" /> Add Page
+        </Button>
+      </div>
+
+      <DataTable
+        data={pages}
+        columns={columns}
+        loading={isLoading}
+        onEdit={handleEdit}
+        onDelete={(p) => {
+          if (p.is_system) {
+            toast({ title: 'Cannot Delete', description: 'System pages cannot be deleted', variant: 'destructive' });
+            return;
+          }
+          deleteMutation.mutate(p.id);
+        }}
+      />
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editing ? 'Edit Page' : 'Add Page'}</DialogTitle>
+          </DialogHeader>
+          
+          <Tabs defaultValue="general">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="seo">SEO</TabsTrigger>
+            </TabsList>
+            
+            <form onSubmit={handleSubmit}>
+              <TabsContent value="general" className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Title *</Label>
+                    <Input name="title" defaultValue={editing?.title} required maxLength={200} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Slug *</Label>
+                    <Input 
+                      name="slug" 
+                      defaultValue={editing?.slug} 
+                      required 
+                      maxLength={100}
+                      disabled={editing?.is_system ?? false}
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Template</Label>
+                    <Select name="template" defaultValue={editing?.template || 'default'}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TEMPLATE_OPTIONS.map((t) => (
+                          <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Parent Page</Label>
+                    <Select name="parent_id" defaultValue={editing?.parent_id || ''}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="None (top level)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">None (top level)</SelectItem>
+                        {pages.filter(p => p.id !== editing?.id).map((p) => (
+                          <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Textarea name="description" defaultValue={editing?.description ?? ''} rows={3} maxLength={1000} />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Display Order</Label>
+                  <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center space-x-2">
+                    <Switch id="is_active" checked={isActive} onCheckedChange={setIsActive} />
+                    <Label htmlFor="is_active">Published</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch id="show_in_nav" checked={showInNav} onCheckedChange={setShowInNav} />
+                    <Label htmlFor="show_in_nav">Show in Navigation</Label>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="seo" className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>Meta Title</Label>
+                  <Input name="meta_title" defaultValue={editing?.meta_title ?? ''} maxLength={60} placeholder="SEO title (max 60 chars)" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Meta Description</Label>
+                  <Textarea name="meta_description" defaultValue={editing?.meta_description ?? ''} rows={3} maxLength={160} placeholder="SEO description (max 160 chars)" />
+                </div>
+              </TabsContent>
+
+              <div className="mt-6">
+                <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+                  {saveMutation.isPending ? 'Saving...' : 'Save'}
+                </Button>
+              </div>
+            </form>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+    </AdminLayout>
+  );
+}
