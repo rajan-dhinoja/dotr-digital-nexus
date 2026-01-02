@@ -130,7 +130,7 @@ export default function AdminPages() {
       meta_title: form.get('meta_title')?.toString() || null,
       meta_description: form.get('meta_description')?.toString() || null,
       template: form.get('template')?.toString() || 'default',
-      parent_id: form.get('parent_id')?.toString() || null,
+      parent_id: form.get('parent_id')?.toString() === 'none' ? null : form.get('parent_id')?.toString() || null,
       is_active: isActive,
       show_in_nav: showInNav,
       display_order: Number(form.get('display_order')) || 0,
@@ -244,12 +244,12 @@ export default function AdminPages() {
                   </div>
                   <div className="space-y-2">
                     <Label>Parent Page</Label>
-                    <Select name="parent_id" defaultValue={editing?.parent_id || ''}>
+                    <Select name="parent_id" defaultValue={editing?.parent_id || 'none'}>
                       <SelectTrigger>
                         <SelectValue placeholder="None (top level)" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">None (top level)</SelectItem>
+                        <SelectItem value="none">None (top level)</SelectItem>
                         {pages.filter(p => p.id !== editing?.id).map((p) => (
                           <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
                         ))}
