@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Moon, Sun, ChevronDown } from "lucide-react";
+import { Menu, X, Moon, Sun, ChevronDown, ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import logoLight from "@/assets/dotr-logo-light.jpg";
@@ -45,8 +45,8 @@ export const Header = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
-          ? "glass py-3"
-          : "bg-transparent py-4"
+          ? "glass py-3 shadow-lg shadow-background/5"
+          : "bg-transparent py-5"
       )}
     >
       <nav className="container mx-auto px-4">
@@ -69,16 +69,18 @@ export const Header = () => {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "relative px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                  "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group",
                   isActive(item.href)
                     ? "text-primary"
                     : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
                 )}
               >
-                {item.name}
+                <span className="relative z-10">{item.name}</span>
                 {isActive(item.href) && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
                 )}
+                {/* Hover underline effect */}
+                <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
           </div>
@@ -96,8 +98,11 @@ export const Header = () => {
                 <Moon className="h-5 w-5" />
               )}
             </Button>
-            <Button className="bg-gradient-primary hover:opacity-90 rounded-xl" asChild>
-              <Link to="/contact">Get Started</Link>
+            <Button variant="gradient" size="default" className="rounded-xl group" asChild>
+              <Link to="/contact">
+                Get Started
+                <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </Link>
             </Button>
           </div>
 
