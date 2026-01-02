@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,7 +17,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Cache roles in memory to avoid repeated DB calls
 const rolesCache = new Map<string, { isAdmin: boolean; isEditor: boolean; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const AUTH_TIMEOUT = 5000; // 5 second timeout for auth check
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -25,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
   const [loading, setLoading] = useState(true);
+  const initializedRef = useRef(false);
 
   const checkRole = async (userId: string, forceRefresh = false) => {
     // Check cache first
@@ -64,17 +64,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Prevent double initialization in strict mode
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     let isMounted = true;
 
-    // Set a timeout to prevent infinite loading - using ref pattern to avoid stale closure
-    const timeoutId = setTimeout(() => {
-      if (isMounted) {
-        console.warn('Auth initialization timeout - forcing loading to false');
-        setLoading(false);
+    // Initialize auth immediately
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!isMounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await checkRole(session.user.id);
+        }
+      } catch (err) {
+        console.error('Error getting session:', err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-    }, AUTH_TIMEOUT);
+    };
 
-    // Set up auth state listener FIRST
+    // Start initialization
+    initializeAuth();
+
+    // Set up auth state listener for subsequent changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted) return;
       
@@ -82,43 +103,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Only force refresh on sign in
         await checkRole(session.user.id, event === 'SIGNED_IN');
       } else {
         setIsAdmin(false);
         setIsEditor(false);
       }
       
-      // Clear timeout and set loading false on any auth state change
-      clearTimeout(timeoutId);
+      // Always ensure loading is false after auth state change
       setLoading(false);
-    });
-
-    // THEN get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!isMounted) return;
-      
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        await checkRole(session.user.id);
-      }
-      
-      clearTimeout(timeoutId);
-      setLoading(false);
-    }).catch((err) => {
-      console.error('Error getting session:', err);
-      if (isMounted) {
-        clearTimeout(timeoutId);
-        setLoading(false);
-      }
     });
 
     return () => {
       isMounted = false;
       subscription.unsubscribe();
-      clearTimeout(timeoutId);
     };
   }, []);
 
