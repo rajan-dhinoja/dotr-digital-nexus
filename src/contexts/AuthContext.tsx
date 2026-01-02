@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -25,7 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
   const [loading, setLoading] = useState(true);
-  const initRef = useRef(false);
 
   const checkRole = async (userId: string, forceRefresh = false) => {
     // Check cache first
@@ -65,37 +64,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Prevent double initialization in strict mode
-    if (initRef.current) return;
-    initRef.current = true;
+    let isMounted = true;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-    // Set a timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      if (loading) {
-        console.warn('Auth initialization timeout - forcing loading to false');
-        setLoading(false);
-      }
-    }, AUTH_TIMEOUT);
+    const initAuth = async () => {
+      // Set a timeout to prevent infinite loading
+      timeoutId = setTimeout(() => {
+        if (isMounted && loading) {
+          console.warn('Auth initialization timeout - forcing loading to false');
+          setLoading(false);
+        }
+      }, AUTH_TIMEOUT);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkRole(session.user.id).finally(() => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!isMounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await checkRole(session.user.id);
+        }
+      } catch (err) {
+        console.error('Error getting session:', err);
+      } finally {
+        if (isMounted) {
           setLoading(false);
           clearTimeout(timeoutId);
-        });
-      } else {
-        setLoading(false);
-        clearTimeout(timeoutId);
+        }
       }
-    }).catch((err) => {
-      console.error('Error getting session:', err);
-      setLoading(false);
-      clearTimeout(timeoutId);
-    });
+    };
+
+    initAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!isMounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -110,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
       clearTimeout(timeoutId);
     };
