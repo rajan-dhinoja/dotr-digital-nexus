@@ -65,40 +65,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
-    let timeoutId: ReturnType<typeof setTimeout>;
 
-    const initAuth = async () => {
-      // Set a timeout to prevent infinite loading
-      timeoutId = setTimeout(() => {
-        if (isMounted && loading) {
-          console.warn('Auth initialization timeout - forcing loading to false');
-          setLoading(false);
-        }
-      }, AUTH_TIMEOUT);
-
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!isMounted) return;
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await checkRole(session.user.id);
-        }
-      } catch (err) {
-        console.error('Error getting session:', err);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-          clearTimeout(timeoutId);
-        }
+    // Set a timeout to prevent infinite loading - using ref pattern to avoid stale closure
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn('Auth initialization timeout - forcing loading to false');
+        setLoading(false);
       }
-    };
+    }, AUTH_TIMEOUT);
 
-    initAuth();
-
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted) return;
       
@@ -112,7 +88,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAdmin(false);
         setIsEditor(false);
       }
+      
+      // Clear timeout and set loading false on any auth state change
+      clearTimeout(timeoutId);
       setLoading(false);
+    });
+
+    // THEN get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!isMounted) return;
+      
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await checkRole(session.user.id);
+      }
+      
+      clearTimeout(timeoutId);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('Error getting session:', err);
+      if (isMounted) {
+        clearTimeout(timeoutId);
+        setLoading(false);
+      }
     });
 
     return () => {
