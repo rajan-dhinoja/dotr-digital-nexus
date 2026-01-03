@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, createElement } from 'react';
-import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, Copy, ClipboardPaste } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useSectionClipboard } from '@/contexts/SectionClipboardContext';
 import { 
   useSectionTypes, 
   useAdminPageSections, 
@@ -26,6 +27,7 @@ interface SectionManagerProps {
 
 export function SectionManager({ pageType, entityId, maxSections = 10 }: SectionManagerProps) {
   const { toast } = useToast();
+  const { copiedSection, copySection, clearClipboard } = useSectionClipboard();
   const [editingSection, setEditingSection] = useState<PageSection | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedSectionType, setSelectedSectionType] = useState<string>('');
@@ -36,7 +38,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
   // Static icon map to avoid importing entire lucide-react library
   const iconMap: Record<string, LucideIcon> = {
-    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText
+    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText, Copy, ClipboardPaste
   };
 
   const getIcon = (iconName?: string | null): LucideIcon => {
@@ -176,21 +178,76 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
     return sectionTypes.find(st => st.slug === slug);
   };
 
+  const handleCopySection = (section: PageSection) => {
+    copySection(section);
+    toast({
+      title: 'Section copied',
+      description: `"${section.title || section.section_type}" copied to clipboard. Navigate to another page to paste.`,
+    });
+  };
+
+  const handlePasteSection = () => {
+    if (!copiedSection) return;
+    if (sections.length >= maxSections) {
+      toast({
+        title: 'Limit Reached',
+        description: `Maximum ${maxSections} sections allowed.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const data: Partial<PageSection> = {
+      section_type: copiedSection.section_type,
+      title: copiedSection.title ? `${copiedSection.title} (copy)` : null,
+      subtitle: copiedSection.subtitle,
+      content: copiedSection.content,
+      display_order: sections.length,
+      is_active: copiedSection.is_active,
+    };
+
+    saveMutation.mutate(data, {
+      onSuccess: () => {
+        toast({ 
+          title: 'Section pasted',
+          description: `Section from "${copiedSection.sourcePageType}" page has been added.`,
+        });
+        clearClipboard();
+      },
+      onError: (error: Error) => {
+        toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      },
+    });
+  };
+
   if (isLoading) {
     return <div className="p-4 text-muted-foreground">Loading sections...</div>;
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="font-semibold">Page Sections ({sections.length}/{maxSections})</h3>
-        <Button 
-          size="sm" 
-          onClick={handleAddSection}
-          disabled={sections.length >= maxSections}
-        >
-          <Plus className="h-4 w-4 mr-2" /> Add Section
-        </Button>
+        <div className="flex items-center gap-2">
+          {copiedSection && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={handlePasteSection}
+              disabled={sections.length >= maxSections || saveMutation.isPending}
+            >
+              <ClipboardPaste className="h-4 w-4 mr-2" /> 
+              Paste "{copiedSection.title || copiedSection.section_type}"
+            </Button>
+          )}
+          <Button 
+            size="sm" 
+            onClick={handleAddSection}
+            disabled={sections.length >= maxSections}
+          >
+            <Plus className="h-4 w-4 mr-2" /> Add Section
+          </Button>
+        </div>
       </div>
 
       {sections.length === 0 ? (
@@ -223,6 +280,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                         className="h-8 w-8"
                         onClick={() => handleMoveUp(index)}
                         disabled={index === 0}
+                        title="Move up"
                       >
                         <ChevronUp className="h-4 w-4" />
                       </Button>
@@ -232,6 +290,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                         className="h-8 w-8"
                         onClick={() => handleMoveDown(index)}
                         disabled={index === sections.length - 1}
+                        title="Move down"
                       >
                         <ChevronDown className="h-4 w-4" />
                       </Button>
@@ -239,7 +298,17 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8"
+                        onClick={() => handleCopySection(section)}
+                        title="Copy section"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
                         onClick={() => setEditingSection(section)}
+                        title="Edit section"
                       >
                         <Edit2 className="h-4 w-4" />
                       </Button>
@@ -248,6 +317,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                         size="icon"
                         className="h-8 w-8 text-destructive"
                         onClick={() => handleDelete(section.id)}
+                        title="Delete section"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

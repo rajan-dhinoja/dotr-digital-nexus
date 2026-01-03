@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SectionClipboardProvider } from "@/contexts/SectionClipboardContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -80,49 +81,51 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/services/:category" element={<ServiceDetail />} />
-              <Route path="/services/:category/:service" element={<SubServiceDetail />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/portfolio/:slug" element={<ProjectDetail />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              
-              {/* Admin Routes - wrapped in Suspense for lazy loading */}
-              <Route path="/admin/login" element={<Suspense fallback={<AdminLoadingFallback />}><AdminLogin /></Suspense>} />
-              <Route path="/admin" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminDashboard /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/pages" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminPages /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/page-sections" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminPageSections /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/services" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminServices /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/service-categories" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminServiceCategories /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/projects" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminProjects /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/blog" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminBlogPosts /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/blog-categories" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminBlogCategories /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/form-submissions" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminFormSubmissions /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/team" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminTeam /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/testimonials" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminTestimonials /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/leads" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminLeads /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/menus" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminMenus /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/media" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminMedia /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminUsers /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/activity-log" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminActivityLog /></Suspense></ProtectedRoute>} />
-              <Route path="/admin/settings" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminSettings /></Suspense></ProtectedRoute>} />
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <SectionClipboardProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/services/:category" element={<ServiceDetail />} />
+                <Route path="/services/:category/:service" element={<SubServiceDetail />} />
+                <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/portfolio/:slug" element={<ProjectDetail />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/testimonials" element={<Testimonials />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                
+                {/* Admin Routes - wrapped in Suspense for lazy loading */}
+                <Route path="/admin/login" element={<Suspense fallback={<AdminLoadingFallback />}><AdminLogin /></Suspense>} />
+                <Route path="/admin" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminDashboard /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/pages" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminPages /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/page-sections" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminPageSections /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/services" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminServices /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/service-categories" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminServiceCategories /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/projects" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminProjects /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/blog" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminBlogPosts /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/blog-categories" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminBlogCategories /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/form-submissions" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminFormSubmissions /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/team" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminTeam /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/testimonials" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminTestimonials /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/leads" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminLeads /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/menus" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminMenus /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/media" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminMedia /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminUsers /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/activity-log" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminActivityLog /></Suspense></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminSettings /></Suspense></ProtectedRoute>} />
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SectionClipboardProvider>
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
