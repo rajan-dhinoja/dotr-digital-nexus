@@ -25,6 +25,7 @@ import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import NotFound from "./pages/NotFound";
+import DynamicPage from "./pages/DynamicPage";
 
 // Admin pages - lazy loaded for better performance
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
@@ -120,6 +121,9 @@ const App = () => (
                 <Route path="/admin/users" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminUsers /></Suspense></ProtectedRoute>} />
                 <Route path="/admin/activity-log" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminActivityLog /></Suspense></ProtectedRoute>} />
                 <Route path="/admin/settings" element={<ProtectedRoute><Suspense fallback={<AdminLoadingFallback />}><AdminSettings /></Suspense></ProtectedRoute>} />
+                
+                {/* Dynamic pages - matches any slug from the pages table */}
+                <Route path="/:slug" element={<DynamicPage />} />
                 
                 <Route path="*" element={<NotFound />} />
               </Routes>
