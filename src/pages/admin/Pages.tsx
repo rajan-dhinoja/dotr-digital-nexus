@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useActivityLog } from '@/hooks/useActivityLog';
-import { Plus, Lock } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface Page {
   id: string;
@@ -146,12 +146,6 @@ export default function AdminPages() {
       render: (p: Page) => (
         <div className="flex items-center gap-2">
           {p.title}
-          {p.is_system && (
-            <Badge variant="outline" className="gap-1">
-              <Lock className="h-3 w-3" />
-              System
-            </Badge>
-          )}
         </div>
       ),
     },
@@ -188,13 +182,7 @@ export default function AdminPages() {
         columns={columns}
         loading={isLoading}
         onEdit={handleEdit}
-        onDelete={(p) => {
-          if (p.is_system) {
-            toast({ title: 'Cannot Delete', description: 'System pages cannot be deleted', variant: 'destructive' });
-            return;
-          }
-          deleteMutation.mutate(p.id);
-        }}
+        onDelete={(p) => deleteMutation.mutate(p.id)}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -223,7 +211,6 @@ export default function AdminPages() {
                       defaultValue={editing?.slug} 
                       required 
                       maxLength={100}
-                      disabled={editing?.is_system ?? false}
                     />
                   </div>
                 </div>
