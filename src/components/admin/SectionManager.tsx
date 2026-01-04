@@ -332,11 +332,11 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
       {/* Add Section Type Selector Dialog */}
       <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Select Section Type</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 overflow-y-auto flex-1 pr-2">
             {sectionTypes.map((type) => {
               const Icon = getIcon(type.icon);
               return (
