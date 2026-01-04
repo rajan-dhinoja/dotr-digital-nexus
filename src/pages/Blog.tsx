@@ -1,40 +1,53 @@
 import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BackToTop } from "@/components/interactive/BackToTop";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User } from "lucide-react";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { usePageSections } from "@/hooks/usePageSections";
+import { SectionRenderer } from "@/components/sections/SectionRenderer";
 import { format } from "date-fns";
 
 const Blog = () => {
-  const { data: posts, isLoading } = useBlogPosts();
+  const { data: posts, isLoading: postsLoading } = useBlogPosts();
+  const { data: sections, isLoading: sectionsLoading } = usePageSections("blog");
+
+  const isLoading = sectionsLoading;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
-              Blog & Insights
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Industry insights, tips, and trends from our team of experts in design, development,
-              marketing, and creative.
-            </p>
-          </div>
+      {/* Dynamic Sections from Admin */}
+      {isLoading ? (
+        <div className="pt-20">
+          <Skeleton className="h-[30vh] w-full" />
         </div>
-      </section>
+      ) : sections && sections.length > 0 ? (
+        <SectionRenderer sections={sections} />
+      ) : (
+        <section className="pt-32 pb-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
+                Blog & Insights
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Industry insights, tips, and trends from our team of experts.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* Blog Grid */}
+      {/* Blog Grid - Always show blog posts */}
       <section className="pb-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {isLoading ? (
+            {postsLoading ? (
               [...Array(6)].map((_, i) => (
                 <Card key={i} className="border-border overflow-hidden">
                   <Skeleton className="aspect-video" />
@@ -49,8 +62,8 @@ const Blog = () => {
                   </CardContent>
                 </Card>
               ))
-            ) : (
-              posts?.map((post) => {
+            ) : posts && posts.length > 0 ? (
+              posts.map((post) => {
                 const category = post.blog_post_categories?.[0]?.blog_categories?.name || "Article";
                 const authorName = post.team_members?.name || "DOTR Team";
                 const publishedDate = post.published_at 
@@ -88,12 +101,17 @@ const Blog = () => {
                   </Link>
                 );
               })
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground">No blog posts available yet.</p>
+              </div>
             )}
           </div>
         </div>
       </section>
 
       <Footer />
+      <BackToTop />
     </div>
   );
 };
