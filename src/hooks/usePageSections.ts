@@ -40,13 +40,8 @@ export function useSectionTypes(pageType?: string) {
       
       if (error) throw error;
       
-      // Filter by allowed_pages if pageType provided
-      if (pageType && data) {
-        return data.filter((st) => 
-          st.allowed_pages.includes(pageType)
-        ) as SectionType[];
-      }
-      
+      // Return all section types - allow all sections on all pages
+      // The allowed_pages field is now just informational, not a restriction
       return data as SectionType[];
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
