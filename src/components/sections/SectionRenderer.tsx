@@ -11,6 +11,16 @@ import { GallerySection } from './GallerySection';
 import { TeamSection } from './TeamSection';
 import { PricingSection } from './PricingSection';
 import { FormSection } from './FormSection';
+import { LogoCloudSection } from './LogoCloudSection';
+import { ServicesGridSection } from './ServicesGridSection';
+import { PortfolioGridSection } from './PortfolioGridSection';
+import { VideoSection } from './VideoSection';
+import { ImageTextSection } from './ImageTextSection';
+import { TimelineSection } from './TimelineSection';
+import { CountersSection } from './CountersSection';
+import { NewsletterSection } from './NewsletterSection';
+import { BlogPostsSection } from './BlogPostsSection';
+import { ContactInfoSection } from './ContactInfoSection';
 
 interface SectionRendererProps {
   sections: PageSection[];
@@ -57,6 +67,26 @@ function DynamicSection({ section }: DynamicSectionProps) {
       return <PricingSection title={title} subtitle={subtitle} content={contentObj} />;
     case 'form':
       return <FormSection title={title} subtitle={subtitle} content={contentObj} sectionId={id} />;
+    case 'logo-cloud':
+      return <LogoCloudSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'services-grid':
+      return <ServicesGridSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'portfolio-grid':
+      return <PortfolioGridSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'video':
+      return <VideoSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'image-text':
+      return <ImageTextSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'timeline':
+      return <TimelineSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'counters':
+      return <CountersSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'newsletter':
+      return <NewsletterSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'blog-posts':
+      return <BlogPostsSection title={title} subtitle={subtitle} content={contentObj} />;
+    case 'contact-info':
+      return <ContactInfoSection title={title} subtitle={subtitle} content={contentObj} />;
     default:
       return null;
   }
