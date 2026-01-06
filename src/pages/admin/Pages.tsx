@@ -69,7 +69,11 @@ export default function AdminPages() {
       }
     },
     onSuccess: () => {
+      // Invalidate all page-related queries (admin + public)
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+      queryClient.invalidateQueries({ queryKey: ['pages'] });
+      queryClient.invalidateQueries({ queryKey: ['nav-pages'] });
+      queryClient.invalidateQueries({ predicate: (query) => query.queryKey[0] === 'page' });
       logActivity({
         action: editing ? 'update' : 'create',
         entity_type: 'page',
@@ -89,7 +93,11 @@ export default function AdminPages() {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate all page-related queries (admin + public)
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+      queryClient.invalidateQueries({ queryKey: ['pages'] });
+      queryClient.invalidateQueries({ queryKey: ['nav-pages'] });
+      queryClient.invalidateQueries({ predicate: (query) => query.queryKey[0] === 'page' });
       toast({ title: 'Page deleted' });
     },
   });
@@ -100,7 +108,11 @@ export default function AdminPages() {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate all page-related queries (admin + public)
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] });
+      queryClient.invalidateQueries({ queryKey: ['pages'] });
+      queryClient.invalidateQueries({ queryKey: ['nav-pages'] });
+      queryClient.invalidateQueries({ predicate: (query) => query.queryKey[0] === 'page' });
     },
   });
 
