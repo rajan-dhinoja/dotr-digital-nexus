@@ -6,12 +6,32 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import logoLight from "@/assets/dotr-logo-light.jpg";
 import logoDark from "@/assets/dotr-logo-dark.jpg";
+import { useNavPages, Page } from "@/hooks/usePages";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+interface NavItem {
+  name: string;
+  href: string;
+  children?: NavItem[];
+}
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [openMobileDropdowns, setOpenMobileDropdowns] = useState<string[]>([]);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
+  const { data: pages = [], isLoading } = useNavPages();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,20 +44,62 @@ export const Header = () => {
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
+    setOpenMobileDropdowns([]);
   }, [location.pathname]);
 
-  const navigation = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Services", href: "/services" },
-    { name: "Portfolio", href: "/portfolio" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/contact" },
-  ];
+  // Build navigation tree from pages
+  const buildNavigation = (pages: Page[]): NavItem[] => {
+    // Separate parent pages (no parent_id) and child pages
+    const parentPages = pages.filter(p => !p.parent_id);
+    const childPages = pages.filter(p => p.parent_id);
+
+    return parentPages.map(parent => {
+      const children = childPages
+        .filter(child => child.parent_id === parent.id)
+        .map(child => ({
+          name: child.title,
+          href: getPageHref(child),
+        }));
+
+      return {
+        name: parent.title,
+        href: getPageHref(parent),
+        children: children.length > 0 ? children : undefined,
+      };
+    });
+  };
+
+  // Get correct href based on page slug
+  const getPageHref = (page: Page): string => {
+    // Map common system page slugs to their routes
+    const systemRoutes: Record<string, string> = {
+      'home': '/',
+      'about': '/about',
+      'services': '/services',
+      'portfolio': '/portfolio',
+      'blog': '/blog',
+      'contact': '/contact',
+      'testimonials': '/testimonials',
+      'privacy-policy': '/privacy-policy',
+      'terms-of-service': '/terms-of-service',
+    };
+
+    return systemRoutes[page.slug] || `/${page.slug}`;
+  };
+
+  const navigation = buildNavigation(pages);
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
+  };
+
+  const toggleMobileDropdown = (name: string) => {
+    setOpenMobileDropdowns(prev => 
+      prev.includes(name) 
+        ? prev.filter(n => n !== name)
+        : [...prev, name]
+    );
   };
 
   return (
@@ -65,23 +127,58 @@ export const Header = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group",
-                  isActive(item.href)
-                    ? "text-primary"
-                    : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                <span className="relative z-10">{item.name}</span>
-                {isActive(item.href) && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-                )}
-                {/* Hover underline effect */}
-                <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-              </Link>
+              item.children && item.children.length > 0 ? (
+                <DropdownMenu key={item.name}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className={cn(
+                        "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group flex items-center gap-1",
+                        isActive(item.href)
+                          ? "text-primary"
+                          : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      <span className="relative z-10">{item.name}</span>
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+                      {isActive(item.href) && (
+                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link to={item.href} className="w-full">
+                        {item.name}
+                      </Link>
+                    </DropdownMenuItem>
+                    {item.children.map((child) => (
+                      <DropdownMenuItem key={child.name} asChild>
+                        <Link to={child.href} className="w-full">
+                          {child.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group",
+                    isActive(item.href)
+                      ? "text-primary"
+                      : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  <span className="relative z-10">{item.name}</span>
+                  {isActive(item.href) && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                  )}
+                  {/* Hover underline effect */}
+                  <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </Link>
+              )
             ))}
           </div>
 
@@ -135,23 +232,75 @@ export const Header = () => {
         <div
           className={cn(
             "md:hidden overflow-hidden transition-all duration-300",
-            isMenuOpen ? "max-h-96 mt-4" : "max-h-0"
+            isMenuOpen ? "max-h-[500px] mt-4" : "max-h-0"
           )}
         >
           <div className="glass-card rounded-2xl p-4 space-y-2">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "block px-4 py-3 rounded-xl text-foreground font-medium transition-colors",
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary"
-                    : "hover:bg-muted/50"
-                )}
-              >
-                {item.name}
-              </Link>
+              item.children && item.children.length > 0 ? (
+                <Collapsible 
+                  key={item.name}
+                  open={openMobileDropdowns.includes(item.name)}
+                  onOpenChange={() => toggleMobileDropdown(item.name)}
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <div
+                      className={cn(
+                        "flex items-center justify-between px-4 py-3 rounded-xl text-foreground font-medium transition-colors",
+                        isActive(item.href)
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted/50"
+                      )}
+                    >
+                      <span>{item.name}</span>
+                      <ChevronDown className={cn(
+                        "h-4 w-4 transition-transform",
+                        openMobileDropdowns.includes(item.name) && "rotate-180"
+                      )} />
+                    </div>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pl-4 space-y-1 mt-1">
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "block px-4 py-2 rounded-xl text-foreground/80 font-medium transition-colors",
+                        isActive(item.href) && location.pathname === item.href
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted/50"
+                      )}
+                    >
+                      All {item.name}
+                    </Link>
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.name}
+                        to={child.href}
+                        className={cn(
+                          "block px-4 py-2 rounded-xl text-foreground/80 font-medium transition-colors",
+                          isActive(child.href)
+                            ? "bg-primary/10 text-primary"
+                            : "hover:bg-muted/50"
+                        )}
+                      >
+                        {child.name}
+                      </Link>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "block px-4 py-3 rounded-xl text-foreground font-medium transition-colors",
+                    isActive(item.href)
+                      ? "bg-primary/10 text-primary"
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              )
             ))}
             <Button className="w-full bg-gradient-primary hover:opacity-90 rounded-xl mt-2" asChild>
               <Link to="/contact">
