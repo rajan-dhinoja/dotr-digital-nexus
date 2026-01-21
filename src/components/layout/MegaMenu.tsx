@@ -17,8 +17,8 @@ export const MegaMenu = ({ item }: MegaMenuProps) => {
   const sections = item.children ?? [];
 
   return (
-    <div className="w-full md:w-[880px] lg:w-[1040px]">
-      <div className="glass-card grid gap-8 rounded-3xl border bg-popover/95 p-6 shadow-2xl backdrop-blur md:grid-cols-[minmax(0,0.9fr)_minmax(0,2.1fr)] md:p-8">
+    <div className="w-screen max-w-[min(1040px,100vw-2rem)] md:w-auto">
+      <div className="glass-card grid max-h-[80vh] gap-8 overflow-y-auto rounded-3xl border bg-popover/95 p-4 shadow-2xl backdrop-blur sm:p-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,2.1fr)] md:p-8">
         {/* Left intro column */}
         <div className="flex flex-col justify-between gap-6 border-b pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
           <div>
