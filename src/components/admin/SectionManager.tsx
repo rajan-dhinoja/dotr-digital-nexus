@@ -447,6 +447,7 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
     case 'cta':
       return (
         <>
+          {/* Shared headline/description + CTA fields for hero/cta */} 
           <div className="space-y-2">
             <Label>Headline</Label>
             <Input name="headline" defaultValue={(content.headline as string) || ''} />
@@ -483,6 +484,274 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
               <Input name="background_image" defaultValue={(content.background_image as string) || ''} />
             </div>
           )}
+        </>
+      );
+
+    case 'logo-cloud':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Logos</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Logo
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Logo {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Logo URL"
+                    value={(item.logo_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'logo_url', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Name"
+                    value={(item.name as string) || ''}
+                    onChange={(e) => updateItem(index, 'name', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Link (optional)"
+                    value={(item.link as string) || ''}
+                    onChange={(e) => updateItem(index, 'link', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'services-grid':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Services</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Service
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Service {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Icon name (e.g., Briefcase)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Link (optional)"
+                    value={(item.link as string) || ''}
+                    onChange={(e) => updateItem(index, 'link', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'portfolio-grid':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Portfolio Items</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Item
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Item {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Image URL"
+                    value={(item.image as string) || ''}
+                    onChange={(e) => updateItem(index, 'image', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Category"
+                    value={(item.category as string) || ''}
+                    onChange={(e) => updateItem(index, 'category', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Link (optional)"
+                    value={(item.link as string) || ''}
+                    onChange={(e) => updateItem(index, 'link', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'video':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Video URL</Label>
+            <Input name="video_url" defaultValue={(content.video_url as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Poster Image URL</Label>
+            <Input name="poster_image" defaultValue={(content.poster_image as string) || ''} />
+          </div>
+          <div className="flex items-center space-x-2 pt-2">
+            <Switch
+              id="autoplay"
+              checked={content.autoplay === true}
+              onCheckedChange={() => {
+                // handled on save via form value if needed later
+              }}
+            />
+            <Label htmlFor="autoplay">Autoplay</Label>
+          </div>
+        </>
+      );
+
+    case 'image-text':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Image URL</Label>
+            <Input name="image_url" defaultValue={(content.image_url as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea name="description" defaultValue={(content.description as string) || ''} rows={3} />
+          </div>
+          <div className="space-y-2">
+            <Label>Image Position</Label>
+            <Select name="image_position" defaultValue={(content.image_position as string) || 'left'}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="left">Image Left</SelectItem>
+                <SelectItem value="right">Image Right</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>CTA Text</Label>
+              <Input name="cta_text" defaultValue={(content.cta_text as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>CTA Link</Label>
+              <Input name="cta_link" defaultValue={(content.cta_link as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'timeline':
+    case 'counters':
+      // These use the generic stats-like editor with items already; fall back to stats editor if needed
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Items</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Item
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Item {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Label / Title"
+                    value={(item.label as string) || (item.title as string) || ''}
+                    onChange={(e) => {
+                      updateItem(index, 'label', e.target.value);
+                      updateItem(index, 'title', e.target.value);
+                    }}
+                  />
+                  <Input
+                    placeholder="Value (optional)"
+                    value={(item.value as string) || ''}
+                    onChange={(e) => updateItem(index, 'value', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Suffix (optional, e.g., %, +)"
+                    value={(item.suffix as string) || ''}
+                    onChange={(e) => updateItem(index, 'suffix', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
         </>
       );
 
@@ -689,6 +958,1260 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
           </div>
         </>
       );
+
+    case 'divider':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Style</Label>
+            <Select name="style" defaultValue={(content.style as string) || 'line'}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="line">Line</SelectItem>
+                <SelectItem value="dots">Dots</SelectItem>
+                <SelectItem value="gradient">Gradient</SelectItem>
+                <SelectItem value="wave">Wave</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Width</Label>
+              <Select name="width" defaultValue={(content.width as string) || 'full'}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Full</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="narrow">Narrow</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Spacing</Label>
+              <Select name="spacing" defaultValue={(content.spacing as string) || 'medium'}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="small">Small</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="large">Large</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </>
+      );
+
+    case 'usp-strip':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>USPs</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add USP
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">USP {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Icon name (e.g., Zap)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Text"
+                    value={(item.text as string) || ''}
+                    onChange={(e) => updateItem(index, 'text', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'kpi-strip':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>KPIs</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add KPI
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">KPI {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Value (number)"
+                    value={String(item.value ?? '')}
+                    onChange={(e) => updateItem(index, 'value', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Label"
+                    value={(item.label as string) || ''}
+                    onChange={(e) => updateItem(index, 'label', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Prefix (optional)"
+                    value={(item.prefix as string) || ''}
+                    onChange={(e) => updateItem(index, 'prefix', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Suffix (optional, e.g., %, +)"
+                    value={(item.suffix as string) || ''}
+                    onChange={(e) => updateItem(index, 'suffix', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'social-proof-bar':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>User Count</Label>
+            <Input name="user_count" defaultValue={(content.user_count as string) || ''} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Rating</Label>
+              <Input name="rating" defaultValue={String(content.rating ?? '')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Review Count</Label>
+              <Input name="review_count" defaultValue={(content.review_count as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'success-metrics':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Metrics</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Metric
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Metric {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Client (optional)"
+                    value={(item.client as string) || ''}
+                    onChange={(e) => updateItem(index, 'client', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Metric (e.g., Revenue Growth)"
+                    value={(item.metric as string) || ''}
+                    onChange={(e) => updateItem(index, 'metric', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Value (e.g., +150%)"
+                    value={(item.value as string) || ''}
+                    onChange={(e) => updateItem(index, 'value', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description (optional)"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'awards-badges':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Awards</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Award
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Award {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Organization"
+                    value={(item.organization as string) || ''}
+                    onChange={(e) => updateItem(index, 'organization', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Year"
+                    value={(item.year as string) || ''}
+                    onChange={(e) => updateItem(index, 'year', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Image URL (optional)"
+                    value={(item.image_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'image_url', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'press-mentions':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Press Mentions</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Mention
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Mention {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Publication"
+                    value={(item.publication as string) || ''}
+                    onChange={(e) => updateItem(index, 'publication', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Logo URL (optional)"
+                    value={(item.logo_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'logo_url', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Quote (optional)"
+                    value={(item.quote as string) || ''}
+                    onChange={(e) => updateItem(index, 'quote', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Link (optional)"
+                    value={(item.link as string) || ''}
+                    onChange={(e) => updateItem(index, 'link', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'ratings-reviews':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Review Platforms</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Platform
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Platform {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Platform Name"
+                    value={(item.platform as string) || ''}
+                    onChange={(e) => updateItem(index, 'platform', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Rating (e.g., 4.9)"
+                    value={String(item.rating ?? '')}
+                    onChange={(e) => updateItem(index, 'rating', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Review Count"
+                    value={String(item.review_count ?? '')}
+                    onChange={(e) => updateItem(index, 'review_count', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Logo URL (optional)"
+                    value={(item.logo_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'logo_url', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'trust-badges':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Trust Badges</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Badge
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Badge {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description (optional)"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Icon name (optional, e.g., ShieldCheck)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Image URL (optional)"
+                    value={(item.image_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'image_url', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'differentiators':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Differentiators</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Point
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Point {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'problem-statement':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Problems</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Problem
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Problem {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description (optional)"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <Label>Empathy Text</Label>
+            <Textarea
+              name="empathy_text"
+              defaultValue={(content.empathy_text as string) || ''}
+              rows={2}
+            />
+          </div>
+        </>
+      );
+
+    case 'agitate-solve':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Problem</Label>
+            <Textarea
+              name="problem"
+              defaultValue={(content.problem as string) || ''}
+              rows={2}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Agitation</Label>
+            <Textarea
+              name="agitation"
+              defaultValue={(content.agitation as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Solution</Label>
+            <Textarea
+              name="solution"
+              defaultValue={(content.solution as string) || ''}
+              rows={3}
+            />
+          </div>
+        </>
+      );
+
+    case 'value-proposition':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Headline</Label>
+            <Input name="headline" defaultValue={(content.headline as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Supporting Points (one per line)</Label>
+            <Textarea
+              name="supporting_points"
+              defaultValue={Array.isArray(content.supporting_points) ? (content.supporting_points as string[]).join('\n') : ''}
+              rows={4}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>CTA Text</Label>
+              <Input name="cta_text" defaultValue={(content.cta_text as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>CTA URL</Label>
+              <Input name="cta_url" defaultValue={(content.cta_url as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'elevator-pitch':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Pitch</Label>
+            <Textarea
+              name="pitch"
+              defaultValue={(content.pitch as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Tagline</Label>
+            <Input name="tagline" defaultValue={(content.tagline as string) || ''} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Author (optional)</Label>
+              <Input name="author" defaultValue={(content.author as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>Author Title (optional)</Label>
+              <Input name="author_title" defaultValue={(content.author_title as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'outcomes-benefits':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Benefits</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Benefit
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Benefit {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description (optional)"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Icon name (optional)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <Label>Layout</Label>
+            <Select name="layout" defaultValue={(content.layout as string) || 'grid'}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="grid">Grid</SelectItem>
+                <SelectItem value="list">List</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </>
+      );
+
+    case 'who-its-for':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Personas</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Persona
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Persona {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Persona Name"
+                    value={(item.persona as string) || ''}
+                    onChange={(e) => updateItem(index, 'persona', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Icon name (optional)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Textarea
+                    placeholder="Benefits (one per line)"
+                    value={Array.isArray(item.benefits) ? (item.benefits as string[]).join('\n') : ''}
+                    onChange={(e) => updateItem(index, 'benefits', e.target.value.split('\n').filter(Boolean))}
+                    rows={3}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'before-after':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Before Image URL</Label>
+            <Input name="before_image" defaultValue={(content.before_image as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>After Image URL</Label>
+            <Input name="after_image" defaultValue={(content.after_image as string) || ''} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Before Label</Label>
+              <Input name="before_label" defaultValue={(content.before_label as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>After Label</Label>
+              <Input name="after_label" defaultValue={(content.after_label as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'video-demo':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Video URL</Label>
+            <Input name="video_url" defaultValue={(content.video_url as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Poster Image URL</Label>
+            <Input name="poster_image" defaultValue={(content.poster_image as string) || ''} />
+          </div>
+          {renderItemsInput()}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <Label>Callouts</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Callout
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Callout {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Time (e.g., 00:45)"
+                    value={(item.time as string) || ''}
+                    onChange={(e) => updateItem(index, 'time', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Text"
+                    value={(item.text as string) || ''}
+                    onChange={(e) => updateItem(index, 'text', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'screenshot-gallery':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Screenshots</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Screenshot
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Screenshot {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Image URL"
+                    value={(item.url as string) || ''}
+                    onChange={(e) => updateItem(index, 'url', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Caption (optional)"
+                    value={(item.caption as string) || ''}
+                    onChange={(e) => updateItem(index, 'caption', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="flex items-center space-x-2 pt-2">
+            <Switch
+              id="show_captions"
+              checked={content.show_captions !== false}
+              onCheckedChange={() => {
+                // handled on save via form value if needed later
+              }}
+            />
+            <Label htmlFor="show_captions">Show Captions</Label>
+          </div>
+        </>
+      );
+
+    case 'device-frames':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Device Type</Label>
+            <Select name="device_type" defaultValue={(content.device_type as string) || 'iphone'}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="iphone">iPhone</SelectItem>
+                <SelectItem value="android">Android</SelectItem>
+                <SelectItem value="laptop">Laptop</SelectItem>
+                <SelectItem value="tablet">Tablet</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {renderItemsInput()}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <Label>Screenshots</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Screenshot
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Screenshot {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Image URL"
+                    value={(item.url as string) || (item as string)}
+                    onChange={(e) => updateItem(index, 'url', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'feature-list':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Features</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Feature
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Feature {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Text"
+                    value={(item.text as string) || ''}
+                    onChange={(e) => updateItem(index, 'text', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Icon name (optional)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <Label>Columns</Label>
+            <Select name="columns" defaultValue={String(content.columns ?? 2)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 Column</SelectItem>
+                <SelectItem value="2">2 Columns</SelectItem>
+                <SelectItem value="3">3 Columns</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </>
+      );
+
+    case 'feature-highlights':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Feature Highlights</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Feature
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Feature {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Image URL"
+                    value={(item.image_url as string) || ''}
+                    onChange={(e) => updateItem(index, 'image_url', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Icon name (optional)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Bullets (one per line, optional)"
+                    value={Array.isArray(item.bullets) ? (item.bullets as string[]).join('\n') : ''}
+                    onChange={(e) => updateItem(index, 'bullets', e.target.value.split('\n').filter(Boolean))}
+                    rows={3}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      );
+
+    case 'primary-cta-banner':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Headline</Label>
+            <Input name="headline" defaultValue={(content.headline as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea
+              name="description"
+              defaultValue={(content.description as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Primary Button Text</Label>
+              <Input name="button_text" defaultValue={(content.button_text as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>Primary Button URL</Label>
+              <Input name="button_url" defaultValue={(content.button_url as string) || ''} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="space-y-2">
+              <Label>Secondary Button Text (optional)</Label>
+              <Input
+                name="secondary_button_text"
+                defaultValue={(content.secondary_button_text as string) || ''}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Secondary Button URL (optional)</Label>
+              <Input
+                name="secondary_button_url"
+                defaultValue={(content.secondary_button_url as string) || ''}
+              />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'secondary-cta':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Text</Label>
+            <Textarea
+              name="text"
+              defaultValue={(content.text as string) || ''}
+              rows={2}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Button Text</Label>
+              <Input name="button_text" defaultValue={(content.button_text as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>Button URL</Label>
+              <Input name="button_url" defaultValue={(content.button_url as string) || ''} />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'exit-intent-cta':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Headline</Label>
+            <Input name="headline" defaultValue={(content.headline as string) || ''} />
+          </div>
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea
+              name="description"
+              defaultValue={(content.description as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Button Text</Label>
+              <Input name="button_text" defaultValue={(content.button_text as string) || ''} />
+            </div>
+            <div className="space-y-2">
+              <Label>Button URL</Label>
+              <Input name="button_url" defaultValue={(content.button_url as string) || ''} />
+            </div>
+          </div>
+          <div className="space-y-2 pt-2">
+            <Label>Show After Scroll (%)</Label>
+            <Input
+              name="show_after_scroll"
+              defaultValue={String(content.show_after_scroll ?? 50)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Offer Text (optional)</Label>
+            <Input name="offer_text" defaultValue={(content.offer_text as string) || ''} />
+          </div>
+        </>
+      );
+
+    case 'about-us':
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Story</Label>
+            <Textarea
+              name="story"
+              defaultValue={(content.story as string) || ''}
+              rows={4}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Mission</Label>
+            <Textarea
+              name="mission"
+              defaultValue={(content.mission as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Vision (optional)</Label>
+            <Textarea
+              name="vision"
+              defaultValue={(content.vision as string) || ''}
+              rows={3}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="space-y-2">
+              <Label>Founder Image URL (optional)</Label>
+              <Input
+                name="founder_image"
+                defaultValue={(content.founder_image as string) || ''}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Founded Year (optional)</Label>
+              <Input
+                name="founded_year"
+                defaultValue={(content.founded_year as string) || ''}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="space-y-2">
+              <Label>Founder Name (optional)</Label>
+              <Input
+                name="founder_name"
+                defaultValue={(content.founder_name as string) || ''}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Founder Title (optional)</Label>
+              <Input
+                name="founder_title"
+                defaultValue={(content.founder_title as string) || ''}
+              />
+            </div>
+          </div>
+        </>
+      );
+
+    case 'values-culture':
+      return (
+        <>
+          {renderItemsInput()}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Values</Label>
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-1" /> Add Value
+              </Button>
+            </div>
+            {items.map((item, index) => (
+              <Card key={index} className="p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Value {index + 1}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeItem(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    placeholder="Title"
+                    value={(item.title as string) || ''}
+                    onChange={(e) => updateItem(index, 'title', e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={(item.description as string) || ''}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  <Input
+                    placeholder="Icon name (optional)"
+                    value={(item.icon as string) || ''}
+                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <Label>Culture Text (optional)</Label>
+            <Textarea
+              name="culture_text"
+              defaultValue={(content.culture_text as string) || ''}
+              rows={3}
+            />
+          </div>
+        </>
+      );
+
 
     case 'faq':
       return (
