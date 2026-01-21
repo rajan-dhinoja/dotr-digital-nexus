@@ -18,6 +18,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const rolesCache = new Map<string, { isAdmin: boolean; isEditor: boolean; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+// Small helper to make sure auth-related calls can never block the UI forever.
+// If Supabase is slow or unreachable, we fail fast and let the app render
+// instead of keeping the whole admin behind a perpetual loading spinner.
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, context: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`${context} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -36,10 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId);
+      const { data, error } = await withTimeout(
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId),
+        8000,
+        'Role check'
+      );
       
       if (error) {
         console.error('Error checking role:', error);
@@ -73,13 +98,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Initialize auth immediately
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+        } = await withTimeout(supabase.auth.getSession(), 8000, 'Auth session');
+
         if (!isMounted) return;
-        
+
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
           await checkRole(session.user.id);
         }

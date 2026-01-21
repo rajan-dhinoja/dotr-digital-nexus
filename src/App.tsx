@@ -74,6 +74,10 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 60 * 1000, // Default 1 minute stale time
       retry: 1,
+      // Avoid aggressive refetching when switching tabs/windows, which was causing
+      // the UI to appear like it's "loading forever" on every focus change.
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   },
 });
