@@ -1,5 +1,10 @@
 import { useState, lazy, Suspense, createElement } from 'react';
-import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, Copy, ClipboardPaste } from 'lucide-react';
+import { 
+  Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, 
+  Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, 
+  Copy, ClipboardPaste, Code, Cpu, Maximize, Shield, Target, Rocket, Globe, Heart, CheckCircle,
+  Lightbulb, Award, Briefcase, Database 
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,8 +43,34 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
   // Static icon map to avoid importing entire lucide-react library
   const iconMap: Record<string, LucideIcon> = {
-    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText, Copy, ClipboardPaste
+    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, 
+    TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText, 
+    Copy, ClipboardPaste
   };
+
+  // Icon options for feature items (kept in sync with FeaturesSection)
+  const featureIconOptions: { value: string; label: string; icon: LucideIcon }[] = [
+    { value: 'Star', label: 'Star', icon: Star },
+    { value: 'Code', label: 'Code', icon: Code },
+    { value: 'Cpu', label: 'CPU', icon: Cpu },
+    { value: 'BarChart', label: 'Bar chart', icon: BarChart },
+    { value: 'Maximize', label: 'Maximize', icon: Maximize },
+    { value: 'Zap', label: 'Lightning (Zap)', icon: Zap },
+    { value: 'Shield', label: 'Shield', icon: Shield },
+    { value: 'Users', label: 'Users', icon: Users },
+    { value: 'Target', label: 'Target', icon: Target },
+    { value: 'Rocket', label: 'Rocket', icon: Rocket },
+    { value: 'Settings', label: 'Settings', icon: Settings },
+    { value: 'Globe', label: 'Globe', icon: Globe },
+    { value: 'Heart', label: 'Heart', icon: Heart },
+    { value: 'Clock', label: 'Clock', icon: Clock },
+    { value: 'CheckCircle', label: 'Check circle', icon: CheckCircle },
+    { value: 'Lightbulb', label: 'Lightbulb', icon: Lightbulb },
+    { value: 'TrendingUp', label: 'Trending up', icon: TrendingUp },
+    { value: 'Award', label: 'Award', icon: Award },
+    { value: 'Briefcase', label: 'Briefcase', icon: Briefcase },
+    { value: 'Database', label: 'Database', icon: Database },
+  ];
 
   const getIcon = (iconName?: string | null): LucideIcon => {
     if (!iconName) return Layers;
@@ -792,11 +823,33 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
                     onChange={(e) => updateItem(index, 'description', e.target.value)}
                     rows={2}
                   />
-                  <Input
-                    placeholder="Icon name (e.g., Star, Check)"
-                    value={(item.icon as string) || ''}
-                    onChange={(e) => updateItem(index, 'icon', e.target.value)}
-                  />
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Icon</Label>
+                    <Select
+                      value={(item.icon as string) || ''}
+                      onValueChange={(value) => updateItem(index, 'icon', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose an icon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">
+                          <div className="flex items-center gap-2">
+                            <Star className="h-4 w-4" />
+                            <span>Default (Star)</span>
+                          </div>
+                        </SelectItem>
+                        {featureIconOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            <div className="flex items-center gap-2">
+                              <option.icon className="h-4 w-4" />
+                              <span>{option.label}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </Card>
             ))}
