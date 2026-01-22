@@ -1,99 +1,138 @@
+import { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-export interface MegaMenuItem {
-  name: string;
-  href: string;
-  description?: string | null;
-  children?: MegaMenuItem[];
-}
+import { megaMenuConfig, MegaMenuDefinition } from "@/config/megaMenu";
 
 interface MegaMenuProps {
-  item: MegaMenuItem;
+  label: string;
+  href: string;
+  slug?: string;
+  isActive: boolean;
 }
 
-export const MegaMenu = ({ item }: MegaMenuProps) => {
-  const sections = item.children ?? [];
+export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
+  const [open, setOpen] = useState(false);
+
+  const key = slug || href.replace(/^\//, "");
+  const config: MegaMenuDefinition | undefined = megaMenuConfig[key];
+
+  if (!config) {
+    return (
+      <Link
+        to={href}
+        className={cn(
+          "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group",
+          isActive
+            ? "text-primary"
+            : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+        )}
+      >
+        <span className="relative z-10">{label}</span>
+        {isActive && (
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+        )}
+        <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+      </Link>
+    );
+  }
 
   return (
-    <div className="w-screen max-w-[min(1040px,100vw-2rem)] md:w-auto">
-      <div className="glass-card grid max-h-[80vh] gap-8 overflow-y-auto rounded-3xl border bg-popover/95 p-4 shadow-2xl backdrop-blur sm:p-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,2.1fr)] md:p-8">
-        {/* Left intro column */}
-        <div className="flex flex-col justify-between gap-6 border-b pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">
-              Explore
-            </p>
-            <h3 className="mt-3 text-xl font-bold tracking-tight md:text-2xl">
-              {item.name}
-            </h3>
-            {item.description && (
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
-            )}
-          </div>
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        className={cn(
+          "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group flex items-center gap-1",
+          isActive
+            ? "text-primary"
+            : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+        )}
+      >
+        <span className="relative z-10">{label}</span>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 transition-transform",
+            open && "rotate-180"
+          )}
+        />
+        {isActive && (
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+        )}
+      </button>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              to={item.href}
-              className={cn(
-                "inline-flex items-center rounded-full bg-gradient-to-r from-primary to-primary/80 px-4 py-2 text-xs font-semibold text-primary-foreground shadow-md transition hover:shadow-lg hover:brightness-105"
-              )}
-            >
-              View all {item.name}
-              <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </Link>
-            <p className="text-xs text-muted-foreground/80">
-              Browse by category or jump straight into a specific service.
-            </p>
-          </div>
-        </div>
-
-        {/* Right multi-column content */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sections.map((section) => {
-            const children = section.children ?? [];
-
-            return (
-              <div key={section.href} className="space-y-2">
-                <Link
-                  to={section.href}
-                  className="group inline-flex items-center gap-1 text-sm font-semibold text-foreground transition-colors hover:text-primary"
-                >
-                  <span>{section.name}</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-
-                {children.length > 0 && (
-                  <ul className="mt-1 space-y-1.5">
-                    {children.map((child) => (
-                      <li key={child.href}>
-                        <Link
-                          to={child.href}
-                          className="group block rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-medium text-foreground/90 group-hover:text-foreground text-sm">
-                              {child.name}
-                            </span>
-                          </div>
-                          {child.description && (
-                            <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                              {child.description}
-                            </p>
-                          )}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+      {open && (
+        <div className="absolute left-1/2 top-full z-40 mt-4 w-screen max-w-5xl -translate-x-1/2">
+          <div className="overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
+            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              {/* Left summary column */}
+              <div className="relative bg-gradient-to-b from-primary/5 via-primary/10 to-primary/5 p-8 md:p-10 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">
+                    {config.summaryTitle}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {config.summaryText}
+                  </p>
+                </div>
+                {config.ctaLabel && config.ctaHref && (
+                  <div className="mt-6">
+                    <Link
+                      to={config.ctaHref}
+                      className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow"
+                    >
+                      {config.ctaLabel}
+                    </Link>
+                  </div>
                 )}
               </div>
-            );
-          })}
+
+              {/* Right columns */}
+              <div className="p-6 md:p-8 grid gap-6 md:grid-cols-3">
+                {config.sections.map(section => (
+                  <div key={section.title} className="space-y-3">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {section.title}
+                      </p>
+                      {section.description && (
+                        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                          {section.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-1.5">
+                      {section.items?.map(item => (
+                        <Link
+                          key={item.title}
+                          to={item.href}
+                          className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors"
+                        >
+                          {item.icon && (
+                            <span className="mt-0.5 text-primary">
+                              {item.icon}
+                            </span>
+                          )}
+                          <div>
+                            <p className="font-medium">{item.title}</p>
+                            {item.description && (
+                              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
