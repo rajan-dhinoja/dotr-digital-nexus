@@ -10,23 +10,39 @@ import {
   Code,
   Layout,
   Settings,
-  Zap
+  Zap,
+  LucideIcon
 } from "lucide-react";
 
 export interface MegaMenuLink {
   title: string;
   href: string;
   description?: string;
-  icon?: ReactNode;
+  iconName?: keyof typeof iconMap;
 }
 
 export interface MegaMenuSection {
   title: string;
   href?: string;
   description?: string;
-  icon?: ReactNode;
+  iconName?: keyof typeof iconMap;
   items?: MegaMenuLink[];
 }
+
+// Icon map for easy lookup
+export const iconMap = {
+  Globe,
+  Smartphone,
+  Palette,
+  Megaphone,
+  Shield,
+  Monitor,
+  ShoppingCart,
+  Code,
+  Layout,
+  Settings,
+  Zap,
+} as const;
 
 export interface MegaMenuDefinition {
   summaryTitle: string;
@@ -47,71 +63,71 @@ export const megaMenuConfig: Record<string, MegaMenuDefinition> = {
       {
         title: "Web Based Solutions",
         description: "Modern, secure and scalable web applications tailored to your business.",
-        icon: <Globe className="h-5 w-5" />,
+        iconName: "Globe",
         items: [
           {
             title: "Web Design & Development",
             href: "/services/web-design-development",
-            icon: <Layout className="h-4 w-4" />,
+            iconName: "Layout",
           },
           {
             title: "Custom CMS Development",
             href: "/services/custom-cms-development",
-            icon: <Code className="h-4 w-4" />,
+            iconName: "Code",
           },
           {
             title: "e‑Commerce Website Development",
             href: "/services/ecommerce-website-development",
-            icon: <ShoppingCart className="h-4 w-4" />,
+            iconName: "ShoppingCart",
           },
           {
             title: "Web Application Development",
             href: "/services/web-application-development",
-            icon: <Monitor className="h-4 w-4" />,
+            iconName: "Monitor",
           },
           {
             title: "Software Development",
             href: "/services/software-development",
-            icon: <Code className="h-4 w-4" />,
+            iconName: "Code",
           },
         ],
       },
       {
         title: "Digital Experience",
         description: "Delight your users with thoughtful, conversion‑focused experiences.",
-        icon: <Palette className="h-5 w-5" />,
+        iconName: "Palette",
         items: [
           {
             title: "UI/UX Design",
             href: "/services/ui-ux-design",
-            icon: <Palette className="h-4 w-4" />,
+            iconName: "Palette",
           },
           {
             title: "Website Optimization Services",
             href: "/services/website-optimization",
-            icon: <Zap className="h-4 w-4" />,
+            iconName: "Zap",
           },
           {
             title: "Digital Marketing",
             href: "/services/digital-marketing",
-            icon: <Megaphone className="h-4 w-4" />,
+            iconName: "Megaphone",
           },
         ],
       },
       {
         title: "Managed Solutions",
         description: "Reliable long‑term partnership to keep your systems running smoothly.",
-        icon: <Settings className="h-5 w-5" />,
+        iconName: "Settings",
         items: [
           {
             title: "Quality Assurance",
             href: "/services/quality-assurance",
-            icon: <Shield className="h-4 w-4" />,
+            iconName: "Shield",
           },
           {
             title: "Managed IT Services",
             href: "/services/managed-it-services",
-            icon: <Monitor className="h-4 w-4" />,
+            iconName: "Monitor",
           },
         ],
       },

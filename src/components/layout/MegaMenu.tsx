@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { megaMenuConfig, MegaMenuDefinition } from "@/config/megaMenu";
+import { megaMenuConfig, MegaMenuDefinition, iconMap } from "@/config/megaMenu";
 
 interface MegaMenuProps {
   label: string;
@@ -91,43 +91,56 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
 
               {/* Right columns */}
               <div className="p-6 md:p-8 grid gap-6 md:grid-cols-3">
-                {config.sections.map(section => (
-                  <div key={section.title} className="space-y-3">
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        {section.title}
-                      </p>
-                      {section.description && (
-                        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                          {section.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-1.5">
-                      {section.items?.map(item => (
-                        <Link
-                          key={item.title}
-                          to={item.href}
-                          className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors"
-                        >
-                          {item.icon && (
-                            <span className="mt-0.5 text-primary">
-                              {item.icon}
-                            </span>
+                {config.sections.map(section => {
+                  const SectionIcon = section.iconName ? iconMap[section.iconName] : null;
+                  return (
+                    <div key={section.title} className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        {SectionIcon && (
+                          <span className="text-primary mt-0.5 flex-shrink-0">
+                            <SectionIcon className="h-5 w-5" />
+                          </span>
+                        )}
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">
+                            {section.title}
+                          </p>
+                          {section.description && (
+                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                              {section.description}
+                            </p>
                           )}
-                          <div>
-                            <p className="font-medium">{item.title}</p>
-                            {item.description && (
-                              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
-                        </Link>
-                      ))}
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        {section.items?.map(item => {
+                          const ItemIcon = item.iconName ? iconMap[item.iconName] : null;
+                          return (
+                            <Link
+                              key={item.title}
+                              to={item.href}
+                              className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors"
+                            >
+                              {ItemIcon && (
+                                <span className="mt-0.5 text-primary flex-shrink-0">
+                                  <ItemIcon className="h-4 w-4" />
+                                </span>
+                              )}
+                              <div>
+                                <p className="font-medium">{item.title}</p>
+                                {item.description && (
+                                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                    {item.description}
+                                  </p>
+                                )}
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
