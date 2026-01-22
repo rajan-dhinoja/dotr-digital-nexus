@@ -64,7 +64,13 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
       </button>
 
       {open && (
-        <div className="absolute left-1/2 top-full z-40 mt-4 w-screen max-w-5xl -translate-x-1/2">
+        <div 
+          className="absolute left-1/2 top-full z-[60] pt-4 w-screen max-w-5xl -translate-x-1/2"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          {/* Invisible bridge to prevent mouse from leaving hover area */}
+          <div className="absolute top-0 left-0 right-0 h-4" />
           <div className="overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
             <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
               {/* Left summary column */}
