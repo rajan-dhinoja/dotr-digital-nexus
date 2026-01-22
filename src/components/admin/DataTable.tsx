@@ -21,6 +21,7 @@ interface DataTableProps<T> {
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   loading?: boolean;
+  actions?: (item: T) => React.ReactNode;
 }
 
 export function DataTable<T extends { id: string }>({
@@ -29,6 +30,7 @@ export function DataTable<T extends { id: string }>({
   onEdit,
   onDelete,
   loading,
+  actions,
 }: DataTableProps<T>) {
   if (loading) {
     return <div className="text-center py-8 text-foreground/70">Loading...</div>;
@@ -45,7 +47,7 @@ export function DataTable<T extends { id: string }>({
           {columns.map((col) => (
             <TableHead key={String(col.key)}>{col.label}</TableHead>
           ))}
-          {(onEdit || onDelete) && <TableHead className="w-24">Actions</TableHead>}
+          {(onEdit || onDelete || actions) && <TableHead className="w-24">Actions</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -56,7 +58,7 @@ export function DataTable<T extends { id: string }>({
                 {col.render ? col.render(item) : String(item[col.key as keyof T] ?? '')}
               </TableCell>
             ))}
-            {(onEdit || onDelete) && (
+            {(onEdit || onDelete || actions) && (
               <TableCell>
                 <div className="flex gap-2">
                   {onEdit && (
@@ -64,6 +66,7 @@ export function DataTable<T extends { id: string }>({
                       <Pencil className="h-4 w-4" />
                     </Button>
                   )}
+                  {actions && actions(item)}
                   {onDelete && (
                     <Button variant="ghost" size="icon" onClick={() => onDelete(item)}>
                       <Trash2 className="h-4 w-4 text-destructive" />

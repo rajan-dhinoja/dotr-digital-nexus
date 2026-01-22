@@ -4,12 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
@@ -21,6 +23,9 @@ export default function AdminTeam() {
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [imageUrl, setImageUrl] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [activeTab, setActiveTab] = useState('form');
+  const [jsonIsValid, setJsonIsValid] = useState(true);
+  const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -68,33 +73,89 @@ export default function AdminTeam() {
     setEditing(member);
     setImageUrl(member.image_url ?? '');
     setIsFeatured(member.is_featured ?? false);
+    
+    // Load JSON data from member
+    const socialLinks = (member.social_links as Record<string, unknown>) || {};
+    setJsonData({
+      name: member.name || '',
+      role: member.role || '',
+      bio: member.bio || '',
+      email: member.email || '',
+      image_url: member.image_url || '',
+      linkedin: socialLinks.linkedin || member.linkedin_url || '',
+      twitter: socialLinks.twitter || member.twitter_url || '',
+      github: socialLinks.github || member.github_url || '',
+      facebook: socialLinks.facebook || '',
+      instagram: socialLinks.instagram || '',
+      youtube: socialLinks.youtube || '',
+      website: socialLinks.website || '',
+      is_featured: member.is_featured || false,
+      display_order: member.display_order || 0,
+    });
+    
+    setActiveTab('form');
     setOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
     
-    const name = form.get('name')?.toString() ?? '';
-    const role = form.get('role')?.toString() ?? '';
-
-    if (!name || !role) {
-      toast({ title: 'Validation Error', description: 'Name and role are required', variant: 'destructive' });
+    // If JSON view is active and invalid, prevent save
+    if (activeTab === 'json' && !jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
       return;
     }
 
-    const data: Partial<TeamMember> = {
-      name,
-      role,
-      bio: form.get('bio')?.toString() || null,
-      email: form.get('email')?.toString() || null,
-      image_url: imageUrl || null,
-      linkedin_url: form.get('linkedin_url')?.toString() || null,
-      twitter_url: form.get('twitter_url')?.toString() || null,
-      github_url: form.get('github_url')?.toString() || null,
-      is_featured: isFeatured,
-      display_order: Number(form.get('display_order')) || 0,
-    };
+    // Use JSON data if JSON tab is active, otherwise use form data
+    const data: Partial<TeamMember> = activeTab === 'json' ? {
+      name: (jsonData.name as string) || '',
+      role: (jsonData.role as string) || '',
+      bio: (jsonData.bio as string) || null,
+      email: (jsonData.email as string) || null,
+      image_url: (jsonData.image_url as string) || null,
+      linkedin_url: (jsonData.linkedin as string) || null,
+      twitter_url: (jsonData.twitter as string) || null,
+      github_url: (jsonData.github as string) || null,
+      social_links: {
+        linkedin: jsonData.linkedin || '',
+        twitter: jsonData.twitter || '',
+        github: jsonData.github || '',
+        facebook: jsonData.facebook || '',
+        instagram: jsonData.instagram || '',
+        youtube: jsonData.youtube || '',
+        website: jsonData.website || '',
+      } as any,
+      is_featured: (jsonData.is_featured as boolean) || false,
+      display_order: Number(jsonData.display_order) || 0,
+    } : (() => {
+      const form = new FormData(e.currentTarget);
+      const name = form.get('name')?.toString() ?? '';
+      const role = form.get('role')?.toString() ?? '';
+
+      if (!name || !role) {
+        toast({ title: 'Validation Error', description: 'Name and role are required', variant: 'destructive' });
+        return null;
+      }
+
+      return {
+        name,
+        role,
+        bio: form.get('bio')?.toString() || null,
+        email: form.get('email')?.toString() || null,
+        image_url: imageUrl || null,
+        linkedin_url: form.get('linkedin_url')?.toString() || null,
+        twitter_url: form.get('twitter_url')?.toString() || null,
+        github_url: form.get('github_url')?.toString() || null,
+        is_featured: isFeatured,
+        display_order: Number(form.get('display_order')) || 0,
+      };
+    })();
+
+    if (!data) return;
 
     saveMutation.mutate(data);
   };
@@ -116,7 +177,14 @@ export default function AdminTeam() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Team Members</h1>
-        <Button onClick={() => { setEditing(null); setImageUrl(''); setIsFeatured(false); setOpen(true); }}>
+        <Button onClick={() => { 
+          setEditing(null); 
+          setImageUrl(''); 
+          setIsFeatured(false); 
+          setJsonData({});
+          setActiveTab('form');
+          setOpen(true); 
+        }}>
           <Plus className="h-4 w-4 mr-2" /> Add Member
         </Button>
       </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +29,10 @@ export default function AdminSettings() {
       (data || []).forEach((s) => {
         settingsMap[s.key] = s.value as SettingValue;
       });
+      
+      // Initialize JSON data with all settings
+      setAllSettingsJson(settingsMap);
+      
       return settingsMap;
     },
   });
@@ -60,6 +65,34 @@ export default function AdminSettings() {
     saveMutation.mutate({ key, value });
   };
 
+  const handleSaveAllJson = async () => {
+    if (!jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Save each setting key from JSON
+      const savePromises = Object.entries(allSettingsJson).map(([key, value]) => {
+        return saveMutation.mutateAsync({ key, value: value as SettingValue });
+      });
+
+      await Promise.all(savePromises);
+      toast({ title: 'All settings saved' });
+      queryClient.invalidateQueries({ queryKey: ['site-settings'] });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to save settings',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (isLoading) {
     return <AdminLayout><div className="text-center py-12">Loading settings...</div></AdminLayout>;
   }
@@ -71,13 +104,14 @@ export default function AdminSettings() {
         <p className="text-muted-foreground">Configure your website settings</p>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           <TabsTrigger value="social">Social</TabsTrigger>
           <TabsTrigger value="contact">Contact</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
+          <TabsTrigger value="json">JSON</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general">
@@ -240,6 +274,32 @@ export default function AdminSettings() {
                   <Save className="h-4 w-4 mr-2" /> Save
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="json">
+          <Card>
+            <CardHeader>
+              <CardTitle>All Settings (JSON)</CardTitle>
+              <CardDescription>Edit all site settings as JSON. Changes will be saved to their respective setting keys.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <EntityJsonEditor
+                entityType="site_setting"
+                value={allSettingsJson}
+                onChange={(value) => setAllSettingsJson(value)}
+                onValidationChange={setJsonIsValid}
+                fileName="site-settings"
+              />
+              <div className="mt-4">
+                <Button 
+                  onClick={handleSaveAllJson}
+                  disabled={saveMutation.isPending || !jsonIsValid}
+                >
+                  <Save className="h-4 w-4 mr-2" /> Save All Settings
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

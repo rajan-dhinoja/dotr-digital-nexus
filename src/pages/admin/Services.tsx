@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, X, GripVertical } from 'lucide-react';
+import { useEntityImportExport } from '@/hooks/useEntityImportExport';
+import { Plus, X, GripVertical, Download, Upload as UploadIcon } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Service = Tables<'services'>;
@@ -53,8 +55,17 @@ export default function AdminServices() {
   const [techInput, setTechInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [activeTab, setActiveTab] = useState('basic');
+  const [jsonIsValid, setJsonIsValid] = useState(true);
+  const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
+  const importFileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { exportSingle, exportBulk, importFromFile } = useEntityImportExport({
+    entityType: 'service',
+    tableName: 'services',
+    queryKey: ['admin-services'],
+  });
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['admin-services'],
@@ -91,6 +102,23 @@ export default function AdminServices() {
     setTechnologies(Array.isArray(techs) ? techs as string[] : []);
     setImageUrl(service.image_url ?? '');
     setIsFeatured(service.is_featured ?? false);
+    
+    // Load JSON data from service
+    setJsonData({
+      name: service.name || '',
+      slug: service.slug || '',
+      tagline: service.tagline || '',
+      description: service.description || '',
+      icon: service.icon || '',
+      image_url: service.image_url || '',
+      features: (service.features as unknown as Feature[]) || [],
+      process_steps: (service.process_steps as unknown as ProcessStep[]) || [],
+      faqs: (service.faqs as unknown as FAQ[]) || [],
+      technologies: Array.isArray(techs) ? techs as string[] : [],
+      pricing: (service.pricing as unknown) || [],
+    });
+    
+    setActiveTab('basic');
     setOpen(true);
   };
 
@@ -125,8 +153,71 @@ export default function AdminServices() {
     },
   });
 
+  const handleExportService = (service: Service) => {
+    const serviceData = {
+      name: service.name,
+      slug: service.slug,
+      category_id: service.category_id,
+      tagline: service.tagline,
+      description: service.description,
+      icon: service.icon,
+      image_url: service.image_url,
+      is_featured: service.is_featured,
+      display_order: service.display_order,
+      features: service.features,
+      process_steps: service.process_steps,
+      faqs: service.faqs,
+      technologies: service.technologies,
+      pricing: service.pricing,
+    };
+    exportSingle(serviceData, service.id);
+  };
+
+  const handleExportAll = () => {
+    const servicesData = services.map((service) => ({
+      name: service.name,
+      slug: service.slug,
+      category_id: service.category_id,
+      tagline: service.tagline,
+      description: service.description,
+      icon: service.icon,
+      image_url: service.image_url,
+      is_featured: service.is_featured,
+      display_order: service.display_order,
+      features: service.features,
+      process_steps: service.process_steps,
+      faqs: service.faqs,
+      technologies: service.technologies,
+      pricing: service.pricing,
+    }));
+    exportBulk(servicesData);
+  };
+
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    await importFromFile(file, { onConflict: 'overwrite', createNew: true });
+    
+    // Reset file input
+    if (importFileRef.current) {
+      importFileRef.current.value = '';
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // If JSON view is active and invalid, prevent save
+    if (activeTab === 'json' && !jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const form = new FormData(e.currentTarget);
     
     const name = form.get('name')?.toString() ?? '';
@@ -138,7 +229,23 @@ export default function AdminServices() {
       return;
     }
 
-    const data: Partial<Service> = {
+    // Use JSON data if JSON tab is active, otherwise use form data
+    const data: Partial<Service> = activeTab === 'json' ? {
+      name: (jsonData.name as string) || '',
+      slug: (jsonData.slug as string) || '',
+      category_id,
+      tagline: (jsonData.tagline as string) || null,
+      description: (jsonData.description as string) || null,
+      icon: (jsonData.icon as string) || null,
+      image_url: (jsonData.image_url as string) || null,
+      is_featured: isFeatured,
+      display_order: Number(form.get('display_order')) || 0,
+      features: (jsonData.features as unknown) || [],
+      process_steps: (jsonData.process_steps as unknown) || [],
+      faqs: (jsonData.faqs as unknown) || [],
+      technologies: (jsonData.technologies as unknown) || [],
+      pricing: (jsonData.pricing as unknown) || null,
+    } : {
       name,
       slug,
       category_id,
@@ -226,9 +333,37 @@ export default function AdminServices() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Services</h1>
-        <Button onClick={() => { setEditing(null); resetForm(); setOpen(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Service
-        </Button>
+        <div className="flex gap-2">
+          <input
+            ref={importFileRef}
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+            className="hidden"
+          />
+          <Button
+            variant="outline"
+            onClick={() => importFileRef.current?.click()}
+          >
+            <UploadIcon className="h-4 w-4 mr-2" /> Import
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleExportAll}
+            disabled={services.length === 0}
+          >
+            <Download className="h-4 w-4 mr-2" /> Export All
+          </Button>
+          <Button onClick={() => { 
+            setEditing(null); 
+            resetForm(); 
+            setJsonData({});
+            setActiveTab('basic');
+            setOpen(true); 
+          }}>
+            <Plus className="h-4 w-4 mr-2" /> Add Service
+          </Button>
+        </div>
       </div>
 
       <DataTable
@@ -237,6 +372,15 @@ export default function AdminServices() {
         loading={isLoading}
         onEdit={(s) => loadEditingData(s)}
         onDelete={(s) => deleteMutation.mutate(s.id)}
+        actions={(s) => (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleExportService(s)}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        )}
       />
 
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditing(null); resetForm(); }}}>
@@ -245,12 +389,13 @@ export default function AdminServices() {
             <DialogTitle>{editing ? 'Edit Service' : 'Add Service'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
-            <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="features">Features</TabsTrigger>
                 <TabsTrigger value="process">Process</TabsTrigger>
                 <TabsTrigger value="faqs">FAQs</TabsTrigger>
+                <TabsTrigger value="json">JSON</TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-4 mt-4">
@@ -487,10 +632,21 @@ export default function AdminServices() {
                   <p className="text-foreground/70 text-center py-8">No FAQs added yet. Click "Add FAQ" to start.</p>
                 )}
               </TabsContent>
+
+              <TabsContent value="json" className="mt-4">
+                <EntityJsonEditor
+                  entityType="service"
+                  entityId={editing?.id}
+                  value={jsonData}
+                  onChange={(value) => setJsonData(value)}
+                  onValidationChange={setJsonIsValid}
+                  fileName={editing?.name || 'service'}
+                />
+              </TabsContent>
             </Tabs>
 
             <div className="mt-6">
-              <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+              <Button type="submit" className="w-full" disabled={saveMutation.isPending || (activeTab === 'json' && !jsonIsValid)}>
                 {saveMutation.isPending ? 'Saving...' : 'Save Service'}
               </Button>
             </div>

@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
 import { VisibilityToggle, VisibilityBadge } from '@/components/admin/VisibilityToggle';
+import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useActivityLog } from '@/hooks/useActivityLog';
+import { useEntityFormSync } from '@/hooks/useEntityFormSync';
 import { Plus } from 'lucide-react';
 
 interface Page {
@@ -46,6 +48,9 @@ export default function AdminPages() {
   const [editing, setEditing] = useState<Page | null>(null);
   const [isActive, setIsActive] = useState(true);
   const [showInNav, setShowInNav] = useState(true);
+  const [activeTab, setActiveTab] = useState('general');
+  const [jsonIsValid, setJsonIsValid] = useState(true);
+  const [jsonContent, setJsonContent] = useState<Record<string, unknown>>({});
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
   const queryClient = useQueryClient();
@@ -120,11 +125,24 @@ export default function AdminPages() {
     setEditing(page);
     setIsActive(page.is_active ?? true);
     setShowInNav(page.show_in_nav ?? true);
+    setJsonContent((page.content as Record<string, unknown>) || {});
+    setActiveTab('general');
     setOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // If JSON view is active and invalid, prevent save
+    if (activeTab === 'json' && !jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const form = new FormData(e.currentTarget);
     
     const title = form.get('title')?.toString() ?? '';
@@ -146,6 +164,7 @@ export default function AdminPages() {
       is_active: isActive,
       show_in_nav: showInNav,
       display_order: Number(form.get('display_order')) || 0,
+      content: activeTab === 'json' ? jsonContent : (editing?.content || {}),
     };
 
     saveMutation.mutate(data);
@@ -184,7 +203,14 @@ export default function AdminPages() {
           <h1 className="text-2xl font-bold">Pages</h1>
           <p className="text-muted-foreground">Manage website pages and their visibility</p>
         </div>
-        <Button onClick={() => { setEditing(null); setIsActive(true); setShowInNav(true); setOpen(true); }}>
+        <Button onClick={() => { 
+          setEditing(null); 
+          setIsActive(true); 
+          setShowInNav(true); 
+          setJsonContent({});
+          setActiveTab('general');
+          setOpen(true); 
+        }}>
           <Plus className="h-4 w-4 mr-2" /> Add Page
         </Button>
       </div>
@@ -203,10 +229,11 @@ export default function AdminPages() {
             <DialogTitle>{editing ? 'Edit Page' : 'Add Page'}</DialogTitle>
           </DialogHeader>
           
-          <Tabs defaultValue="general">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
+              <TabsTrigger value="json">JSON</TabsTrigger>
             </TabsList>
             
             <form onSubmit={handleSubmit}>
@@ -290,8 +317,19 @@ export default function AdminPages() {
                 </div>
               </TabsContent>
 
+              <TabsContent value="json" className="mt-4">
+                <EntityJsonEditor
+                  entityType="page"
+                  entityId={editing?.id}
+                  value={jsonContent}
+                  onChange={(value) => setJsonContent(value)}
+                  onValidationChange={setJsonIsValid}
+                  fileName={editing?.title || 'page'}
+                />
+              </TabsContent>
+
               <div className="mt-6">
-                <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+                <Button type="submit" className="w-full" disabled={saveMutation.isPending || (activeTab === 'json' && !jsonIsValid)}>
                   {saveMutation.isPending ? 'Saving...' : 'Save'}
                 </Button>
               </div>

@@ -5,6 +5,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DataTable } from '@/components/admin/DataTable';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
+import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +24,9 @@ export default function AdminProjects() {
   const [editing, setEditing] = useState<Project | null>(null);
   const [coverImage, setCoverImage] = useState<string>('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
+  const [jsonIsValid, setJsonIsValid] = useState(true);
+  const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -70,34 +74,75 @@ export default function AdminProjects() {
     setEditing(project);
     setCoverImage(project.cover_image ?? '');
     setIsFeatured(project.is_featured ?? false);
+    setJsonData({
+      title: project.title || '',
+      slug: project.slug || '',
+      client: project.client || '',
+      description: project.description || '',
+      challenge: project.challenge || '',
+      solution: project.solution || '',
+      results: project.results || '',
+      project_url: project.project_url || '',
+      cover_image: project.cover_image || '',
+      is_featured: project.is_featured || false,
+      display_order: project.display_order || 0,
+    });
+    setActiveTab('details');
     setOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
     
-    const title = form.get('title')?.toString() ?? '';
-    const slug = form.get('slug')?.toString() ?? '';
-
-    if (!title || !slug) {
-      toast({ title: 'Validation Error', description: 'Title and slug are required', variant: 'destructive' });
+    // If JSON view is active and invalid, prevent save
+    if (activeTab === 'json' && !jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
       return;
     }
 
-    const data: Partial<Project> = {
-      title,
-      slug,
-      client: form.get('client')?.toString() || null,
-      description: form.get('description')?.toString() || null,
-      challenge: form.get('challenge')?.toString() || null,
-      solution: form.get('solution')?.toString() || null,
-      results: form.get('results')?.toString() || null,
-      project_url: form.get('project_url')?.toString() || null,
-      cover_image: coverImage || null,
-      is_featured: isFeatured,
-      display_order: Number(form.get('display_order')) || 0,
-    };
+    // Use JSON data if JSON tab is active, otherwise use form data
+    const data: Partial<Project> = activeTab === 'json' ? {
+      title: (jsonData.title as string) || '',
+      slug: (jsonData.slug as string) || '',
+      client: (jsonData.client as string) || null,
+      description: (jsonData.description as string) || null,
+      challenge: (jsonData.challenge as string) || null,
+      solution: (jsonData.solution as string) || null,
+      results: (jsonData.results as string) || null,
+      project_url: (jsonData.project_url as string) || null,
+      cover_image: (jsonData.cover_image as string) || null,
+      is_featured: (jsonData.is_featured as boolean) || false,
+      display_order: Number(jsonData.display_order) || 0,
+    } : (() => {
+      const form = new FormData(e.currentTarget);
+      const title = form.get('title')?.toString() ?? '';
+      const slug = form.get('slug')?.toString() ?? '';
+
+      if (!title || !slug) {
+        toast({ title: 'Validation Error', description: 'Title and slug are required', variant: 'destructive' });
+        return null;
+      }
+
+      return {
+        title,
+        slug,
+        client: form.get('client')?.toString() || null,
+        description: form.get('description')?.toString() || null,
+        challenge: form.get('challenge')?.toString() || null,
+        solution: form.get('solution')?.toString() || null,
+        results: form.get('results')?.toString() || null,
+        project_url: form.get('project_url')?.toString() || null,
+        cover_image: coverImage || null,
+        is_featured: isFeatured,
+        display_order: Number(form.get('display_order')) || 0,
+      };
+    })();
+
+    if (!data) return;
 
     saveMutation.mutate(data);
   };
@@ -119,7 +164,14 @@ export default function AdminProjects() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <Button onClick={() => { setEditing(null); setCoverImage(''); setIsFeatured(false); setOpen(true); }}>
+        <Button onClick={() => { 
+          setEditing(null); 
+          setCoverImage(''); 
+          setIsFeatured(false); 
+          setJsonData({});
+          setActiveTab('details');
+          setOpen(true); 
+        }}>
           <Plus className="h-4 w-4 mr-2" /> Add Project
         </Button>
       </div>
@@ -138,10 +190,11 @@ export default function AdminProjects() {
             <DialogTitle>{editing ? 'Edit Project' : 'Add Project'}</DialogTitle>
           </DialogHeader>
           
-          <Tabs defaultValue="details">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="gallery" disabled={!editing}>Gallery</TabsTrigger>
+              <TabsTrigger value="json">JSON</TabsTrigger>
             </TabsList>
             
             <TabsContent value="details">
@@ -208,6 +261,17 @@ export default function AdminProjects() {
             
             <TabsContent value="gallery">
               {editing && <ProjectGalleryManager projectId={editing.id} />}
+            </TabsContent>
+
+            <TabsContent value="json" className="mt-4">
+              <EntityJsonEditor
+                entityType="project"
+                entityId={editing?.id}
+                value={jsonData}
+                onChange={(value) => setJsonData(value)}
+                onValidationChange={setJsonIsValid}
+                fileName={editing?.title || 'project'}
+              />
             </TabsContent>
           </Tabs>
         </DialogContent>
