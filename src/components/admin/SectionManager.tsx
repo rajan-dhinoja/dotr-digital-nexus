@@ -445,7 +445,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                   <SectionContentEditor section={editingSection} />
                 </TabsContent>
                 
-                <TabsContent value="json" className="flex-1 min-h-0 overflow-hidden mt-4">
+                <TabsContent value="json" className="flex-1 min-h-0 overflow-y-auto mt-4 pr-2">
                   <SectionJsonEditor
                     section={editingSection}
                     sectionType={getSectionTypeInfo(editingSection.section_type)}

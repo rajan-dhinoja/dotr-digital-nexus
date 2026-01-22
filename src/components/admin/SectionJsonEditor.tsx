@@ -297,7 +297,7 @@ export function SectionJsonEditor({
   }, [validationResult.valid, parseError, jsonValue, onContentChange, isUserEditing]);
 
   return (
-    <div className="flex flex-col h-full min-h-0 space-y-4">
+    <div className="flex flex-col space-y-4">
       {/* Toolbar */}
       <div className="flex items-center justify-between flex-wrap gap-2 flex-shrink-0">
         <div className="flex items-center gap-2 flex-wrap">
@@ -365,14 +365,14 @@ export function SectionJsonEditor({
       </div>
 
       {/* Editor and Schema Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] xl:grid-cols-[60%_40%] gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] xl:grid-cols-[60%_40%] gap-4">
         {/* JSON Editor */}
-        <Card className="flex flex-col min-h-0">
+        <Card className="flex flex-col">
           <CardHeader className="pb-2 flex-shrink-0">
             <CardTitle className="text-sm">JSON Editor</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex-1 min-h-0 flex flex-col">
-            <div className="flex-1 min-h-0 border rounded-md overflow-hidden">
+          <CardContent className="p-0 flex flex-col">
+            <div className="h-[500px] border rounded-md overflow-hidden">
               <Editor
                 height="100%"
                 language="json"
@@ -427,12 +427,12 @@ export function SectionJsonEditor({
         </Card>
 
         {/* Schema Example Panel */}
-        <Card className="flex flex-col min-h-0">
+        <Card className="flex flex-col">
           <CardHeader className="pb-2 flex-shrink-0">
             <CardTitle className="text-sm">Example JSON Structure</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex-1 min-h-0 flex flex-col">
-            <ScrollArea className="flex-1 min-h-0">
+          <CardContent className="p-0">
+            <ScrollArea className="h-[500px]">
               <div className="p-4">
                 {schemaDef ? (
                   <div className="space-y-4">
