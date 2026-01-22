@@ -297,10 +297,10 @@ export function SectionJsonEditor({
   }, [validationResult.valid, parseError, jsonValue, onContentChange, isUserEditing]);
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col h-full min-h-0 space-y-4">
       {/* Toolbar */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-wrap">
           <input
             ref={fileInputRef}
             type="file"
@@ -365,14 +365,14 @@ export function SectionJsonEditor({
       </div>
 
       {/* Editor and Schema Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 flex-1 min-h-0">
         {/* JSON Editor */}
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="flex flex-col min-h-0">
+          <CardHeader className="pb-2 flex-shrink-0">
             <CardTitle className="text-sm">JSON Editor</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="h-[500px] border rounded-md overflow-hidden">
+          <CardContent className="p-0 flex-1 min-h-0 flex flex-col">
+            <div className="flex-1 min-h-0 border rounded-md overflow-hidden">
               <Editor
                 height="100%"
                 language="json"
@@ -404,7 +404,7 @@ export function SectionJsonEditor({
             
             {/* Parse Error Display */}
             {parseError && (
-              <div className="p-3 bg-red-50 dark:bg-red-950 border-t border-red-200 dark:border-red-800">
+              <div className="p-3 bg-red-50 dark:bg-red-950 border-t border-red-200 dark:border-red-800 flex-shrink-0">
                 <div className="flex items-start gap-2">
                   <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 mt-0.5" />
                   <div className="flex-1">
@@ -422,12 +422,12 @@ export function SectionJsonEditor({
         </Card>
 
         {/* Schema Example Panel */}
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="flex flex-col min-h-0">
+          <CardHeader className="pb-2 flex-shrink-0">
             <CardTitle className="text-sm">Example JSON Structure</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[500px]">
+          <CardContent className="p-0 flex-1 min-h-0 flex flex-col">
+            <ScrollArea className="flex-1 min-h-0">
               <div className="p-4">
                 {schemaDef ? (
                   <div className="space-y-4">

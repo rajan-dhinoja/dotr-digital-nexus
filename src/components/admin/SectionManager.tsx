@@ -406,15 +406,15 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
       {/* Edit Section Dialog */}
       <Dialog open={!!editingSection} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="max-w-[95vw] sm:max-w-3xl lg:max-w-5xl max-h-[95vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
             <DialogTitle>
               {editingSection?.id ? 'Edit' : 'Add'} {getSectionTypeInfo(editingSection?.section_type || '')?.name || 'Section'}
             </DialogTitle>
           </DialogHeader>
           {editingSection && (
-            <form onSubmit={handleSave} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0 px-6 pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-shrink-0 mb-4">
                 <div className="space-y-2">
                   <Label>Section Title</Label>
                   <Input 
@@ -434,18 +434,18 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
               </div>
 
               {/* Tabs for Form/JSON views */}
-              <Tabs value={activeTab} onValueChange={handleTabChange}>
-                <TabsList className="grid w-full grid-cols-2">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col flex-1 min-h-0">
+                <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
                   <TabsTrigger value="form">Form View</TabsTrigger>
                   <TabsTrigger value="json">JSON View</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="form" className="space-y-4 mt-4">
+                <TabsContent value="form" className="flex-1 min-h-0 overflow-y-auto mt-4 pr-2 space-y-4">
                   {/* Content fields based on section type */}
                   <SectionContentEditor section={editingSection} />
                 </TabsContent>
                 
-                <TabsContent value="json" className="space-y-4 mt-4">
+                <TabsContent value="json" className="flex-1 min-h-0 overflow-hidden mt-4">
                   <SectionJsonEditor
                     section={editingSection}
                     sectionType={getSectionTypeInfo(editingSection.section_type)}
@@ -455,24 +455,24 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                 </TabsContent>
               </Tabs>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_active"
-                  checked={editingSection.is_active}
-                  onCheckedChange={(checked) => 
-                    setEditingSection({ ...editingSection, is_active: checked })
-                  }
-                />
-                <Label htmlFor="is_active">Active</Label>
+              <div className="flex items-center justify-between gap-4 flex-shrink-0 mt-4 pt-4 border-t">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_active"
+                    checked={editingSection.is_active}
+                    onCheckedChange={(checked) => 
+                      setEditingSection({ ...editingSection, is_active: checked })
+                    }
+                  />
+                  <Label htmlFor="is_active">Active</Label>
+                </div>
+                <Button 
+                  type="submit" 
+                  disabled={saveMutation.isPending || (activeTab === 'json' && !jsonIsValid)}
+                >
+                  {saveMutation.isPending ? 'Saving...' : 'Save Section'}
+                </Button>
               </div>
-
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={saveMutation.isPending || (activeTab === 'json' && !jsonIsValid)}
-              >
-                {saveMutation.isPending ? 'Saving...' : 'Save Section'}
-              </Button>
             </form>
           )}
         </DialogContent>
