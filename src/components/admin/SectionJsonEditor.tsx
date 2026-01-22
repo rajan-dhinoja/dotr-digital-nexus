@@ -365,7 +365,7 @@ export function SectionJsonEditor({
       </div>
 
       {/* Editor and Schema Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] xl:grid-cols-[60%_40%] gap-4 flex-1 min-h-0">
         {/* JSON Editor */}
         <Card className="flex flex-col min-h-0">
           <CardHeader className="pb-2 flex-shrink-0">
@@ -398,6 +398,11 @@ export function SectionJsonEditor({
                   insertSpaces: true,
                   renderWhitespace: 'selection',
                   smoothScrolling: true,
+                  scrollbar: {
+                    vertical: 'auto',
+                    horizontal: 'auto',
+                    useShadows: false,
+                  },
                 }}
               />
             </div>
@@ -436,7 +441,7 @@ export function SectionJsonEditor({
                         This is an example JSON structure for this section type. Use this as a reference when writing or uploading JSON data. All fields shown are based on the section schema.
                       </p>
                       <div className="relative">
-                        <pre className="text-xs bg-muted/30 border border-border p-3 rounded-md overflow-x-auto font-mono text-foreground dark:bg-muted/20">
+                        <pre className="text-xs bg-muted/30 border border-border p-3 rounded-md overflow-x-auto font-mono text-foreground dark:bg-muted/20 whitespace-pre-wrap break-words max-w-full">
                           {JSON.stringify(exampleJson, null, 2)}
                         </pre>
                         <Button

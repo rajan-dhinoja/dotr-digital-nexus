@@ -406,7 +406,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
       {/* Edit Section Dialog */}
       <Dialog open={!!editingSection} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="max-w-[95vw] sm:max-w-3xl lg:max-w-5xl max-h-[95vh] flex flex-col p-0 gap-0">
+        <DialogContent className={`max-w-[95vw] ${activeTab === 'json' ? 'sm:max-w-5xl lg:max-w-7xl' : 'sm:max-w-3xl lg:max-w-5xl'} max-h-[95vh] flex flex-col p-0 gap-0`}>
           <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
             <DialogTitle>
               {editingSection?.id ? 'Edit' : 'Add'} {getSectionTypeInfo(editingSection?.section_type || '')?.name || 'Section'}
