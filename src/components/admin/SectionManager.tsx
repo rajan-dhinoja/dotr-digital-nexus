@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useSectionClipboard } from '@/contexts/SectionClipboardContext';
 import { 
@@ -18,6 +19,7 @@ import {
   PageSection,
   SectionType 
 } from '@/hooks/usePageSections';
+import { SectionJsonEditor } from '@/components/admin/SectionJsonEditor';
 
 interface SectionManagerProps {
   pageType: string;
@@ -31,6 +33,8 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
   const [editingSection, setEditingSection] = useState<PageSection | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedSectionType, setSelectedSectionType] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'form' | 'json'>('form');
+  const [jsonIsValid, setJsonIsValid] = useState(true);
 
   const { data: sectionTypes = [] } = useSectionTypes(pageType);
   const { data: sections = [], isLoading } = useAdminPageSections(pageType, entityId);
@@ -83,6 +87,16 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!editingSection) return;
+
+    // If JSON view is active and invalid, prevent save
+    if (activeTab === 'json' && !jsonIsValid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix JSON validation errors before saving',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const contentItemsStr = formData.get('content_items')?.toString() || '[]';
@@ -139,11 +153,42 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
       onSuccess: () => {
         toast({ title: editingSection.id ? 'Section updated' : 'Section added' });
         setEditingSection(null);
+        setActiveTab('form'); // Reset to form view
       },
       onError: (error: Error) => {
         toast({ title: 'Error', description: error.message, variant: 'destructive' });
       },
     });
+  };
+
+  // Handle JSON content change from JSON editor
+  const handleJsonContentChange = (content: Record<string, unknown>) => {
+    if (!editingSection) return;
+    
+    setEditingSection({
+      ...editingSection,
+      content: content as PageSection['content'],
+    });
+  };
+
+  // Sync form data to JSON when switching to JSON tab
+  const handleTabChange = (value: string) => {
+    if (value === 'json' && editingSection) {
+      // When switching to JSON tab, we need to ensure JSON editor has latest form data
+      // The JSON editor already reads from section.content, so this should be fine
+      // But we trigger a re-render by updating the section
+      setEditingSection({ ...editingSection });
+    }
+    setActiveTab(value as 'form' | 'json');
+  };
+
+  // Reset tab when opening/closing dialog
+  const handleDialogOpenChange = (open: boolean) => {
+    if (!open) {
+      setEditingSection(null);
+      setActiveTab('form');
+      setJsonIsValid(true);
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -360,8 +405,8 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
       </Dialog>
 
       {/* Edit Section Dialog */}
-      <Dialog open={!!editingSection} onOpenChange={() => setEditingSection(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={!!editingSection} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingSection?.id ? 'Edit' : 'Add'} {getSectionTypeInfo(editingSection?.section_type || '')?.name || 'Section'}
@@ -388,8 +433,27 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                 </div>
               </div>
 
-              {/* Content fields based on section type */}
-              <SectionContentEditor section={editingSection} />
+              {/* Tabs for Form/JSON views */}
+              <Tabs value={activeTab} onValueChange={handleTabChange}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="form">Form View</TabsTrigger>
+                  <TabsTrigger value="json">JSON View</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="form" className="space-y-4 mt-4">
+                  {/* Content fields based on section type */}
+                  <SectionContentEditor section={editingSection} />
+                </TabsContent>
+                
+                <TabsContent value="json" className="space-y-4 mt-4">
+                  <SectionJsonEditor
+                    section={editingSection}
+                    sectionType={getSectionTypeInfo(editingSection.section_type)}
+                    onContentChange={handleJsonContentChange}
+                    onValidationChange={setJsonIsValid}
+                  />
+                </TabsContent>
+              </Tabs>
 
               <div className="flex items-center space-x-2">
                 <Switch
@@ -402,7 +466,11 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                 <Label htmlFor="is_active">Active</Label>
               </div>
 
-              <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={saveMutation.isPending || (activeTab === 'json' && !jsonIsValid)}
+              >
                 {saveMutation.isPending ? 'Saving...' : 'Save Section'}
               </Button>
             </form>
