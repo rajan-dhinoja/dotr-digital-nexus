@@ -433,7 +433,7 @@ export function SectionJsonEditor({
                         This is an example JSON structure for this section type. Use this as a reference when writing or uploading JSON data. All fields shown are based on the section schema.
                       </p>
                       <div className="relative">
-                        <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto border font-mono">
+                        <pre className="text-xs bg-card border border-border p-3 rounded-md overflow-x-auto font-mono text-foreground">
                           {JSON.stringify(exampleJson, null, 2)}
                         </pre>
                         <Button

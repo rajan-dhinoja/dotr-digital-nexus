@@ -273,7 +273,7 @@ export default function AdminMedia() {
           </div>
           <div className="text-sm text-muted-foreground">
             <p>Bucket: {previewFile?.bucket}</p>
-            <p>URL: <code className="text-xs bg-muted px-1 rounded break-all">{previewFile?.url}</code></p>
+            <p>URL: <code className="text-xs bg-card border border-border px-2 py-1 rounded break-all text-foreground font-mono">{previewFile?.url}</code></p>
           </div>
         </DialogContent>
       </Dialog>

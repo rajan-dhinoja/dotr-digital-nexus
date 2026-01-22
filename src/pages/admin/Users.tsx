@@ -99,7 +99,7 @@ export default function AdminUsers() {
       key: 'user_id', 
       label: 'User ID',
       render: (u: UserRole) => (
-        <code className="text-xs bg-muted px-2 py-1 rounded">{u.user_id.slice(0, 8)}...</code>
+        <code className="text-xs bg-card border border-border px-2 py-1 rounded text-foreground font-mono">{u.user_id.slice(0, 8)}...</code>
       ),
     },
     { 
@@ -146,7 +146,7 @@ export default function AdminUsers() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              User ID: <code className="bg-muted px-2 py-1 rounded">{editingUser?.user_id}</code>
+              User ID: <code className="bg-card border border-border px-2 py-1 rounded text-foreground font-mono">{editingUser?.user_id}</code>
             </p>
             <div className="space-y-2">
               <label className="text-sm font-medium">Role</label>

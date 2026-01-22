@@ -169,9 +169,12 @@ export default function AdminActivityLog() {
                       {log.entity_name && <span className="font-medium">"{log.entity_name}"</span>}
                     </p>
                     {log.details && Object.keys(log.details).length > 0 && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Details: {JSON.stringify(log.details)}
-                      </p>
+                      <div className="mt-2 p-2 bg-muted/50 rounded-md border border-border">
+                        <p className="text-xs font-medium text-foreground mb-1">Details:</p>
+                        <pre className="text-xs text-foreground font-mono overflow-x-auto">
+                          {JSON.stringify(log.details, null, 2)}
+                        </pre>
+                      </div>
                     )}
                   </div>
                   <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
