@@ -13,33 +13,23 @@ const Contact = () => {
       <Header />
 
       {isLoading ? (
-        <div className="pt-32">
-          <Skeleton className="h-[40vh] w-full rounded-none" />
-          <div className="container mx-auto px-4 py-16 space-y-4">
-            <Skeleton className="h-8 w-40" />
-            <Skeleton className="h-5 w-64" />
-            <Skeleton className="h-40 w-full" />
+        <div className="pt-20">
+          <Skeleton className="h-[40vh] w-full" />
+          <div className="container mx-auto px-4 py-20">
+            <Skeleton className="h-64 w-full" />
           </div>
         </div>
       ) : sections && sections.length > 0 ? (
-        <main className="pt-24 pb-20">
-          <SectionRenderer sections={sections} />
-        </main>
+        <SectionRenderer sections={sections} />
       ) : (
-        <main className="pt-32 pb-20">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-sm font-medium text-primary/80 mb-3 tracking-wide uppercase">
-              Let&apos;s talk
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Start your <span className="text-gradient">next project</span>
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Add contact form and location sections from the admin panel so leads can reach you
-              through a polished, animated experience.
+        <div className="pt-32 pb-20 text-center">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Contact Us</h1>
+            <p className="text-muted-foreground">
+              Add sections to this page from the admin panel.
             </p>
           </div>
-        </main>
+        </div>
       )}
 
       <Footer />
