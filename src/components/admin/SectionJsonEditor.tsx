@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
-import { Upload, Download, CheckCircle2, XCircle, AlertCircle, FileJson } from 'lucide-react';
+import { Upload, Download, CheckCircle2, XCircle, AlertCircle, FileJson, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -421,7 +421,7 @@ export function SectionJsonEditor({
         {/* Schema Example Panel */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Schema Example</CardTitle>
+            <CardTitle className="text-sm">Example JSON Structure</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <ScrollArea className="h-[500px]">
@@ -429,12 +429,30 @@ export function SectionJsonEditor({
                 {schemaDef ? (
                   <div className="space-y-4">
                     <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-2">
-                        Example JSON Structure:
+                      <p className="text-xs text-muted-foreground mb-3">
+                        This is an example JSON structure for this section type. Use this as a reference when writing or uploading JSON data. All fields shown are based on the section schema.
                       </p>
-                      <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto">
-                        {JSON.stringify(exampleJson, null, 2)}
-                      </pre>
+                      <div className="relative">
+                        <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto border font-mono">
+                          {JSON.stringify(exampleJson, null, 2)}
+                        </pre>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-6 px-2 text-xs"
+                          onClick={() => {
+                            navigator.clipboard.writeText(JSON.stringify(exampleJson, null, 2));
+                            toast({
+                              title: 'Copied',
+                              description: 'Example JSON copied to clipboard',
+                            });
+                          }}
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </Button>
+                      </div>
                     </div>
                     
                     {validationResult.errors.length > 0 && (

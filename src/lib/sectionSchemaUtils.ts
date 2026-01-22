@@ -93,6 +93,189 @@ export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSO
 }
 
 /**
+ * Generates a realistic example value for a field based on its name
+ */
+function getFieldExampleValue(field: string): unknown {
+  const fieldLower = field.toLowerCase();
+
+  // URLs and Links
+  if (fieldLower.includes('video_url') || fieldLower === 'video_url') {
+    return 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  }
+  if (fieldLower.includes('poster_image') || fieldLower === 'poster_image') {
+    return 'https://example.com/poster.jpg';
+  }
+  if (fieldLower.includes('background_image') || fieldLower === 'background_image') {
+    return 'https://example.com/background.jpg';
+  }
+  if (fieldLower.includes('image_url') || fieldLower === 'image_url') {
+    return 'https://example.com/image.jpg';
+  }
+  if (fieldLower.includes('_url') || fieldLower.includes('_link') || fieldLower.includes('url') || fieldLower.includes('link')) {
+    return 'https://example.com';
+  }
+  if (fieldLower.includes('_image') || fieldLower === 'image') {
+    return 'https://example.com/image.jpg';
+  }
+
+  // Boolean fields
+  if (fieldLower === 'autoplay') {
+    return false;
+  }
+  if (fieldLower === 'show_filters' || fieldLower === 'show_featured_only' || fieldLower === 'animate') {
+    return true;
+  }
+  if (fieldLower.includes('_active') || fieldLower.includes('is_') || fieldLower.includes('has_')) {
+    return false;
+  }
+
+  // Number fields
+  if (fieldLower === 'count' || fieldLower === 'rating') {
+    return 5;
+  }
+  if (fieldLower.includes('_order') || fieldLower.includes('display_order') || fieldLower === 'step') {
+    return 1;
+  }
+
+  // Text fields with specific patterns
+  if (fieldLower === 'headline' || fieldLower === 'form_title') {
+    return 'Welcome to Our Platform';
+  }
+  if (fieldLower === 'subtitle' || fieldLower === 'content_subtitle') {
+    return 'Build amazing experiences with our services';
+  }
+  if (fieldLower === 'description' || fieldLower === 'form_description') {
+    return 'This is a detailed description of the section content. You can add multiple lines of text here to provide more information to your visitors.';
+  }
+  if (fieldLower.includes('cta_text') || fieldLower === 'button_text' || fieldLower === 'submit_button_text') {
+    return 'Get Started';
+  }
+  if (fieldLower.includes('primary_cta_text')) {
+    return 'Learn More';
+  }
+  if (fieldLower.includes('secondary_cta_text')) {
+    return 'Contact Us';
+  }
+  if (fieldLower.includes('cta_link') || fieldLower === 'button_url' || fieldLower.includes('primary_cta_link')) {
+    return '/signup';
+  }
+  if (fieldLower.includes('secondary_cta_link')) {
+    return '/contact';
+  }
+  if (fieldLower === 'success_message') {
+    return 'Thank you! Your submission has been received.';
+  }
+  if (fieldLower === 'image_position') {
+    return 'left';
+  }
+  if (fieldLower === 'layout') {
+    return 'grid';
+  }
+  if (fieldLower === 'placeholder_text') {
+    return 'Enter your email address';
+  }
+  if (fieldLower === 'button_text' && !fieldLower.includes('submit')) {
+    return 'Subscribe';
+  }
+  if (fieldLower === 'email') {
+    return 'contact@example.com';
+  }
+  if (fieldLower === 'phone') {
+    return '+1 (555) 123-4567';
+  }
+  if (fieldLower === 'address') {
+    return '123 Main Street, City, State 12345';
+  }
+  if (fieldLower === 'map_embed_url') {
+    return 'https://www.google.com/maps/embed?pb=...';
+  }
+  if (fieldLower.includes('title') && !fieldLower.includes('form')) {
+    return 'Section Title';
+  }
+  if (fieldLower.includes('text') && !fieldLower.includes('cta') && !fieldLower.includes('button')) {
+    return 'Example text content';
+  }
+  if (fieldLower.includes('name')) {
+    return 'Example Name';
+  }
+  if (fieldLower.includes('bio')) {
+    return 'Brief biography or description';
+  }
+  if (fieldLower.includes('quote')) {
+    return 'This is an example quote or testimonial text.';
+  }
+  if (fieldLower.includes('author')) {
+    return 'John Doe';
+  }
+  if (fieldLower.includes('role')) {
+    return 'CEO';
+  }
+  if (fieldLower.includes('company')) {
+    return 'Example Company';
+  }
+  if (fieldLower.includes('question')) {
+    return 'What is your question?';
+  }
+  if (fieldLower.includes('answer')) {
+    return 'This is the answer to the question.';
+  }
+  if (fieldLower.includes('value')) {
+    return '100';
+  }
+  if (fieldLower.includes('label')) {
+    return 'Example Label';
+  }
+  if (fieldLower.includes('suffix')) {
+    return '+';
+  }
+  if (fieldLower.includes('prefix')) {
+    return '$';
+  }
+  if (fieldLower.includes('icon')) {
+    return 'Zap';
+  }
+  if (fieldLower.includes('category')) {
+    return 'Web Design';
+  }
+  if (fieldLower.includes('year')) {
+    return '2024';
+  }
+  if (fieldLower.includes('price')) {
+    return '$99';
+  }
+  if (fieldLower.includes('features') && !fieldLower.includes('show')) {
+    return ['Feature 1', 'Feature 2', 'Feature 3'];
+  }
+  if (fieldLower.includes('platforms') || fieldLower.includes('social_links')) {
+    return ['twitter', 'facebook', 'linkedin'];
+  }
+  if (fieldLower.includes('options')) {
+    return ['Option 1', 'Option 2', 'Option 3'];
+  }
+  if (fieldLower === 'field_type') {
+    return 'text';
+  }
+  if (fieldLower === 'label' && !fieldLower.includes('suffix') && !fieldLower.includes('prefix')) {
+    return 'Field Label';
+  }
+  if (fieldLower === 'name' && !fieldLower.includes('company') && !fieldLower.includes('author')) {
+    return 'field_name';
+  }
+  if (fieldLower === 'placeholder') {
+    return 'Enter value...';
+  }
+  if (fieldLower === 'width') {
+    return 'full';
+  }
+  if (fieldLower === 'validation') {
+    return {};
+  }
+
+  // Default for unknown string fields
+  return '';
+}
+
+/**
  * Generates an example JSON object from a section schema
  */
 export function generateExampleJson(sectionSchema: Json | null | undefined): Record<string, unknown> {
@@ -112,24 +295,7 @@ export function generateExampleJson(sectionSchema: Json | null | undefined): Rec
         continue;
       }
 
-      // Generate example values based on field name
-      if (field.includes('_url') || field.includes('_link') || field.includes('url')) {
-        example[field] = 'https://example.com';
-      } else if (field.includes('_image') || field.includes('image')) {
-        example[field] = 'https://example.com/image.jpg';
-      } else if (field === 'autoplay' || field.includes('_active') || field.includes('is_') || field === 'show_filters' || field === 'show_featured_only') {
-        example[field] = false;
-      } else if (field === 'count' || field.includes('_order') || field.includes('display_order') || field.includes('rating')) {
-        example[field] = 0;
-      } else if (field.includes('text') || field.includes('title') || field.includes('headline') || field.includes('name')) {
-        example[field] = 'Example ' + field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      } else if (field.includes('description') || field.includes('subtitle') || field.includes('bio')) {
-        example[field] = 'Example description text';
-      } else if (field.includes('_links') || field.includes('platforms') || field.includes('options') || field.includes('features')) {
-        example[field] = [];
-      } else {
-        example[field] = '';
-      }
+      example[field] = getFieldExampleValue(field);
     }
   }
 
@@ -141,24 +307,44 @@ export function generateExampleJson(sectionSchema: Json | null | undefined): Rec
       if (typeof key !== 'string' || typeof typeStr !== 'string') continue;
       
       if (typeStr === 'string') {
-        // Generate more contextual examples
-        if (key.includes('url') || key.includes('link') || key.includes('image')) {
-          itemExample[key] = 'https://example.com';
-        } else if (key.includes('email')) {
-          itemExample[key] = 'example@example.com';
-        } else if (key.includes('phone')) {
-          itemExample[key] = '+1 (555) 123-4567';
-        } else {
-          itemExample[key] = `Example ${key.replace(/_/g, ' ')}`;
-        }
+        // Use the same field example value function for consistency
+        itemExample[key] = getFieldExampleValue(key);
       } else if (typeStr === 'number') {
-        itemExample[key] = 0;
+        // Generate contextual number examples
+        if (key.includes('step') || key.includes('order')) {
+          itemExample[key] = 1;
+        } else if (key.includes('rating') || key.includes('value')) {
+          itemExample[key] = 5;
+        } else {
+          itemExample[key] = 0;
+        }
       } else if (typeStr === 'boolean') {
-        itemExample[key] = false;
+        // Generate contextual boolean examples
+        if (key.includes('required') || key.includes('featured') || key.includes('active')) {
+          itemExample[key] = true;
+        } else {
+          itemExample[key] = false;
+        }
       } else if (typeStr === 'array') {
-        itemExample[key] = [];
+        // Generate contextual array examples
+        if (key.includes('options')) {
+          itemExample[key] = ['Option 1', 'Option 2', 'Option 3'];
+        } else if (key.includes('features')) {
+          itemExample[key] = ['Feature 1', 'Feature 2', 'Feature 3'];
+        } else if (key.includes('links') || key.includes('platforms')) {
+          itemExample[key] = ['twitter', 'facebook', 'linkedin'];
+        } else if (key.includes('technologies')) {
+          itemExample[key] = ['React', 'TypeScript', 'Node.js'];
+        } else {
+          itemExample[key] = [];
+        }
       } else if (typeStr === 'object') {
-        itemExample[key] = {};
+        // Generate contextual object examples
+        if (key.includes('validation')) {
+          itemExample[key] = { min: 0, max: 100 };
+        } else {
+          itemExample[key] = {};
+        }
       } else {
         itemExample[key] = '';
       }
@@ -166,7 +352,21 @@ export function generateExampleJson(sectionSchema: Json | null | undefined): Rec
 
     // Only add items example if we have item properties
     if (Object.keys(itemExample).length > 0) {
-      example.items = [itemExample];
+      // Generate 2-3 example items to show array structure
+      const itemsArray = [];
+      for (let i = 0; i < 2; i++) {
+        const item = { ...itemExample };
+        // Make items slightly different for better examples
+        Object.keys(item).forEach(k => {
+          if (typeof item[k] === 'string' && !item[k].toString().includes('http')) {
+            item[k] = `${item[k]} ${i + 1}`;
+          } else if (typeof item[k] === 'number') {
+            item[k] = (item[k] as number) + i;
+          }
+        });
+        itemsArray.push(item);
+      }
+      example.items = itemsArray;
     }
   }
 
