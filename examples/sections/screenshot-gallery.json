@@ -1,0 +1,21 @@
+{
+  "screenshots": [
+    {
+      "url": "/images/screenshots/dashboard.jpg",
+      "caption": "Intuitive Dashboard Overview"
+    },
+    {
+      "url": "/images/screenshots/analytics.jpg",
+      "caption": "Comprehensive Analytics View"
+    },
+    {
+      "url": "/images/screenshots/settings.jpg",
+      "caption": "Easy-to-Use Settings Panel"
+    },
+    {
+      "url": "/images/screenshots/reports.jpg",
+      "caption": "Detailed Reporting Interface"
+    }
+  ],
+  "show_captions": true
+}

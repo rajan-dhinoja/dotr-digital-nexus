@@ -1,0 +1,34 @@
+{
+  "personas": [
+    {
+      "persona": "Startups",
+      "icon": "Rocket",
+      "description": "Move fast and scale efficiently with modern solutions designed for growth",
+      "benefits": [
+        "Rapid deployment",
+        "Cost-effective pricing",
+        "Scalable architecture"
+      ]
+    },
+    {
+      "persona": "Enterprises",
+      "icon": "Building2",
+      "description": "Enterprise-grade solutions for complex requirements and large-scale operations",
+      "benefits": [
+        "Custom integrations",
+        "Dedicated support team",
+        "Security compliance"
+      ]
+    },
+    {
+      "persona": "Agencies",
+      "icon": "Users",
+      "description": "White-label solutions to expand your service offerings and client base",
+      "benefits": [
+        "Partner program",
+        "Volume pricing",
+        "Training resources"
+      ]
+    }
+  ]
+}

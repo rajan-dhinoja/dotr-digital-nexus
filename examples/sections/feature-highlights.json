@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "title": "Powerful Analytics Dashboard",
+      "description": "Get deep insights into your data with our advanced analytics dashboard that tracks everything you need to make informed decisions.",
+      "image_url": "/images/features/analytics.jpg",
+      "icon": "BarChart3",
+      "bullets": [
+        "Real-time data visualization",
+        "Custom report generation",
+        "Export to CSV and PDF",
+        "Advanced filtering options"
+      ]
+    },
+    {
+      "title": "Team Collaboration Tools",
+      "description": "Work together seamlessly with built-in collaboration tools that keep your team aligned and productive.",
+      "image_url": "/images/features/collaboration.jpg",
+      "icon": "Users",
+      "bullets": [
+        "Shared workspaces",
+        "Comments and mentions",
+        "Version history tracking",
+        "Real-time notifications"
+      ]
+    },
+    {
+      "title": "Enterprise-Grade Security",
+      "description": "Bank-grade security to keep your data safe and compliant with industry standards and regulations.",
+      "image_url": "/images/features/security.jpg",
+      "icon": "Shield",
+      "bullets": [
+        "SOC 2 Type II certified",
+        "End-to-end encryption",
+        "SSO support",
+        "Regular security audits"
+      ]
+    }
+  ]
+}

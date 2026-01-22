@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "value": 500,
+      "suffix": "+",
+      "prefix": "",
+      "label": "Happy Clients"
+    },
+    {
+      "value": 98,
+      "suffix": "%",
+      "prefix": "",
+      "label": "Satisfaction Rate"
+    },
+    {
+      "value": 24,
+      "suffix": "/7",
+      "prefix": "",
+      "label": "Support Available"
+    },
+    {
+      "value": 10,
+      "suffix": "+",
+      "prefix": "",
+      "label": "Years Experience"
+    }
+  ],
+  "animate": true
+}

@@ -1,0 +1,438 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-22T18:00:00Z",
+  "sections": [
+    {
+      "slug": "hero",
+      "name": "Hero",
+      "exampleFile": "sections/hero.json",
+      "componentPath": "src/components/sections/HeroSection.tsx",
+      "fieldsCount": 5,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "features",
+      "name": "Features",
+      "exampleFile": "sections/features.json",
+      "componentPath": "src/components/sections/FeaturesSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "testimonials",
+      "name": "Testimonials",
+      "exampleFile": "sections/testimonials.json",
+      "componentPath": "src/components/sections/TestimonialsSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "stats",
+      "name": "Stats",
+      "exampleFile": "sections/stats.json",
+      "componentPath": "src/components/sections/StatsSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "faq",
+      "name": "FAQ",
+      "exampleFile": "sections/faq.json",
+      "componentPath": "src/components/sections/FAQSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "cta",
+      "name": "CTA",
+      "exampleFile": "sections/cta.json",
+      "componentPath": "src/components/sections/CTASection.tsx",
+      "fieldsCount": 6,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "gallery",
+      "name": "Gallery",
+      "exampleFile": "sections/gallery.json",
+      "componentPath": "src/components/sections/GallerySection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "team",
+      "name": "Team",
+      "exampleFile": "sections/team.json",
+      "componentPath": "src/components/sections/TeamSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "pricing",
+      "name": "Pricing",
+      "exampleFile": "sections/pricing.json",
+      "componentPath": "src/components/sections/PricingSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "complex"
+    },
+    {
+      "slug": "process",
+      "name": "Process",
+      "exampleFile": "sections/process.json",
+      "componentPath": "src/components/sections/ProcessSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "logo-cloud",
+      "name": "Logo Cloud",
+      "exampleFile": "sections/logo-cloud.json",
+      "componentPath": "src/components/sections/LogoCloudSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "services-grid",
+      "name": "Services Grid",
+      "exampleFile": "sections/services-grid.json",
+      "componentPath": "src/components/sections/ServicesGridSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "portfolio-grid",
+      "name": "Portfolio Grid",
+      "exampleFile": "sections/portfolio-grid.json",
+      "componentPath": "src/components/sections/PortfolioGridSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "video",
+      "name": "Video",
+      "exampleFile": "sections/video.json",
+      "componentPath": "src/components/sections/VideoSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "image-text",
+      "name": "Image Text",
+      "exampleFile": "sections/image-text.json",
+      "componentPath": "src/components/sections/ImageTextSection.tsx",
+      "fieldsCount": 5,
+      "hasArray": false,
+      "complexity": "medium"
+    },
+    {
+      "slug": "timeline",
+      "name": "Timeline",
+      "exampleFile": "sections/timeline.json",
+      "componentPath": "src/components/sections/TimelineSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "counters",
+      "name": "Counters",
+      "exampleFile": "sections/counters.json",
+      "componentPath": "src/components/sections/CountersSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "newsletter",
+      "name": "Newsletter",
+      "exampleFile": "sections/newsletter.json",
+      "componentPath": "src/components/sections/NewsletterSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "blog-posts",
+      "name": "Blog Posts",
+      "exampleFile": "sections/blog-posts.json",
+      "componentPath": "src/components/sections/BlogPostsSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "contact-info",
+      "name": "Contact Info",
+      "exampleFile": "sections/contact-info.json",
+      "componentPath": "src/components/sections/ContactInfoSection.tsx",
+      "fieldsCount": 5,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "divider",
+      "name": "Divider",
+      "exampleFile": "sections/divider.json",
+      "componentPath": "src/components/sections/DividerSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "usp-strip",
+      "name": "USP Strip",
+      "exampleFile": "sections/usp-strip.json",
+      "componentPath": "src/components/sections/UspStripSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "kpi-strip",
+      "name": "KPI Strip",
+      "exampleFile": "sections/kpi-strip.json",
+      "componentPath": "src/components/sections/KpiStripSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "social-proof-bar",
+      "name": "Social Proof Bar",
+      "exampleFile": "sections/social-proof-bar.json",
+      "componentPath": "src/components/sections/SocialProofBarSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "success-metrics",
+      "name": "Success Metrics",
+      "exampleFile": "sections/success-metrics.json",
+      "componentPath": "src/components/sections/SuccessMetricsSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "awards-badges",
+      "name": "Awards & Badges",
+      "exampleFile": "sections/awards-badges.json",
+      "componentPath": "src/components/sections/AwardsBadgesSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "press-mentions",
+      "name": "Press Mentions",
+      "exampleFile": "sections/press-mentions.json",
+      "componentPath": "src/components/sections/PressMentionsSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "ratings-reviews",
+      "name": "Ratings & Reviews",
+      "exampleFile": "sections/ratings-reviews.json",
+      "componentPath": "src/components/sections/RatingsReviewsSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "trust-badges",
+      "name": "Trust Badges",
+      "exampleFile": "sections/trust-badges.json",
+      "componentPath": "src/components/sections/TrustBadgesSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "differentiators",
+      "name": "Differentiators",
+      "exampleFile": "sections/differentiators.json",
+      "componentPath": "src/components/sections/DifferentiatorsSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "problem-statement",
+      "name": "Problem Statement",
+      "exampleFile": "sections/problem-statement.json",
+      "componentPath": "src/components/sections/ProblemStatementSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "agitate-solve",
+      "name": "Agitate & Solve",
+      "exampleFile": "sections/agitate-solve.json",
+      "componentPath": "src/components/sections/AgitateSolveSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "value-proposition",
+      "name": "Value Proposition",
+      "exampleFile": "sections/value-proposition.json",
+      "componentPath": "src/components/sections/ValuePropositionSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "elevator-pitch",
+      "name": "Elevator Pitch",
+      "exampleFile": "sections/elevator-pitch.json",
+      "componentPath": "src/components/sections/ElevatorPitchSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "outcomes-benefits",
+      "name": "Outcomes/Benefits",
+      "exampleFile": "sections/outcomes-benefits.json",
+      "componentPath": "src/components/sections/OutcomesBenefitsSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "who-its-for",
+      "name": "Who Its For",
+      "exampleFile": "sections/who-its-for.json",
+      "componentPath": "src/components/sections/WhoItsForSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "complex"
+    },
+    {
+      "slug": "before-after",
+      "name": "Before & After",
+      "exampleFile": "sections/before-after.json",
+      "componentPath": "src/components/sections/BeforeAfterSection.tsx",
+      "fieldsCount": 4,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "video-demo",
+      "name": "Video Demo",
+      "exampleFile": "sections/video-demo.json",
+      "componentPath": "src/components/sections/VideoDemoSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "screenshot-gallery",
+      "name": "Screenshot Gallery",
+      "exampleFile": "sections/screenshot-gallery.json",
+      "componentPath": "src/components/sections/ScreenshotGallerySection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "device-frames",
+      "name": "Device Frames",
+      "exampleFile": "sections/device-frames.json",
+      "componentPath": "src/components/sections/DeviceFramesSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "feature-list",
+      "name": "Feature List",
+      "exampleFile": "sections/feature-list.json",
+      "componentPath": "src/components/sections/FeatureListSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "simple"
+    },
+    {
+      "slug": "feature-highlights",
+      "name": "Feature Highlights",
+      "exampleFile": "sections/feature-highlights.json",
+      "componentPath": "src/components/sections/FeatureHighlightsSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "complex"
+    },
+    {
+      "slug": "primary-cta-banner",
+      "name": "Primary CTA Banner",
+      "exampleFile": "sections/primary-cta-banner.json",
+      "componentPath": "src/components/sections/PrimaryCtaBannerSection.tsx",
+      "fieldsCount": 6,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "secondary-cta",
+      "name": "Secondary CTA",
+      "exampleFile": "sections/secondary-cta.json",
+      "componentPath": "src/components/sections/SecondaryCtaSection.tsx",
+      "fieldsCount": 3,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "exit-intent-cta",
+      "name": "Exit Intent CTA",
+      "exampleFile": "sections/exit-intent-cta.json",
+      "componentPath": "src/components/sections/ExitIntentCtaSection.tsx",
+      "fieldsCount": 5,
+      "hasArray": false,
+      "complexity": "simple"
+    },
+    {
+      "slug": "about-us",
+      "name": "About Us",
+      "exampleFile": "sections/about-us.json",
+      "componentPath": "src/components/sections/AboutUsSection.tsx",
+      "fieldsCount": 7,
+      "hasArray": false,
+      "complexity": "medium"
+    },
+    {
+      "slug": "values-culture",
+      "name": "Values & Culture",
+      "exampleFile": "sections/values-culture.json",
+      "componentPath": "src/components/sections/ValuesCultureSection.tsx",
+      "fieldsCount": 2,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "form",
+      "name": "Form",
+      "exampleFile": "sections/form.json",
+      "componentPath": "src/components/sections/FormSection.tsx",
+      "fieldsCount": 5,
+      "hasArray": true,
+      "complexity": "complex"
+    }
+  ]
+}

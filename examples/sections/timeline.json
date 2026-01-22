@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "year": "2020",
+      "title": "Company Founded",
+      "description": "Started with a vision to revolutionize digital experiences",
+      "icon": "Rocket"
+    },
+    {
+      "year": "2021",
+      "title": "First 100 Clients",
+      "description": "Reached a major milestone with our first 100 satisfied clients",
+      "icon": "Users"
+    },
+    {
+      "year": "2022",
+      "title": "International Expansion",
+      "description": "Expanded operations to serve clients across 15 countries",
+      "icon": "Globe"
+    },
+    {
+      "year": "2023",
+      "title": "Award Recognition",
+      "description": "Received industry awards for innovation and excellence",
+      "icon": "Award"
+    },
+    {
+      "year": "2024",
+      "title": "500+ Projects",
+      "description": "Celebrated completing over 500 successful projects",
+      "icon": "Target"
+    }
+  ]
+}

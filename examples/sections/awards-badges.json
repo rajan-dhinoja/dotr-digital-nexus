@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "title": "Best Design Agency 2024",
+      "organization": "Design Excellence Awards",
+      "year": "2024",
+      "image_url": "/images/awards/design-award-2024.png"
+    },
+    {
+      "title": "Top Developer Team",
+      "organization": "Tech Innovation Awards",
+      "year": "2024",
+      "image_url": "/images/awards/tech-award-2024.png"
+    },
+    {
+      "title": "Innovation Award",
+      "organization": "Industry Leaders Summit",
+      "year": "2023",
+      "image_url": "/images/awards/innovation-award-2023.png"
+    },
+    {
+      "title": "Customer Choice Award",
+      "organization": "Business Excellence Awards",
+      "year": "2023",
+      "image_url": "/images/awards/customer-choice-2023.png"
+    }
+  ]
+}

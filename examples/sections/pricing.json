@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "name": "Starter",
+      "price": "$99",
+      "description": "Perfect for small businesses getting started",
+      "features": [
+        "Up to 5 pages",
+        "Basic customization",
+        "Mobile responsive",
+        "Email support",
+        "SSL certificate"
+      ],
+      "cta_text": "Get Started",
+      "is_featured": false
+    },
+    {
+      "name": "Professional",
+      "price": "$299",
+      "description": "Ideal for growing businesses",
+      "features": [
+        "Up to 20 pages",
+        "Advanced customization",
+        "E-commerce integration",
+        "Priority support",
+        "SEO optimization",
+        "Analytics dashboard"
+      ],
+      "cta_text": "Get Started",
+      "is_featured": true
+    },
+    {
+      "name": "Enterprise",
+      "price": "Custom",
+      "description": "Tailored solutions for large organizations",
+      "features": [
+        "Unlimited pages",
+        "Fully custom design",
+        "Advanced integrations",
+        "Dedicated account manager",
+        "24/7 priority support",
+        "Custom development",
+        "Training & onboarding"
+      ],
+      "cta_text": "Contact Sales",
+      "is_featured": false
+    }
+  ]
+}

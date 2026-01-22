@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "name": "Alexandra Martinez",
+      "role": "Creative Director",
+      "image": "/images/team/alexandra-martinez.jpg",
+      "bio": "10+ years of experience in digital design and brand strategy"
+    },
+    {
+      "name": "James Wilson",
+      "role": "Lead Developer",
+      "image": "/images/team/james-wilson.jpg",
+      "bio": "Full-stack engineer specializing in modern web technologies"
+    },
+    {
+      "name": "Sophie Anderson",
+      "role": "Marketing Strategist",
+      "image": "/images/team/sophie-anderson.jpg",
+      "bio": "Expert in growth marketing and digital campaign optimization"
+    },
+    {
+      "name": "Michael Park",
+      "role": "Project Manager",
+      "image": "/images/team/michael-park.jpg",
+      "bio": "Ensures smooth project delivery and client satisfaction"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "problems": [
+    {
+      "title": "Wasting time on repetitive tasks",
+      "description": "Hours spent on manual work that could be automated, taking away from strategic initiatives"
+    },
+    {
+      "title": "Struggling to scale efficiently",
+      "description": "Growth limited by outdated systems and processes that can't keep up with demand"
+    },
+    {
+      "title": "Missing critical opportunities",
+      "description": "Unable to act fast enough on market changes and customer needs due to slow processes"
+    },
+    {
+      "title": "High operational costs",
+      "description": "Spending too much on maintenance and manual processes instead of innovation"
+    }
+  ],
+  "empathy_text": "We understand the frustration. You're not alone, and there's a better way forward."
+}

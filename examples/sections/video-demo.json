@@ -1,0 +1,18 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "poster_image": "/images/video-demo-poster.jpg",
+  "callouts": [
+    {
+      "time": "0:15",
+      "text": "See how easy it is to get started"
+    },
+    {
+      "time": "1:30",
+      "text": "Watch the powerful analytics dashboard"
+    },
+    {
+      "time": "2:45",
+      "text": "Discover advanced customization options"
+    }
+  ]
+}

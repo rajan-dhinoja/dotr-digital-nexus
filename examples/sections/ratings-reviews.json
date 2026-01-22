@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "platform": "Google",
+      "rating": 4.9,
+      "review_count": 250,
+      "logo_url": "/images/platforms/google-logo.svg"
+    },
+    {
+      "platform": "Clutch",
+      "rating": 4.8,
+      "review_count": 120,
+      "logo_url": "/images/platforms/clutch-logo.svg"
+    },
+    {
+      "platform": "Trustpilot",
+      "rating": 4.7,
+      "review_count": 180,
+      "logo_url": "/images/platforms/trustpilot-logo.svg"
+    }
+  ],
+  "show_aggregate": true
+}

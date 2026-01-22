@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "image_url": "/images/gallery/project-1.jpg",
+      "caption": "Modern Office Space Design",
+      "alt": "Contemporary office interior with natural lighting"
+    },
+    {
+      "image_url": "/images/gallery/project-2.jpg",
+      "caption": "Brand Identity Launch",
+      "alt": "Creative brand presentation and visual identity"
+    },
+    {
+      "image_url": "/images/gallery/project-3.jpg",
+      "caption": "E-commerce Platform",
+      "alt": "Sleek e-commerce interface on multiple devices"
+    },
+    {
+      "image_url": "/images/gallery/project-4.jpg",
+      "caption": "Mobile App Development",
+      "alt": "Mobile application screenshots and user interface"
+    },
+    {
+      "image_url": "/images/gallery/project-5.jpg",
+      "caption": "Corporate Website Redesign",
+      "alt": "Professional corporate website homepage"
+    },
+    {
+      "image_url": "/images/gallery/project-6.jpg",
+      "caption": "Marketing Campaign Visuals",
+      "alt": "Creative marketing materials and campaign assets"
+    }
+  ]
+}

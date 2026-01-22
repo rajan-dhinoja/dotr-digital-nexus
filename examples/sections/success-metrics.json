@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "client": "TechCorp Industries",
+      "metric": "Revenue Growth",
+      "value": "+150%",
+      "description": "Increased monthly recurring revenue in 12 months"
+    },
+    {
+      "client": "StartupX",
+      "metric": "User Acquisition",
+      "value": "3x",
+      "description": "Tripled user base within 6 months of launch"
+    },
+    {
+      "client": "EnterpriseCo",
+      "metric": "Cost Reduction",
+      "value": "-40%",
+      "description": "Reduced operational costs through automation"
+    },
+    {
+      "client": "Digital Ventures",
+      "metric": "Conversion Rate",
+      "value": "+85%",
+      "description": "Improved conversion rate with optimized user experience"
+    }
+  ]
+}

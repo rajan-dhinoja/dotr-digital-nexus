@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "value": 500,
+      "label": "Active Projects",
+      "prefix": "",
+      "suffix": "+",
+      "icon": "Briefcase"
+    },
+    {
+      "value": 98,
+      "label": "Client Satisfaction",
+      "prefix": "",
+      "suffix": "%",
+      "icon": "Heart"
+    },
+    {
+      "value": 24,
+      "label": "Support Hours",
+      "prefix": "",
+      "suffix": "/7",
+      "icon": "Clock"
+    },
+    {
+      "value": 15,
+      "label": "Years Experience",
+      "prefix": "",
+      "suffix": "+",
+      "icon": "Award"
+    }
+  ]
+}

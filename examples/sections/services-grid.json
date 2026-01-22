@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "icon": "Code",
+      "title": "Web Development",
+      "description": "Custom websites and web applications built with modern technologies for optimal performance",
+      "link": "/services/web-development"
+    },
+    {
+      "icon": "Smartphone",
+      "title": "Mobile Apps",
+      "description": "Native and cross-platform mobile applications for iOS and Android devices",
+      "link": "/services/mobile-apps"
+    },
+    {
+      "icon": "Palette",
+      "title": "UI/UX Design",
+      "description": "User-centered design solutions that create engaging and intuitive user experiences",
+      "link": "/services/ui-ux-design"
+    },
+    {
+      "icon": "TrendingUp",
+      "title": "Digital Marketing",
+      "description": "Comprehensive marketing strategies to grow your online presence and reach your audience",
+      "link": "/services/digital-marketing"
+    },
+    {
+      "icon": "ShoppingCart",
+      "title": "E-commerce",
+      "description": "Complete e-commerce solutions with secure payment processing and inventory management",
+      "link": "/services/e-commerce"
+    },
+    {
+      "icon": "BarChart",
+      "title": "Analytics & SEO",
+      "description": "Data-driven insights and search engine optimization to improve your visibility and performance",
+      "link": "/services/analytics-seo"
+    }
+  ]
+}

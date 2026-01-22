@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "feature": "24/7 Premium Support",
+      "us": true,
+      "competitors": false
+    },
+    {
+      "feature": "Custom Solutions",
+      "us": true,
+      "competitors": "Limited"
+    },
+    {
+      "feature": "No Hidden Fees",
+      "us": true,
+      "competitors": false
+    },
+    {
+      "feature": "Money-Back Guarantee",
+      "us": true,
+      "competitors": false
+    },
+    {
+      "feature": "Dedicated Account Manager",
+      "us": true,
+      "competitors": false
+    }
+  ],
+  "show_comparison": true,
+  "our_label": "Us",
+  "competitor_label": "Others"
+}

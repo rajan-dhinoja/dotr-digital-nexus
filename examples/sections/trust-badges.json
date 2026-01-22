@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "title": "SSL Secured",
+      "description": "256-bit encryption",
+      "icon": "Lock",
+      "image_url": ""
+    },
+    {
+      "title": "GDPR Compliant",
+      "description": "Data protection certified",
+      "icon": "ShieldCheck",
+      "image_url": ""
+    },
+    {
+      "title": "Secure Payments",
+      "description": "PCI DSS certified",
+      "icon": "CreditCard",
+      "image_url": ""
+    },
+    {
+      "title": "99.9% Uptime",
+      "description": "Guaranteed availability",
+      "icon": "CheckCircle",
+      "image_url": ""
+    }
+  ]
+}

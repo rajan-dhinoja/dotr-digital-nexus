@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "question": "How long does it take to complete a project?",
+      "answer": "Project timelines vary depending on scope and complexity. Typically, a standard website project takes 4-8 weeks from initial consultation to launch. We'll provide a detailed timeline during our discovery phase."
+    },
+    {
+      "question": "What is your pricing structure?",
+      "answer": "We offer flexible pricing based on your specific needs. Our packages range from starter solutions to enterprise-level custom development. Contact us for a personalized quote tailored to your requirements."
+    },
+    {
+      "question": "Do you provide ongoing support after launch?",
+      "answer": "Yes, we offer comprehensive maintenance and support packages. This includes regular updates, security monitoring, performance optimization, and technical support. We have various support tiers to match your needs."
+    },
+    {
+      "question": "Can you work with our existing systems?",
+      "answer": "Absolutely. We specialize in integrating with existing platforms and systems. Our team will assess your current infrastructure and ensure seamless integration with minimal disruption to your operations."
+    },
+    {
+      "question": "What technologies do you use?",
+      "answer": "We use modern, industry-standard technologies including React, TypeScript, Node.js, and cloud platforms. We choose the best tools for each project to ensure scalability, performance, and maintainability."
+    },
+    {
+      "question": "How do you ensure project quality?",
+      "answer": "We follow rigorous quality assurance processes including code reviews, automated testing, performance audits, and user acceptance testing. Every project goes through multiple checkpoints before delivery."
+    }
+  ]
+}

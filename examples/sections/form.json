@@ -1,0 +1,65 @@
+{
+  "form_title": "Get in Touch",
+  "form_description": "Fill out the form below and we'll get back to you as soon as possible.",
+  "submit_button_text": "Send Message",
+  "success_message": "Thank you! Your message has been received. We'll get back to you within 24 hours.",
+  "fields": [
+    {
+      "field_type": "text",
+      "label": "Full Name",
+      "name": "name",
+      "placeholder": "John Doe",
+      "required": true,
+      "width": "full"
+    },
+    {
+      "field_type": "email",
+      "label": "Email Address",
+      "name": "email",
+      "placeholder": "john@example.com",
+      "required": true,
+      "width": "full"
+    },
+    {
+      "field_type": "phone",
+      "label": "Phone Number",
+      "name": "phone",
+      "placeholder": "+1 (555) 123-4567",
+      "required": false,
+      "width": "half"
+    },
+    {
+      "field_type": "select",
+      "label": "Inquiry Type",
+      "name": "inquiry_type",
+      "placeholder": "Select an option",
+      "required": true,
+      "options": [
+        "General Inquiry",
+        "Sales Question",
+        "Support Request",
+        "Partnership Opportunity"
+      ],
+      "width": "half"
+    },
+    {
+      "field_type": "textarea",
+      "label": "Message",
+      "name": "message",
+      "placeholder": "Tell us about your project or question...",
+      "required": true,
+      "validation": {
+        "min": 10,
+        "max": 1000
+      },
+      "width": "full"
+    },
+    {
+      "field_type": "checkbox",
+      "label": "I agree to receive marketing communications",
+      "name": "marketing_consent",
+      "required": false,
+      "width": "full"
+    }
+  ]
+}

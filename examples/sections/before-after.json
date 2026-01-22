@@ -1,0 +1,6 @@
+{
+  "before_image": "/images/before-after/before.jpg",
+  "after_image": "/images/before-after/after.jpg",
+  "before_label": "Before",
+  "after_label": "After"
+}

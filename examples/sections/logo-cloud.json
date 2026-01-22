@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "logo_url": "/images/logos/client-1.svg",
+      "name": "TechCorp",
+      "link": "https://techcorp.com"
+    },
+    {
+      "logo_url": "/images/logos/client-2.svg",
+      "name": "Innovate Solutions",
+      "link": "https://innovatesolutions.com"
+    },
+    {
+      "logo_url": "/images/logos/client-3.svg",
+      "name": "Digital Ventures",
+      "link": "https://digitalventures.com"
+    },
+    {
+      "logo_url": "/images/logos/client-4.svg",
+      "name": "Creative Agency",
+      "link": "https://creativeagency.com"
+    },
+    {
+      "logo_url": "/images/logos/client-5.svg",
+      "name": "Global Enterprises",
+      "link": "https://globalenterprises.com"
+    },
+    {
+      "logo_url": "/images/logos/client-6.svg",
+      "name": "Startup Hub",
+      "link": "https://startuphub.com"
+    }
+  ]
+}

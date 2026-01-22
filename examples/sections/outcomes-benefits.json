@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "title": "Increased Efficiency",
+      "description": "Automate repetitive tasks and focus on strategic growth initiatives",
+      "icon": "Zap"
+    },
+    {
+      "title": "Better Customer Experience",
+      "description": "Delight users with seamless, intuitive interactions that build loyalty",
+      "icon": "Heart"
+    },
+    {
+      "title": "Higher Revenue",
+      "description": "Convert more leads and retain customers with optimized processes",
+      "icon": "TrendingUp"
+    },
+    {
+      "title": "Competitive Edge",
+      "description": "Stay ahead with cutting-edge technology and innovative solutions",
+      "icon": "Target"
+    },
+    {
+      "title": "Reduced Costs",
+      "description": "Lower operational expenses through automation and efficiency",
+      "icon": "DollarSign"
+    },
+    {
+      "title": "Faster Time to Market",
+      "description": "Launch products and features faster than your competitors",
+      "icon": "Rocket"
+    }
+  ],
+  "layout": "grid"
+}

@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "title": "Lightning Fast Performance",
+      "description": "Optimized for speed with cutting-edge technology that ensures your website loads in milliseconds",
+      "icon": "Zap"
+    },
+    {
+      "title": "Enterprise-Grade Security",
+      "description": "Bank-level encryption and security protocols to protect your data and your customers' information",
+      "icon": "Shield"
+    },
+    {
+      "title": "Scalable Infrastructure",
+      "description": "Grows with your business, handling traffic spikes and increasing demand without breaking a sweat",
+      "icon": "TrendingUp"
+    },
+    {
+      "title": "24/7 Expert Support",
+      "description": "Round-the-clock assistance from our team of specialists ready to help whenever you need it",
+      "icon": "Users"
+    },
+    {
+      "title": "Customizable Solutions",
+      "description": "Tailored to your specific needs with flexible configurations that adapt to your workflow",
+      "icon": "Settings"
+    },
+    {
+      "title": "Analytics & Insights",
+      "description": "Comprehensive data analytics to help you make informed decisions and optimize performance",
+      "icon": "BarChart"
+    }
+  ]
+}

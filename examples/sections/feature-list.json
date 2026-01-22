@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "text": "Unlimited projects and workspaces",
+      "icon": "Infinity"
+    },
+    {
+      "text": "Advanced analytics and reporting",
+      "icon": "BarChart3"
+    },
+    {
+      "text": "24/7 priority support",
+      "icon": "Headphones"
+    },
+    {
+      "text": "Custom integrations and APIs",
+      "icon": "Plug"
+    },
+    {
+      "text": "Team collaboration tools",
+      "icon": "Users"
+    },
+    {
+      "text": "Full API access",
+      "icon": "Code"
+    },
+    {
+      "text": "Advanced security features",
+      "icon": "Shield"
+    },
+    {
+      "text": "Automated backups",
+      "icon": "Database"
+    }
+  ],
+  "columns": 2
+}

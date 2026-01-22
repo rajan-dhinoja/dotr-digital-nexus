@@ -1,0 +1,41 @@
+{
+  "show_filters": true,
+  "items": [
+    {
+      "image": "/images/portfolio/e-commerce-platform.jpg",
+      "title": "E-commerce Platform",
+      "category": "Web Development",
+      "link": "/portfolio/e-commerce-platform"
+    },
+    {
+      "image": "/images/portfolio/mobile-banking-app.jpg",
+      "title": "Mobile Banking App",
+      "category": "Mobile Apps",
+      "link": "/portfolio/mobile-banking-app"
+    },
+    {
+      "image": "/images/portfolio/brand-identity.jpg",
+      "title": "Brand Identity Design",
+      "category": "Design",
+      "link": "/portfolio/brand-identity"
+    },
+    {
+      "image": "/images/portfolio/corporate-website.jpg",
+      "title": "Corporate Website",
+      "category": "Web Development",
+      "link": "/portfolio/corporate-website"
+    },
+    {
+      "image": "/images/portfolio/fitness-app.jpg",
+      "title": "Fitness Tracking App",
+      "category": "Mobile Apps",
+      "link": "/portfolio/fitness-app"
+    },
+    {
+      "image": "/images/portfolio/saas-platform.jpg",
+      "title": "SaaS Platform",
+      "category": "Web Development",
+      "link": "/portfolio/saas-platform"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "icon": "Zap",
+      "text": "Lightning Fast Delivery"
+    },
+    {
+      "icon": "Shield",
+      "text": "100% Secure & Safe"
+    },
+    {
+      "icon": "Award",
+      "text": "Award Winning Quality"
+    },
+    {
+      "icon": "Headphones",
+      "text": "24/7 Expert Support"
+    }
+  ],
+  "background_color": "primary"
+}

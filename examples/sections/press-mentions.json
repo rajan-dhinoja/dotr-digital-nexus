@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "publication": "TechCrunch",
+      "logo_url": "/images/press/techcrunch-logo.svg",
+      "quote": "A game-changing solution that's revolutionizing how businesses approach digital transformation",
+      "link": "https://techcrunch.com/article"
+    },
+    {
+      "publication": "Forbes",
+      "logo_url": "/images/press/forbes-logo.svg",
+      "quote": "Leading innovation in the digital space with cutting-edge technology and exceptional service",
+      "link": "https://forbes.com/article"
+    },
+    {
+      "publication": "Wired",
+      "logo_url": "/images/press/wired-logo.svg",
+      "quote": "The future of digital transformation is here, and this company is at the forefront",
+      "link": "https://wired.com/article"
+    }
+  ]
+}

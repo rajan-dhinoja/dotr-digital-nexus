@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "step": 1,
+      "title": "Discovery & Planning",
+      "description": "We start by understanding your business goals, target audience, and requirements through comprehensive consultations and research",
+      "icon": "Search"
+    },
+    {
+      "step": 2,
+      "title": "Design & Prototyping",
+      "description": "Our design team creates wireframes and prototypes that align with your brand and user experience goals",
+      "icon": "PenTool"
+    },
+    {
+      "step": 3,
+      "title": "Development & Testing",
+      "description": "We build your solution using best practices, with continuous testing to ensure quality and performance",
+      "icon": "Code"
+    },
+    {
+      "step": 4,
+      "title": "Launch & Optimization",
+      "description": "We deploy your solution and monitor performance, making optimizations to ensure the best results",
+      "icon": "Rocket"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "title": "Innovation",
+      "description": "We constantly push boundaries and embrace new ideas to stay ahead of the curve",
+      "icon": "Lightbulb"
+    },
+    {
+      "title": "Integrity",
+      "description": "Honesty and transparency in everything we do, building trust with every interaction",
+      "icon": "Shield"
+    },
+    {
+      "title": "Excellence",
+      "description": "Committed to delivering the highest quality work that exceeds expectations",
+      "icon": "Star"
+    },
+    {
+      "title": "Collaboration",
+      "description": "Great things happen when we work together, both internally and with our clients",
+      "icon": "Users"
+    },
+    {
+      "title": "Growth",
+      "description": "Continuous learning and improvement to better serve our clients and community",
+      "icon": "TrendingUp"
+    },
+    {
+      "title": "Impact",
+      "description": "Making a meaningful difference for our clients and the communities we serve",
+      "icon": "Target"
+    }
+  ],
+  "culture_text": "We believe in creating an environment where creativity thrives, ideas are valued, and everyone has the opportunity to make a meaningful impact."
+}

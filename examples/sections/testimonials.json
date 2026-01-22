@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "quote": "Working with this team transformed our online presence. The results exceeded our expectations and our conversion rate increased by 40%.",
+      "author": "Sarah Johnson",
+      "role": "Marketing Director",
+      "company": "TechCorp Industries",
+      "image": "/images/testimonials/sarah-johnson.jpg"
+    },
+    {
+      "quote": "The level of professionalism and attention to detail is outstanding. They truly understand our business needs and deliver exceptional results.",
+      "author": "Michael Chen",
+      "role": "CEO",
+      "company": "Innovate Solutions",
+      "image": "/images/testimonials/michael-chen.jpg"
+    },
+    {
+      "quote": "Outstanding service from start to finish. The team was responsive, creative, and delivered on time. Highly recommend their services.",
+      "author": "Emily Rodriguez",
+      "role": "Founder",
+      "company": "Creative Agency",
+      "image": "/images/testimonials/emily-rodriguez.jpg"
+    },
+    {
+      "quote": "We've seen a significant improvement in our user engagement and customer satisfaction since implementing their solution.",
+      "author": "David Thompson",
+      "role": "Product Manager",
+      "company": "Digital Ventures",
+      "image": "/images/testimonials/david-thompson.jpg"
+    }
+  ]
+}
