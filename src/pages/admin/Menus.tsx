@@ -175,10 +175,10 @@ export default function AdminMenus() {
         {MENU_LOCATIONS.map((loc) => (
           <TabsContent key={loc.value} value={loc.value} className="mt-6">
             {isLoading ? (
-              <div className="text-center py-12 text-muted-foreground">Loading menu items...</div>
+              <div className="text-center py-12 text-foreground/70">Loading menu items...</div>
             ) : menuItems.length === 0 ? (
               <Card>
-                <CardContent className="py-12 text-center text-muted-foreground">
+                <CardContent className="py-12 text-center text-foreground/70">
                   No menu items yet. Add your first item above.
                 </CardContent>
               </Card>
@@ -187,10 +187,10 @@ export default function AdminMenus() {
                 {menuItems.map((item) => (
                   <Card key={item.id}>
                     <CardContent className="p-4 flex items-center gap-4">
-                      <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                      <GripVertical className="h-5 w-5 text-foreground/60 cursor-grab" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium">{item.label}</p>
-                        <p className="text-sm text-muted-foreground truncate">
+                        <p className="text-sm text-foreground/80 truncate">
                           {item.url || (item.page_id ? `Page: ${pages.find(p => p.id === item.page_id)?.title}` : 'No link')}
                         </p>
                       </div>
@@ -203,7 +203,7 @@ export default function AdminMenus() {
                           size="icon"
                           onClick={() => toggleVisibilityMutation.mutate({ id: item.id, is_active: !item.is_active })}
                         >
-                          {item.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
+                          {item.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-foreground/60" />}
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(item)}>
                           Edit
@@ -250,7 +250,7 @@ export default function AdminMenus() {
             <div className="space-y-2">
               <Label>Custom URL</Label>
               <Input name="url" defaultValue={editing?.url ?? ''} placeholder="https://example.com or /page" />
-              <p className="text-xs text-muted-foreground">Used when no page is selected above</p>
+              <p className="text-xs text-foreground/70">Used when no page is selected above</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

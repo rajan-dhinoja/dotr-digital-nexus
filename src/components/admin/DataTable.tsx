@@ -31,11 +31,11 @@ export function DataTable<T extends { id: string }>({
   loading,
 }: DataTableProps<T>) {
   if (loading) {
-    return <div className="text-center py-8 text-muted-foreground">Loading...</div>;
+    return <div className="text-center py-8 text-foreground/70">Loading...</div>;
   }
 
   if (data.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground">No data found</div>;
+    return <div className="text-center py-8 text-foreground/70">No data found</div>;
   }
 
   return (

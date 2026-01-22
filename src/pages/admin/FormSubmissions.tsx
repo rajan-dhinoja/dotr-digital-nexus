@@ -188,9 +188,9 @@ export default function AdminFormSubmissions() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-muted-foreground">Loading submissions...</div>
+        <div className="text-center py-12 text-foreground/70">Loading submissions...</div>
       ) : filteredSubmissions.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">No submissions found</div>
+        <div className="text-center py-12 text-foreground/70">No submissions found</div>
       ) : (
         <div className="space-y-3">
           {filteredSubmissions.map((sub) => {
@@ -213,7 +213,7 @@ export default function AdminFormSubmissions() {
                         {formData.name || formData.email || Object.values(formData)[0] || 'No data'}
                       </p>
                     </div>
-                    <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
+                    <div className="text-right text-sm text-foreground/70 whitespace-nowrap">
                       {format(new Date(sub.created_at!), 'MMM d, yyyy HH:mm')}
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export default function AdminFormSubmissions() {
               </div>
               
               <div className="space-y-3">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-foreground/80">
                   <p>Page: {selectedSubmission.page_type}</p>
                   <p>Submitted: {format(new Date(selectedSubmission.created_at!), 'MMM d, yyyy HH:mm:ss')}</p>
                 </div>

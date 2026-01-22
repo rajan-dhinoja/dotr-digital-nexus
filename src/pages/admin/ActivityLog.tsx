@@ -139,9 +139,9 @@ export default function AdminActivityLog() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-muted-foreground">Loading activity log...</div>
+        <div className="text-center py-12 text-foreground/70">Loading activity log...</div>
       ) : filteredLogs.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">No activity logs found</div>
+        <div className="text-center py-12 text-foreground/70">No activity logs found</div>
       ) : (
         <div className="space-y-3">
           {filteredLogs.map((log) => (
@@ -177,7 +177,7 @@ export default function AdminActivityLog() {
                       </div>
                     )}
                   </div>
-                  <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
+                  <div className="text-right text-sm text-foreground/70 whitespace-nowrap">
                     <p>{format(new Date(log.created_at), 'MMM d, yyyy')}</p>
                     <p>{format(new Date(log.created_at), 'HH:mm:ss')}</p>
                   </div>

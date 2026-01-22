@@ -89,7 +89,7 @@ export function ProjectGalleryManager({ projectId }: Props) {
               <Trash2 className="h-3 w-3" />
             </Button>
             {img.caption && (
-              <p className="text-xs text-muted-foreground mt-1 truncate">{img.caption}</p>
+              <p className="text-xs text-foreground/70 mt-1 truncate">{img.caption}</p>
             )}
           </div>
         ))}

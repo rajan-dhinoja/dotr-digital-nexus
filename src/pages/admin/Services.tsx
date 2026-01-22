@@ -394,7 +394,7 @@ export default function AdminServices() {
                   </Card>
                 ))}
                 {features.length === 0 && (
-                  <p className="text-muted-foreground text-center py-8">No features added yet. Click "Add Feature" to start.</p>
+                  <p className="text-foreground/70 text-center py-8">No features added yet. Click "Add Feature" to start.</p>
                 )}
               </TabsContent>
 
@@ -484,7 +484,7 @@ export default function AdminServices() {
                   </Card>
                 ))}
                 {faqs.length === 0 && (
-                  <p className="text-muted-foreground text-center py-8">No FAQs added yet. Click "Add FAQ" to start.</p>
+                  <p className="text-foreground/70 text-center py-8">No FAQs added yet. Click "Add FAQ" to start.</p>
                 )}
               </TabsContent>
             </Tabs>

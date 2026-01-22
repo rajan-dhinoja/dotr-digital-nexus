@@ -266,7 +266,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
   };
 
   if (isLoading) {
-    return <div className="p-4 text-muted-foreground">Loading sections...</div>;
+    return <div className="p-4 text-foreground/70">Loading sections...</div>;
   }
 
   return (
@@ -297,7 +297,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
 
       {sections.length === 0 ? (
         <Card className="border-dashed">
-          <CardContent className="py-8 text-center text-muted-foreground">
+          <CardContent className="py-8 text-center text-foreground/70">
             No sections added yet. Click "Add Section" to get started.
           </CardContent>
         </Card>
@@ -310,12 +310,12 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
               <Card key={section.id} className={!section.is_active ? 'opacity-50' : ''}>
                 <CardHeader className="py-3 px-4">
                   <div className="flex items-center gap-3">
-                    <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                    <GripVertical className="h-4 w-4 text-foreground/60 cursor-grab" />
                     <Icon className="h-4 w-4 text-primary" />
                     <CardTitle className="text-sm font-medium flex-1">
                       {section.title || typeInfo?.name || section.section_type}
                     </CardTitle>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                    <span className="text-xs text-foreground/80 bg-muted/50 border border-border px-2 py-1 rounded">
                       {typeInfo?.name || section.section_type}
                     </span>
                     <div className="flex items-center gap-1">
@@ -393,7 +393,7 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                   <Icon className="h-6 w-6 text-primary" />
                   <span className="font-medium text-sm">{type.name}</span>
                   {type.description && (
-                    <span className="text-xs text-muted-foreground text-center line-clamp-2">
+                    <span className="text-xs text-foreground/80 text-center line-clamp-2">
                       {type.description}
                     </span>
                   )}
@@ -2491,7 +2491,7 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
 
     default:
       return (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-foreground/70">
           No editor available for this section type.
         </div>
       );
@@ -2618,7 +2618,7 @@ function FormSectionEditor({ content, items, setItems, renderItemsInput }: FormS
 
         {fields.length === 0 ? (
           <Card className="p-4 border-dashed">
-            <p className="text-sm text-muted-foreground text-center">No fields added yet. Click "Add Field" to start building your form.</p>
+            <p className="text-sm text-foreground/70 text-center">No fields added yet. Click "Add Field" to start building your form.</p>
           </Card>
         ) : (
           <div className="space-y-2">
@@ -2727,13 +2727,13 @@ function FormSectionEditor({ content, items, setItems, renderItemsInput }: FormS
                   // Preview Mode
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                      <GripVertical className="h-4 w-4 text-foreground/60 cursor-grab" />
                       <div>
                         <p className="text-sm font-medium">
                           {field.label || 'Untitled Field'}
                           {field.required && <span className="text-destructive ml-1">*</span>}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-foreground/70">
                           {FIELD_TYPES.find(t => t.value === field.field_type)?.label || 'Text Input'}
                           {field.width === 'half' && ' • Half width'}
                         </p>

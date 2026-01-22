@@ -145,7 +145,7 @@ export default function AdminUsers() {
             <DialogTitle>Change User Role</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/80">
               User ID: <code className="bg-card border border-border px-2 py-1 rounded text-foreground font-mono">{editingUser?.user_id}</code>
             </p>
             <div className="space-y-2">

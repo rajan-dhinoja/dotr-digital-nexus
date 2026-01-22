@@ -82,12 +82,12 @@ export function ImageUpload({ bucket, value, onChange }: ImageUploadProps) {
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (
-            <Loader2 className="h-8 w-8 mx-auto animate-spin text-muted-foreground" />
+            <Loader2 className="h-8 w-8 mx-auto animate-spin text-foreground/70" />
           ) : (
             <>
-              <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">Click to upload</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <Upload className="h-8 w-8 mx-auto text-foreground/60 mb-2" />
+              <p className="text-sm text-foreground/80">Click to upload</p>
+              <p className="text-xs text-foreground/70 mt-1">
                 Max {formatFileSize(MAX_FILE_SIZE)} • JPEG, PNG, GIF, WebP
               </p>
             </>

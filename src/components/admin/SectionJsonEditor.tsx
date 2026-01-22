@@ -312,6 +312,7 @@ export function SectionJsonEditor({
             type="button"
             variant="outline"
             size="sm"
+            className="bg-card border-border text-foreground hover:bg-muted hover:text-foreground"
             onClick={() => fileInputRef.current?.click()}
           >
             <Upload className="h-4 w-4 mr-2" />
@@ -321,6 +322,7 @@ export function SectionJsonEditor({
             type="button"
             variant="outline"
             size="sm"
+            className="bg-card border-border text-foreground hover:bg-muted hover:text-foreground"
             onClick={handleExport}
             disabled={!validationResult.valid || !!parseError}
           >
@@ -331,6 +333,7 @@ export function SectionJsonEditor({
             type="button"
             variant="outline"
             size="sm"
+            className="bg-card border-border text-foreground hover:bg-muted hover:text-foreground"
             onClick={handleFormat}
             disabled={!!parseError}
           >
@@ -379,7 +382,7 @@ export function SectionJsonEditor({
                 onMount={handleEditorDidMount}
                 loading={
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-sm text-muted-foreground">Loading editor...</div>
+                    <div className="text-sm text-foreground/70">Loading editor...</div>
                   </div>
                 }
                 options={{
@@ -429,11 +432,11 @@ export function SectionJsonEditor({
                 {schemaDef ? (
                   <div className="space-y-4">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-3">
+                      <p className="text-xs text-foreground/80 mb-3 leading-relaxed">
                         This is an example JSON structure for this section type. Use this as a reference when writing or uploading JSON data. All fields shown are based on the section schema.
                       </p>
                       <div className="relative">
-                        <pre className="text-xs bg-card border border-border p-3 rounded-md overflow-x-auto font-mono text-foreground">
+                        <pre className="text-xs bg-muted/30 border border-border p-3 rounded-md overflow-x-auto font-mono text-foreground dark:bg-muted/20">
                           {JSON.stringify(exampleJson, null, 2)}
                         </pre>
                         <Button
@@ -457,7 +460,7 @@ export function SectionJsonEditor({
                     
                     {validationResult.errors.length > 0 && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-2">
+                        <p className="text-xs font-medium text-foreground mb-2">
                           Validation Errors:
                         </p>
                         <ScrollArea className="h-[200px]">
@@ -481,7 +484,7 @@ export function SectionJsonEditor({
                     )}
                   </div>
                 ) : (
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-foreground/70">
                     No schema available for this section type
                   </div>
                 )}

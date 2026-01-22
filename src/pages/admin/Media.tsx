@@ -163,11 +163,11 @@ export default function AdminMedia() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-muted-foreground">Loading files...</div>
+        <div className="text-center py-12 text-foreground/70">Loading files...</div>
       ) : filteredFiles.length === 0 ? (
         <div className="text-center py-12">
-          <Image className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">No files found</p>
+          <Image className="h-12 w-12 mx-auto text-foreground/50 mb-4" />
+          <p className="text-foreground/70">No files found</p>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -271,7 +271,7 @@ export default function AdminMedia() {
               className="max-h-[60vh] object-contain rounded"
             />
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-foreground/80">
             <p>Bucket: {previewFile?.bucket}</p>
             <p>URL: <code className="text-xs bg-card border border-border px-2 py-1 rounded break-all text-foreground font-mono">{previewFile?.url}</code></p>
           </div>
