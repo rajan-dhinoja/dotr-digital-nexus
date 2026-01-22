@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import type { PageSection, SectionType } from '@/hooks/usePageSections';
 import { validateJson, getSchemaDefinition } from '@/lib/sectionSchemaUtils';
+import { getSectionExample } from '@/lib/sectionExamples';
 import type { ValidationResult } from '@/types/sectionSchema';
 
 interface SectionJsonEditorProps {
@@ -33,8 +34,8 @@ export function SectionJsonEditor({
   const [parseError, setParseError] = useState<string | null>(null);
   const [editorTheme, setEditorTheme] = useState<'vs-dark' | 'light'>('light');
 
-  // Get schema definition
-  const schemaDef = sectionType ? getSchemaDefinition(sectionType.schema) : null;
+  // Get schema definition - use actual example JSON if available
+  const schemaDef = sectionType ? getSchemaDefinition(sectionType.schema, sectionType.slug) : null;
   const exampleJson = schemaDef?.example || {};
 
   // Track if user is actively editing to prevent auto-updates

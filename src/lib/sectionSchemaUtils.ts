@@ -3,6 +3,7 @@ import addFormats from 'ajv-formats';
 import type { Json } from '@/integrations/supabase/types';
 import type { JSONSchemaType } from 'ajv';
 import type { SectionSchema, ValidationResult, JsonSchemaDefinition } from '@/types/sectionSchema';
+import { getSectionExample } from './sectionExamples';
 
 // Initialize AJV with formats support
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -450,10 +451,29 @@ export function validateJson(
 
 /**
  * Gets both JSON Schema and example JSON for a section type
+ * @param sectionSchema The schema from the database
+ * @param sectionSlug Optional section slug to load actual example JSON
  */
-export function getSchemaDefinition(sectionSchema: Json | null | undefined): JsonSchemaDefinition {
+export function getSchemaDefinition(
+  sectionSchema: Json | null | undefined,
+  sectionSlug?: string
+): JsonSchemaDefinition {
+  // Try to load actual example JSON first, fallback to generated
+  let example: Record<string, unknown>;
+  
+  if (sectionSlug) {
+    const actualExample = getSectionExample(sectionSlug);
+    if (actualExample) {
+      example = actualExample;
+    } else {
+      example = generateExampleJson(sectionSchema);
+    }
+  } else {
+    example = generateExampleJson(sectionSchema);
+  }
+  
   return {
     schema: convertToJsonSchema(sectionSchema),
-    example: generateExampleJson(sectionSchema),
+    example,
   };
 }

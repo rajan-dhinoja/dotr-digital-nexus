@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-01-22T18:00:00Z",
+  "lastUpdated": "2025-01-22T18:30:00Z",
   "sections": [
     {
       "slug": "hero",
@@ -16,6 +16,15 @@
       "name": "Features",
       "exampleFile": "sections/features.json",
       "componentPath": "src/components/sections/FeaturesSection.tsx",
+      "fieldsCount": 1,
+      "hasArray": true,
+      "complexity": "medium"
+    },
+    {
+      "slug": "process",
+      "name": "Process",
+      "exampleFile": "sections/process.json",
+      "componentPath": "src/components/sections/ProcessSection.tsx",
       "fieldsCount": 1,
       "hasArray": true,
       "complexity": "medium"
@@ -45,7 +54,7 @@
       "componentPath": "src/components/sections/FAQSection.tsx",
       "fieldsCount": 1,
       "hasArray": true,
-      "complexity": "simple"
+      "complexity": "medium"
     },
     {
       "slug": "cta",
@@ -84,13 +93,13 @@
       "complexity": "complex"
     },
     {
-      "slug": "process",
-      "name": "Process",
-      "exampleFile": "sections/process.json",
-      "componentPath": "src/components/sections/ProcessSection.tsx",
-      "fieldsCount": 1,
+      "slug": "form",
+      "name": "Form",
+      "exampleFile": "sections/form.json",
+      "componentPath": "src/components/sections/FormSection.tsx",
+      "fieldsCount": 5,
       "hasArray": true,
-      "complexity": "medium"
+      "complexity": "complex"
     },
     {
       "slug": "logo-cloud",
@@ -135,7 +144,7 @@
       "componentPath": "src/components/sections/ImageTextSection.tsx",
       "fieldsCount": 5,
       "hasArray": false,
-      "complexity": "medium"
+      "complexity": "simple"
     },
     {
       "slug": "timeline",
@@ -153,7 +162,7 @@
       "componentPath": "src/components/sections/CountersSection.tsx",
       "fieldsCount": 1,
       "hasArray": true,
-      "complexity": "simple"
+      "complexity": "medium"
     },
     {
       "slug": "newsletter",
@@ -184,7 +193,7 @@
     },
     {
       "slug": "divider",
-      "name": "Divider",
+      "name": "Section Divider",
       "exampleFile": "sections/divider.json",
       "componentPath": "src/components/sections/DividerSection.tsx",
       "fieldsCount": 4,
@@ -202,7 +211,7 @@
     },
     {
       "slug": "kpi-strip",
-      "name": "KPI Strip",
+      "name": "KPI/Stats Strip",
       "exampleFile": "sections/kpi-strip.json",
       "componentPath": "src/components/sections/KpiStripSection.tsx",
       "fieldsCount": 2,
@@ -256,7 +265,7 @@
     },
     {
       "slug": "trust-badges",
-      "name": "Trust Badges",
+      "name": "Security Trust Badges",
       "exampleFile": "sections/trust-badges.json",
       "componentPath": "src/components/sections/TrustBadgesSection.tsx",
       "fieldsCount": 1,
@@ -324,7 +333,7 @@
       "componentPath": "src/components/sections/WhoItsForSection.tsx",
       "fieldsCount": 1,
       "hasArray": true,
-      "complexity": "complex"
+      "complexity": "medium"
     },
     {
       "slug": "before-after",
@@ -424,15 +433,6 @@
       "fieldsCount": 2,
       "hasArray": true,
       "complexity": "medium"
-    },
-    {
-      "slug": "form",
-      "name": "Form",
-      "exampleFile": "sections/form.json",
-      "componentPath": "src/components/sections/FormSection.tsx",
-      "fieldsCount": 5,
-      "hasArray": true,
-      "complexity": "complex"
     }
   ]
 }
