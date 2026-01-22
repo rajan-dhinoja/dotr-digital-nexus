@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,9 +13,19 @@ interface MegaMenuProps {
 
 export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
   const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const key = slug || href.replace(/^\//, "");
   const config: MegaMenuDefinition | undefined = megaMenuConfig[key];
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!config) {
     return (
@@ -37,11 +47,26 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
     );
   }
 
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    // Add a small delay before closing to allow mouse movement
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 150);
+  };
+
   return (
     <div
       className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <button
         className={cn(
@@ -65,13 +90,13 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
 
       {open && (
         <div 
-          className="absolute left-1/2 top-full z-[60] pt-4 w-screen max-w-5xl -translate-x-1/2"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
+          className="absolute left-1/2 top-full z-[60] w-screen max-w-5xl -translate-x-1/2"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          {/* Invisible bridge to prevent mouse from leaving hover area */}
-          <div className="absolute top-0 left-0 right-0 h-4" />
-          <div className="overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
+          {/* Invisible bridge to fill any gap - extends upward to connect with button */}
+          <div className="absolute -top-1 left-0 right-0 h-1" />
+          <div className="mt-1 overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
             <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
               {/* Left summary column */}
               <div className="relative bg-gradient-to-b from-primary/5 via-primary/10 to-primary/5 p-8 md:p-10 flex flex-col justify-between">
