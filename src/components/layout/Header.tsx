@@ -8,6 +8,8 @@ import logoLight from "@/assets/dotr-logo-light.jpg";
 import logoDark from "@/assets/dotr-logo-dark.jpg";
 import { useNavPages, Page } from "@/hooks/usePages";
 import { MegaMenu } from "@/components/layout/MegaMenu";
+import { useNavigationMenu } from "@/hooks/useNavigationMenu";
+import { mapTreeToUi, UiNavItem } from "@/lib/navigation/transform";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +46,8 @@ interface NavItem {
   sections?: MegaMenuSection[];
 }
 
+const USE_DB_NAVIGATION = import.meta.env.VITE_USE_DB_NAVIGATION === "true";
+
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,6 +55,9 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const { data: pages = [], isLoading } = useNavPages();
+  const { data: headerMenu } = useNavigationMenu("header-main", {
+    enabled: USE_DB_NAVIGATION,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,8 +73,8 @@ export const Header = () => {
     setOpenMobileDropdowns([]);
   }, [location.pathname]);
 
-  // Build navigation tree from pages
-  const buildNavigation = (pages: Page[]): NavItem[] => {
+  // Build navigation tree from pages (legacy)
+  const buildNavigationFromPages = (pages: Page[]): NavItem[] => {
     // Separate parent pages (no parent_id) and child pages
     const parentPages = pages.filter(p => !p.parent_id);
     const childPages = pages.filter(p => p.parent_id);
@@ -110,7 +117,26 @@ export const Header = () => {
     return systemRoutes[page.slug] || `/${page.slug}`;
   };
 
-  const navigation = buildNavigation(pages);
+  const navigationFromPages = buildNavigationFromPages(pages);
+
+  const navigationFromDb: NavItem[] | null = headerMenu
+    ? mapTreeToUi(headerMenu.items).map((item) => ({
+        name: item.label,
+        href: item.href || "#",
+        slug: undefined,
+        description: item.description ?? undefined,
+        children: (item.children ?? []).map((child) => ({
+          name: child.label,
+          href: child.href || "#",
+          slug: undefined,
+          description: child.description ?? undefined,
+        })),
+      }))
+    : null;
+
+  const navigation = USE_DB_NAVIGATION && navigationFromDb
+    ? navigationFromDb
+    : navigationFromPages;
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";

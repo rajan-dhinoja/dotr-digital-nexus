@@ -33,6 +33,11 @@ interface Page {
   is_system: boolean | null;
   show_in_nav: boolean | null;
   display_order: number | null;
+  // Navigation integration fields (hybrid model)
+  show_in_navigation: boolean | null;
+  default_menu_type: string | null;
+  navigation_label_override: string | null;
+  navigation_priority: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,6 +53,10 @@ export default function AdminPages() {
   const [editing, setEditing] = useState<Page | null>(null);
   const [isActive, setIsActive] = useState(true);
   const [showInNav, setShowInNav] = useState(true);
+  const [showInNavigation, setShowInNavigation] = useState(true);
+  const [defaultMenuType, setDefaultMenuType] = useState<string>('header');
+  const [navigationLabelOverride, setNavigationLabelOverride] = useState<string>('');
+  const [navigationPriority, setNavigationPriority] = useState<number>(0);
   const [activeTab, setActiveTab] = useState('general');
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonContent, setJsonContent] = useState<Record<string, unknown>>({});
@@ -125,6 +134,10 @@ export default function AdminPages() {
     setEditing(page);
     setIsActive(page.is_active ?? true);
     setShowInNav(page.show_in_nav ?? true);
+    setShowInNavigation(page.show_in_navigation ?? true);
+    setDefaultMenuType(page.default_menu_type ?? 'header');
+    setNavigationLabelOverride(page.navigation_label_override ?? '');
+    setNavigationPriority(page.navigation_priority ?? 0);
     setJsonContent((page.content as Record<string, unknown>) || {});
     setActiveTab('general');
     setOpen(true);
@@ -163,6 +176,10 @@ export default function AdminPages() {
       parent_id: form.get('parent_id')?.toString() === 'none' ? null : form.get('parent_id')?.toString() || null,
       is_active: isActive,
       show_in_nav: showInNav,
+      show_in_navigation: showInNavigation,
+      default_menu_type: form.get('default_menu_type')?.toString() || defaultMenuType,
+      navigation_label_override: form.get('navigation_label_override')?.toString() || navigationLabelOverride || null,
+      navigation_priority: Number(form.get('navigation_priority')) || navigationPriority || 0,
       display_order: Number(form.get('display_order')) || 0,
       content: activeTab === 'json' ? jsonContent : (editing?.content || {}),
     };
@@ -207,6 +224,10 @@ export default function AdminPages() {
           setEditing(null); 
           setIsActive(true); 
           setShowInNav(true); 
+          setShowInNavigation(true);
+          setDefaultMenuType('header');
+          setNavigationLabelOverride('');
+          setNavigationPriority(0);
           setJsonContent({});
           setActiveTab('general');
           setOpen(true); 
@@ -294,14 +315,67 @@ export default function AdminPages() {
                   <Input name="display_order" type="number" defaultValue={editing?.display_order ?? 0} min={0} max={9999} />
                 </div>
 
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center space-x-2">
-                    <Switch id="is_active" checked={isActive} onCheckedChange={setIsActive} />
-                    <Label htmlFor="is_active">Published</Label>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center space-x-2">
+                      <Switch id="is_active" checked={isActive} onCheckedChange={setIsActive} />
+                      <Label htmlFor="is_active">Published</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch id="show_in_nav" checked={showInNav} onCheckedChange={setShowInNav} />
+                      <Label htmlFor="show_in_nav">Show in Legacy Navigation</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="show_in_navigation"
+                        checked={showInNavigation}
+                        onCheckedChange={setShowInNavigation}
+                      />
+                      <Label htmlFor="show_in_navigation">Show in New Navigation</Label>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch id="show_in_nav" checked={showInNav} onCheckedChange={setShowInNav} />
-                    <Label htmlFor="show_in_nav">Show in Navigation</Label>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Default Menu Type</Label>
+                      <Select
+                        name="default_menu_type"
+                        defaultValue={editing?.default_menu_type || defaultMenuType}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select menu type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="header">Header</SelectItem>
+                          <SelectItem value="footer">Footer</SelectItem>
+                          <SelectItem value="mobile">Mobile</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Navigation Label Override</Label>
+                      <Input
+                        name="navigation_label_override"
+                        defaultValue={editing?.navigation_label_override ?? navigationLabelOverride}
+                        placeholder="Optional label used in menus"
+                        maxLength={100}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Navigation Priority</Label>
+                    <Input
+                      name="navigation_priority"
+                      type="number"
+                      defaultValue={editing?.navigation_priority ?? navigationPriority ?? 0}
+                      min={0}
+                      max={9999}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Lower numbers appear earlier in navigation within the same group.
+                    </p>
                   </div>
                 </div>
               </TabsContent>

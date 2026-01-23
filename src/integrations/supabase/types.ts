@@ -364,6 +364,10 @@ export type Database = {
           meta_title: string | null
           parent_id: string | null
           show_in_nav: boolean | null
+          show_in_navigation: boolean | null
+          default_menu_type: string | null
+          navigation_label_override: string | null
+          navigation_priority: number | null
           slug: string
           template: string | null
           title: string
@@ -381,6 +385,10 @@ export type Database = {
           meta_title?: string | null
           parent_id?: string | null
           show_in_nav?: boolean | null
+          show_in_navigation?: boolean | null
+          default_menu_type?: string | null
+          navigation_label_override?: string | null
+          navigation_priority?: number | null
           slug: string
           template?: string | null
           title: string
@@ -398,6 +406,10 @@ export type Database = {
           meta_title?: string | null
           parent_id?: string | null
           show_in_nav?: boolean | null
+          show_in_navigation?: boolean | null
+          default_menu_type?: string | null
+          navigation_label_override?: string | null
+          navigation_priority?: number | null
           slug?: string
           template?: string | null
           title?: string
@@ -822,6 +834,237 @@ export type Database = {
         ]
       }
       user_roles: {
+      navigation_menus: {
+        Row: {
+          id: string
+          site_id: string
+          locale: string | null
+          slug: string
+          label: string
+          type: string
+          is_default: boolean | null
+          is_active: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          site_id: string
+          locale?: string | null
+          slug: string
+          label: string
+          type?: string
+          is_default?: boolean | null
+          is_active?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          site_id?: string
+          locale?: string | null
+          slug?: string
+          label?: string
+          type?: string
+          is_default?: boolean | null
+          is_active?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_menus_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      navigation_items: {
+        Row: {
+          id: string
+          menu_id: string
+          parent_id: string | null
+          site_id: string
+          locale: string | null
+          label: string
+          description: string | null
+          icon_key: string | null
+          badge_text: string | null
+          is_featured: boolean | null
+          target_type: string
+          page_id: string | null
+          external_url: string | null
+          entity_type: string | null
+          entity_id: string | null
+          open_in_new_tab: boolean | null
+          is_active: boolean | null
+          is_visible_desktop: boolean | null
+          is_visible_mobile: boolean | null
+          is_mega_root: boolean | null
+          layout_variant: string | null
+          order_index: number | null
+          group_key: string | null
+          column_index: number | null
+          source: string | null
+          source_page_path: string | null
+          auto_sync: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          menu_id: string
+          parent_id?: string | null
+          site_id: string
+          locale?: string | null
+          label: string
+          description?: string | null
+          icon_key?: string | null
+          badge_text?: string | null
+          is_featured?: boolean | null
+          target_type?: string
+          page_id?: string | null
+          external_url?: string | null
+          entity_type?: string | null
+          entity_id?: string | null
+          open_in_new_tab?: boolean | null
+          is_active?: boolean | null
+          is_visible_desktop?: boolean | null
+          is_visible_mobile?: boolean | null
+          is_mega_root?: boolean | null
+          layout_variant?: string | null
+          order_index?: number | null
+          group_key?: string | null
+          column_index?: number | null
+          source?: string | null
+          source_page_path?: string | null
+          auto_sync?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          menu_id?: string
+          parent_id?: string | null
+          site_id?: string
+          locale?: string | null
+          label?: string
+          description?: string | null
+          icon_key?: string | null
+          badge_text?: string | null
+          is_featured?: boolean | null
+          target_type?: string
+          page_id?: string | null
+          external_url?: string | null
+          entity_type?: string | null
+          entity_id?: string | null
+          open_in_new_tab?: boolean | null
+          is_active?: boolean | null
+          is_visible_desktop?: boolean | null
+          is_visible_mobile?: boolean | null
+          is_mega_root?: boolean | null
+          layout_variant?: string | null
+          order_index?: number | null
+          group_key?: string | null
+          column_index?: number | null
+          source?: string | null
+          source_page_path?: string | null
+          auto_sync?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_items_menu_id_fkey"
+            columns: ["menu_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_menus"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "navigation_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "navigation_items_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "navigation_items_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      navigation_item_meta: {
+        Row: {
+          id: string
+          navigation_item_id: string
+          key: string
+          value: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          navigation_item_id: string
+          key: string
+          value?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          navigation_item_id?: string
+          key?: string
+          value?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_item_meta_navigation_item_id_fkey"
+            columns: ["navigation_item_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sites: {
+        Row: {
+          id: string
+          name: string
+          domain: string | null
+          is_active: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          domain?: string | null
+          is_active?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          domain?: string | null
+          is_active?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
         Row: {
           created_at: string
           id: string

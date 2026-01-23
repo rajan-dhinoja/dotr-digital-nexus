@@ -15,6 +15,10 @@ export interface Page {
   is_system: boolean | null;
   show_in_nav: boolean | null;
   display_order: number | null;
+  show_in_navigation: boolean | null;
+  default_menu_type: string | null;
+  navigation_label_override: string | null;
+  navigation_priority: number | null;
   created_at: string;
   updated_at: string;
 }
