@@ -1,5 +1,9 @@
 {
+  "version": "1.0",
+  "exported_at": "2026-01-23T10:30:00.000Z",
+  "entity_type": "page_section",
   "page_type": "home",
+  "entity_id": null,
   "sections": [
     {
       "section_type": "hero",
@@ -10,7 +14,7 @@
         "subtitle": "Transform your business with fast, scalable, and future-ready services powered by AI and advanced automation. We're not just AI-assisted—we're AI-first.",
         "cta_text": "Get Started with AI Consultation",
         "cta_link": "/contact",
-        "background_image": null
+        "background_image": ""
       },
       "display_order": 1,
       "is_active": true
@@ -137,43 +141,43 @@
             "title": "AI Consultant Chatbot",
             "description": "Smart chatbot that asks intelligent questions and recommends the perfect services for your needs—available 24/7",
             "icon": "MessageSquare",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           },
           {
             "title": "Smart Lead Qualification",
             "description": "AI-powered systems automatically qualify leads, route them to the right team, and start conversations instantly",
             "icon": "Filter",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           },
           {
             "title": "AI Service Recommendations",
             "description": "Our platform analyzes your business needs and suggests the optimal combination of services for maximum impact",
             "icon": "Sparkles",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           },
           {
             "title": "Automated Content Generation",
             "description": "AI-assisted content creation for websites, marketing materials, and communications—faster and more consistent",
             "icon": "FileText",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           },
           {
             "title": "AI Analytics & Insights",
             "description": "Deep analytics powered by AI to uncover patterns, predict trends, and optimize your digital presence continuously",
             "icon": "BarChart",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           },
           {
             "title": "Workflow Automation",
             "description": "End-to-end automation using n8n to connect your tools, streamline processes, and eliminate manual work",
             "icon": "Workflow",
-            "image": null,
-            "link": null
+            "image": "",
+            "link": ""
           }
         ]
       },
@@ -346,28 +350,28 @@
             "author": "Alex Chen",
             "role": "CEO",
             "company": "TechStart Inc.",
-            "image": null
+            "image": ""
           },
           {
             "quote": "Finally, a company that offers everything under one roof. No more juggling multiple vendors. DOTR's 9 pillars cover everything we need, and their AI tools make everything faster.",
             "author": "Maria Rodriguez",
             "role": "Founder",
             "company": "Digital Ventures",
-            "image": null
+            "image": ""
           },
           {
             "quote": "The AI consultant chatbot was a game-changer. It understood our needs immediately and recommended the perfect service mix. The whole process was smooth and fast.",
             "author": "James Wilson",
             "role": "CTO",
             "company": "Innovate Solutions",
-            "image": null
+            "image": ""
           },
           {
             "quote": "We saved 25+ hours per week after implementing their automation solutions. The ROI was clear within the first month. DOTR is the future of digital services.",
             "author": "Sarah Kim",
             "role": "Operations Director",
             "company": "ScaleUp Co.",
-            "image": null
+            "image": ""
           }
         ]
       },
@@ -397,9 +401,9 @@
         "story": "DOTR (Dhinoja OmniTech Resolutions) was founded on a simple principle: technology should empower businesses, not complicate them. We're not just another agency—we're an AI-first company that builds fast, scalable, and future-ready solutions. Every service we offer is designed to be quick, smart, and optimized from the ground up.",
         "mission": "To deliver innovative AI-powered digital solutions that drive real business results and help our clients achieve their goals faster and more efficiently.",
         "vision": "To be the leading AI-first partner for businesses seeking to transform their digital presence, automate their operations, and unlock their full potential through intelligent technology.",
-        "founder_image": null,
-        "founder_name": null,
-        "founder_title": null,
+        "founder_image": "",
+        "founder_name": "",
+        "founder_title": "",
         "founded_year": "2024"
       },
       "display_order": 12,
