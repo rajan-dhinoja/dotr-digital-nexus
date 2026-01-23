@@ -5,7 +5,7 @@ Complete inventory of all section types in the Page Builder system.
 ## Summary
 
 - **Total Sections**: 48
-- **Last Updated**: 2025-01-22
+- **Last Updated**: 2025-01-23
 - **Source**: Database `section_types` table + `SectionRenderer.tsx`
 
 ## Section List
@@ -27,7 +27,7 @@ Complete inventory of all section types in the Page Builder system.
 | services-grid | Services Grid | ServicesGridSection.tsx | Medium | Yes | 1 |
 | portfolio-grid | Portfolio Grid | PortfolioGridSection.tsx | Medium | Yes | 2 |
 | video | Video | VideoSection.tsx | Simple | No | 3 |
-| image-text | Image Text | ImageTextSection.tsx | Medium | No | 5 |
+| image-text | Image Text | ImageTextSection.tsx | Simple | No | 5 |
 | timeline | Timeline | TimelineSection.tsx | Medium | Yes | 1 |
 | counters | Counters | CountersSection.tsx | Simple | Yes | 1 |
 | newsletter | Newsletter | NewsletterSection.tsx | Simple | No | 3 |
@@ -48,7 +48,7 @@ Complete inventory of all section types in the Page Builder system.
 | value-proposition | Value Proposition | ValuePropositionSection.tsx | Medium | Yes | 4 |
 | elevator-pitch | Elevator Pitch | ElevatorPitchSection.tsx | Simple | No | 4 |
 | outcomes-benefits | Outcomes/Benefits | OutcomesBenefitsSection.tsx | Medium | Yes | 2 |
-| who-its-for | Who Its For | WhoItsForSection.tsx | Complex | Yes | 1 |
+| who-its-for | Who Its For | WhoItsForSection.tsx | Medium | Yes | 1 |
 | before-after | Before & After | BeforeAfterSection.tsx | Simple | No | 4 |
 | video-demo | Video Demo | VideoDemoSection.tsx | Medium | Yes | 3 |
 | screenshot-gallery | Screenshot Gallery | ScreenshotGallerySection.tsx | Medium | Yes | 2 |
@@ -95,9 +95,9 @@ form
 
 ## Complexity Distribution
 
-- **Simple**: 20 sections
-- **Medium**: 23 sections
-- **Complex**: 5 sections
+- **Simple**: 21 sections
+- **Medium**: 24 sections
+- **Complex**: 3 sections
 
 ## Array-Based Sections
 

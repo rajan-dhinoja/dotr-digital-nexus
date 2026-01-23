@@ -1,0 +1,554 @@
+[
+  {
+    "page_type": "home",
+    "section_type": "hero",
+    "title": "Hero Section",
+    "subtitle": null,
+    "content": {
+      "headline": "AI-Powered Digital Solutions That Scale",
+      "subtitle": "Transform your business with fast, scalable, and future-ready services powered by AI and advanced automation. We're not just AI-assisted—we're AI-first.",
+      "cta_text": "Get Started with AI Consultation",
+      "cta_link": "/contact",
+      "background_image": null
+    },
+    "display_order": 1,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "problem-statement",
+    "title": "The Problem",
+    "subtitle": "Are you struggling with these challenges?",
+    "content": {
+      "problems": [
+        {
+          "title": "Slow, Manual Processes",
+          "description": "Wasting hours on repetitive tasks that could be automated, limiting your team's ability to focus on growth and innovation."
+        },
+        {
+          "title": "Disconnected Services",
+          "description": "Working with multiple vendors for design, development, marketing, and support creates communication gaps and delays."
+        },
+        {
+          "title": "Outdated Technology",
+          "description": "Using legacy systems that can't scale with your business or leverage modern AI capabilities."
+        },
+        {
+          "title": "High Costs, Slow Results",
+          "description": "Traditional agencies take months to deliver, charge premium rates, and often miss the mark on what you actually need."
+        }
+      ],
+      "empathy_text": "We understand. Running a business means juggling countless priorities while trying to stay ahead of the competition. You need solutions that work fast, scale easily, and don't break the bank."
+    },
+    "display_order": 2,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "value-proposition",
+    "title": "Why DOTR?",
+    "subtitle": "The AI-First Difference",
+    "content": {
+      "headline": "Fast, Scalable, Future-Ready Solutions Powered by AI",
+      "supporting_points": [
+        "AI-first approach means automation from day one, not as an afterthought",
+        "End-to-end solutions across 9 specialized pillars—no vendor juggling",
+        "Deliver results in weeks, not months with our streamlined processes",
+        "Built to scale with your business without performance bottlenecks",
+        "Modern tech stack (Lovable, Supabase, n8n) ensures reliability and speed"
+      ],
+      "cta_text": "See How We're Different",
+      "cta_url": "/about"
+    },
+    "display_order": 3,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "services-grid",
+    "title": "Our Services",
+    "subtitle": "9 Specialized Pillars, One Unified Solution",
+    "content": {
+      "items": [
+        {
+          "icon": "Palette",
+          "title": "Designing",
+          "description": "UI/UX Design, Graphic Design, Branding & Identity, Motion & Visual Design",
+          "link": "/services/designing"
+        },
+        {
+          "icon": "Code",
+          "title": "Development",
+          "description": "Frontend, Backend & Full-Stack Development, Web Apps, Mobile Apps, Admin Panels, APIs & SaaS Platforms",
+          "link": "/services/development"
+        },
+        {
+          "icon": "ShoppingCart",
+          "title": "E-Commerce",
+          "description": "Shopify & WooCommerce, Custom E-commerce Platforms, Payments, Subscriptions, Marketplaces",
+          "link": "/services/e-commerce"
+        },
+        {
+          "icon": "TrendingUp",
+          "title": "Marketing",
+          "description": "Digital Strategy, SEO, Social Media Management, Paid Ads, Email Marketing & Automation",
+          "link": "/services/marketing"
+        },
+        {
+          "icon": "Video",
+          "title": "Content & Creative",
+          "description": "Website & SEO Content, Branding & Storytelling, Video Production & Editing",
+          "link": "/services/content-creative"
+        },
+        {
+          "icon": "Brain",
+          "title": "AI & Automation",
+          "description": "AI Chatbots & Support Systems, AI Content Generation, Lead Qualification, CRM & WhatsApp Automation, AI Analytics",
+          "link": "/services/ai-automation"
+        },
+        {
+          "icon": "Cloud",
+          "title": "Cloud / DevOps",
+          "description": "AWS, GCP, Azure, CI/CD Pipelines, Deployment, Monitoring & Scalability",
+          "link": "/services/cloud-devops"
+        },
+        {
+          "icon": "Shield",
+          "title": "Security & Maintenance",
+          "description": "Application Security, Backups & Performance Optimization, Ongoing Maintenance",
+          "link": "/services/security-maintenance"
+        },
+        {
+          "icon": "Lightbulb",
+          "title": "Consulting & Support",
+          "description": "Startup & Product Consulting, MVP Planning, Digital Transformation, Long-term Support & SLAs",
+          "link": "/services/consulting-support"
+        }
+      ]
+    },
+    "display_order": 4,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "feature-highlights",
+    "title": "AI-First Capabilities",
+    "subtitle": "How We Leverage AI to Deliver Better Results",
+    "content": {
+      "items": [
+        {
+          "title": "AI Consultant Chatbot",
+          "description": "Smart chatbot that asks intelligent questions and recommends the perfect services for your needs—available 24/7",
+          "icon": "MessageSquare",
+          "image": null,
+          "link": null
+        },
+        {
+          "title": "Smart Lead Qualification",
+          "description": "AI-powered systems automatically qualify leads, route them to the right team, and start conversations instantly",
+          "icon": "Filter",
+          "image": null,
+          "link": null
+        },
+        {
+          "title": "AI Service Recommendations",
+          "description": "Our platform analyzes your business needs and suggests the optimal combination of services for maximum impact",
+          "icon": "Sparkles",
+          "image": null,
+          "link": null
+        },
+        {
+          "title": "Automated Content Generation",
+          "description": "AI-assisted content creation for websites, marketing materials, and communications—faster and more consistent",
+          "icon": "FileText",
+          "image": null,
+          "link": null
+        },
+        {
+          "title": "AI Analytics & Insights",
+          "description": "Deep analytics powered by AI to uncover patterns, predict trends, and optimize your digital presence continuously",
+          "icon": "BarChart",
+          "image": null,
+          "link": null
+        },
+        {
+          "title": "Workflow Automation",
+          "description": "End-to-end automation using n8n to connect your tools, streamline processes, and eliminate manual work",
+          "icon": "Workflow",
+          "image": null,
+          "link": null
+        }
+      ]
+    },
+    "display_order": 5,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "process",
+    "title": "How We Work",
+    "subtitle": "Our Streamlined Process for Fast Results",
+    "content": {
+      "items": [
+        {
+          "step": 1,
+          "title": "AI-Powered Discovery",
+          "description": "Our AI consultant analyzes your needs, asks smart questions, and recommends the perfect solution mix. No lengthy sales calls—just intelligent matching.",
+          "icon": "Search"
+        },
+        {
+          "step": 2,
+          "title": "Rapid Planning & Design",
+          "description": "We create detailed plans and prototypes using AI-assisted tools, ensuring alignment with your goals while moving at lightning speed.",
+          "icon": "PenTool"
+        },
+        {
+          "step": 3,
+          "title": "AI-Enhanced Development",
+          "description": "Build with modern tools (Lovable, Supabase) and AI assistance (GitHub Copilot) for faster, higher-quality code that scales effortlessly.",
+          "icon": "Code"
+        },
+        {
+          "step": 4,
+          "title": "Automated Launch & Optimization",
+          "description": "Deploy with confidence using automated CI/CD pipelines. AI monitoring ensures continuous optimization and performance improvements.",
+          "icon": "Rocket"
+        }
+      ]
+    },
+    "display_order": 6,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "differentiators",
+    "title": "Why Choose DOTR?",
+    "subtitle": "What Sets Us Apart from Traditional Agencies",
+    "content": {
+      "items": [
+        {
+          "feature": "AI-First Approach",
+          "us": true,
+          "competitors": false
+        },
+        {
+          "feature": "End-to-End Solutions (9 Pillars)",
+          "us": true,
+          "competitors": "Limited Services"
+        },
+        {
+          "feature": "Fast Delivery (Weeks, Not Months)",
+          "us": true,
+          "competitors": false
+        },
+        {
+          "feature": "Fully CMS-Driven Admin Panel",
+          "us": true,
+          "competitors": "Hard-coded Content"
+        },
+        {
+          "feature": "Modern Tech Stack (Scalable)",
+          "us": true,
+          "competitors": "Legacy Systems"
+        },
+        {
+          "feature": "24/7 AI Support & Automation",
+          "us": true,
+          "competitors": false
+        },
+        {
+          "feature": "Programmatic SEO & Growth",
+          "us": true,
+          "competitors": "Limited SEO"
+        },
+        {
+          "feature": "No Vendor Juggling",
+          "us": true,
+          "competitors": false
+        }
+      ],
+      "show_comparison": true,
+      "our_label": "DOTR",
+      "competitor_label": "Traditional Agencies"
+    },
+    "display_order": 7,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "stats",
+    "title": "Our Impact",
+    "subtitle": "Numbers That Matter",
+    "content": {
+      "items": [
+        {
+          "value": "9",
+          "label": "Specialized Pillars",
+          "suffix": ""
+        },
+        {
+          "value": "48",
+          "label": "Modular Section Types",
+          "suffix": ""
+        },
+        {
+          "value": "100",
+          "label": "AI-Powered Features",
+          "suffix": "%"
+        },
+        {
+          "value": "24",
+          "label": "Hours Support",
+          "suffix": "/7"
+        }
+      ]
+    },
+    "display_order": 8,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "success-metrics",
+    "title": "Client Success Stories",
+    "subtitle": "Real Results from Real Clients",
+    "content": {
+      "items": [
+        {
+          "metric": "40%",
+          "label": "Average Revenue Increase",
+          "description": "Clients see significant revenue growth after implementing our AI-powered solutions",
+          "icon": "TrendingUp"
+        },
+        {
+          "metric": "20+",
+          "label": "Hours Saved Per Week",
+          "description": "Automation eliminates manual tasks, freeing teams to focus on growth",
+          "icon": "Clock"
+        },
+        {
+          "metric": "3x",
+          "label": "Faster Time to Market",
+          "description": "Our streamlined processes and AI tools deliver results in weeks, not months",
+          "icon": "Zap"
+        },
+        {
+          "metric": "98%",
+          "label": "Client Satisfaction",
+          "description": "Our AI-first approach and end-to-end solutions keep clients happy and coming back",
+          "icon": "Heart"
+        }
+      ]
+    },
+    "display_order": 9,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "subtitle": "Trusted by Businesses That Value Innovation",
+    "section_type": "testimonials",
+    "title": "What Our Clients Say",
+    "content": {
+      "items": [
+        {
+          "quote": "DOTR transformed our entire digital infrastructure. Their AI-first approach meant we got automation from day one, not as an expensive add-on. The results were immediate and measurable.",
+          "author": "Alex Chen",
+          "role": "CEO",
+          "company": "TechStart Inc.",
+          "image": null
+        },
+        {
+          "quote": "Finally, a company that offers everything under one roof. No more juggling multiple vendors. DOTR's 9 pillars cover everything we need, and their AI tools make everything faster.",
+          "author": "Maria Rodriguez",
+          "role": "Founder",
+          "company": "Digital Ventures",
+          "image": null
+        },
+        {
+          "quote": "The AI consultant chatbot was a game-changer. It understood our needs immediately and recommended the perfect service mix. The whole process was smooth and fast.",
+          "author": "James Wilson",
+          "role": "CTO",
+          "company": "Innovate Solutions",
+          "image": null
+        },
+        {
+          "quote": "We saved 25+ hours per week after implementing their automation solutions. The ROI was clear within the first month. DOTR is the future of digital services.",
+          "author": "Sarah Kim",
+          "role": "Operations Director",
+          "company": "ScaleUp Co.",
+          "image": null
+        }
+      ]
+    },
+    "display_order": 10,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "cta",
+    "title": "Ready to Transform Your Business?",
+    "subtitle": null,
+    "content": {
+      "headline": "Let's Build Something Amazing Together",
+      "description": "Join forward-thinking businesses that are leveraging AI to scale faster and smarter. Get started with a free AI consultation today.",
+      "primary_cta_text": "Get Free AI Consultation",
+      "primary_cta_link": "/contact",
+      "secondary_cta_text": "Explore Our Services",
+      "secondary_cta_link": "/services"
+    },
+    "display_order": 11,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "about-us",
+    "title": "About DOTR",
+    "subtitle": "AI-First Digital Solutions Company",
+    "content": {
+      "story": "DOTR (Dhinoja OmniTech Resolutions) was founded on a simple principle: technology should empower businesses, not complicate them. We're not just another agency—we're an AI-first company that builds fast, scalable, and future-ready solutions. Every service we offer is designed to be quick, smart, and optimized from the ground up.",
+      "mission": "To deliver innovative AI-powered digital solutions that drive real business results and help our clients achieve their goals faster and more efficiently.",
+      "vision": "To be the leading AI-first partner for businesses seeking to transform their digital presence, automate their operations, and unlock their full potential through intelligent technology.",
+      "founder_image": null,
+      "founder_name": null,
+      "founder_title": null,
+      "founded_year": "2024"
+    },
+    "display_order": 12,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "values-culture",
+    "title": "Our Values",
+    "subtitle": "What Drives Us",
+    "content": {
+      "items": [
+        {
+          "title": "AI-First Thinking",
+          "description": "We don't just use AI—we think AI-first. Every solution is designed with automation and intelligence at its core.",
+          "icon": "Brain"
+        },
+        {
+          "title": "Speed & Efficiency",
+          "description": "We deliver results fast without compromising quality. Time is your most valuable asset, and we respect that.",
+          "icon": "Zap"
+        },
+        {
+          "title": "Scalability",
+          "description": "Everything we build is designed to grow with your business. No performance bottlenecks, no technical debt.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "End-to-End Excellence",
+          "description": "We offer complete solutions across 9 specialized pillars, eliminating the need for multiple vendors.",
+          "icon": "Layers"
+        },
+        {
+          "title": "Innovation",
+          "description": "We stay ahead of the curve, using the latest tools and technologies to deliver cutting-edge solutions.",
+          "icon": "Sparkles"
+        },
+        {
+          "title": "Client Success",
+          "description": "Your success is our success. We measure our performance by the results we deliver for you.",
+          "icon": "Target"
+        }
+      ]
+    },
+    "display_order": 13,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "trust-badges",
+    "title": "Trusted By",
+    "subtitle": null,
+    "content": {
+      "items": [
+        {
+          "title": "AI-Powered Platform",
+          "icon": "Brain",
+          "description": "Built with cutting-edge AI technology"
+        },
+        {
+          "title": "Modern Tech Stack",
+          "icon": "Code",
+          "description": "Lovable, Supabase, n8n, GitHub Copilot"
+        },
+        {
+          "title": "Scalable Infrastructure",
+          "icon": "Cloud",
+          "description": "AWS, GCP, Azure ready"
+        },
+        {
+          "title": "Security First",
+          "icon": "Shield",
+          "description": "Enterprise-grade security protocols"
+        }
+      ]
+    },
+    "display_order": 14,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "faq",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything You Need to Know",
+    "content": {
+      "items": [
+        {
+          "question": "What does 'AI-first' mean?",
+          "answer": "AI-first means we design every solution with AI and automation at its core, not as an add-on. From our AI consultant chatbot to automated workflows, AI is integrated into every aspect of our services from day one."
+        },
+        {
+          "question": "How fast can you deliver results?",
+          "answer": "Our streamlined processes and AI-powered tools allow us to deliver results in weeks, not months. Most projects see initial results within 2-4 weeks, with full implementation typically completed in 6-12 weeks depending on scope."
+        },
+        {
+          "question": "Do I need to work with multiple vendors?",
+          "answer": "No! DOTR offers end-to-end solutions across 9 specialized pillars (Designing, Development, E-Commerce, Marketing, Content, AI & Automation, Cloud/DevOps, Security, and Consulting). One company, complete solutions."
+        },
+        {
+          "question": "How does the AI consultant chatbot work?",
+          "answer": "Our AI chatbot asks intelligent questions about your business needs and goals, then recommends the perfect combination of services from our 9 pillars. It's available 24/7 and helps qualify leads instantly."
+        },
+        {
+          "question": "What technologies do you use?",
+          "answer": "We use modern, scalable technologies including Lovable for development, Supabase for backend, n8n for automation, GitHub Copilot for AI-assisted coding, and cloud platforms like AWS, GCP, and Azure."
+        },
+        {
+          "question": "Is everything editable from the admin panel?",
+          "answer": "Yes! Our CMS-driven approach means every piece of content—pages, sections, headings, CTAs, service content, pricing, FAQs, and SEO meta—is fully manageable from the admin panel. No coding required."
+        },
+        {
+          "question": "Can you help with programmatic SEO?",
+          "answer": "Absolutely! We build websites designed for programmatic SEO growth, supporting hundreds of pages, blog content, use-case pages, and industry-specific content to help you build a large professional network organically."
+        },
+        {
+          "question": "What kind of support do you offer?",
+          "answer": "We offer 24/7 AI-powered support, automated workflows, and long-term maintenance. Our support includes ongoing optimization, security updates, performance monitoring, and continuous improvements."
+        }
+      ]
+    },
+    "display_order": 15,
+    "is_active": true
+  },
+  {
+    "page_type": "home",
+    "section_type": "primary-cta-banner",
+    "title": "Final CTA",
+    "subtitle": null,
+    "content": {
+      "headline": "Ready to Scale with AI-Powered Solutions?",
+      "description": "Join the businesses that are transforming their operations with DOTR's AI-first approach. Get started today with a free consultation.",
+      "primary_cta_text": "Start Your AI Transformation",
+      "primary_cta_link": "/contact",
+      "secondary_cta_text": "Learn More",
+      "secondary_cta_link": "/about",
+      "background_color": "primary",
+      "text_color": "white"
+    },
+    "display_order": 16,
+    "is_active": true
+  }
+]

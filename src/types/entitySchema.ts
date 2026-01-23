@@ -24,7 +24,8 @@ export type EntityType =
   | 'site_setting'
   | 'blog_category'
   | 'service_category'
-  | 'menu_item';
+  | 'menu_item'
+  | 'page_section';
 
 export interface EntitySchema {
   entityType: EntityType;

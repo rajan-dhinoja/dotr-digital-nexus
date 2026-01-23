@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, createElement } from 'react';
-import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, Copy, ClipboardPaste } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, Copy, ClipboardPaste, Download, Upload as UploadIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +20,8 @@ import {
   SectionType 
 } from '@/hooks/usePageSections';
 import { SectionJsonEditor } from '@/components/admin/SectionJsonEditor';
+import { useSectionImportExport } from '@/hooks/useSectionImportExport';
+import { SectionImportModal } from '@/components/admin/SectionImportModal';
 
 interface SectionManagerProps {
   pageType: string;
@@ -35,14 +37,20 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
   const [selectedSectionType, setSelectedSectionType] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'form' | 'json'>('form');
   const [jsonIsValid, setJsonIsValid] = useState(true);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const { data: sectionTypes = [] } = useSectionTypes(pageType);
   const { data: sections = [], isLoading } = useAdminPageSections(pageType, entityId);
   const { saveMutation, deleteMutation, reorderMutation } = usePageSectionMutations(pageType, entityId);
+  const { exportSections } = useSectionImportExport({
+    pageType,
+    entityId,
+    queryKey: ['admin-page-sections', pageType, entityId],
+  });
 
   // Static icon map to avoid importing entire lucide-react library
   const iconMap: Record<string, LucideIcon> = {
-    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText, Copy, ClipboardPaste
+    Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, Plus, Edit2, Trash2, GripVertical, ChevronDown, ChevronUp, FileText, Copy, ClipboardPaste, Download, UploadIcon
   };
 
   const getIcon = (iconName?: string | null): LucideIcon => {
@@ -265,6 +273,10 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
     });
   };
 
+  const handleExportAll = () => {
+    exportSections(sections);
+  };
+
   if (isLoading) {
     return <div className="p-4 text-foreground/70">Loading sections...</div>;
   }
@@ -285,6 +297,21 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
               Paste "{copiedSection.title || copiedSection.section_type}"
             </Button>
           )}
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={() => setImportModalOpen(true)}
+          >
+            <UploadIcon className="h-4 w-4 mr-2" /> Bulk Import
+          </Button>
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={handleExportAll}
+            disabled={sections.length === 0}
+          >
+            <Download className="h-4 w-4 mr-2" /> Export Sections
+          </Button>
           <Button 
             size="sm" 
             onClick={handleAddSection}
@@ -477,6 +504,16 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Section Import Modal */}
+      <SectionImportModal
+        open={importModalOpen}
+        onOpenChange={setImportModalOpen}
+        pageType={pageType}
+        entityId={entityId}
+        sectionTypes={sectionTypes}
+        queryKey={['admin-page-sections', pageType, entityId]}
+      />
     </div>
   );
 }
