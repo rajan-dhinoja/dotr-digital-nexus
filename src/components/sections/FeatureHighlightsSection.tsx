@@ -6,6 +6,7 @@ interface FeatureHighlight {
   title: string;
   description: string;
   image_url?: string;
+  image?: string;
   icon?: string;
   bullets?: string[];
 }
@@ -67,20 +68,23 @@ export const FeatureHighlightsSection = ({ title, subtitle, content }: FeatureHi
           {items.map((item, index) => {
             const isEven = index % 2 === 1;
             const IconComponent = item.icon ? getIcon(item.icon) : null;
+            const imgSrc = item.image_url || item.image;
 
             return (
               <ScrollReveal key={index}>
                 <div className={`flex flex-col ${isEven ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 md:gap-12`}>
                   {/* Image */}
-                  <div className="flex-1 w-full">
-                    <div className="rounded-lg overflow-hidden shadow-xl">
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full aspect-video object-cover"
-                      />
+                  {imgSrc && (
+                    <div className="flex-1 w-full">
+                      <div className="rounded-lg overflow-hidden shadow-xl">
+                        <img
+                          src={imgSrc}
+                          alt={item.title}
+                          className="w-full aspect-video object-cover"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Content */}
                   <div className="flex-1 w-full">

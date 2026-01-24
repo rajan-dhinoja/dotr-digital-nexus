@@ -141,6 +141,7 @@
           "description": "Smart chatbot that asks intelligent questions and recommends the perfect services for your needs—available 24/7",
           "icon": "MessageSquare",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80",
           "link": null
         },
         {
@@ -148,6 +149,7 @@
           "description": "AI-powered systems automatically qualify leads, route them to the right team, and start conversations instantly",
           "icon": "Filter",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
           "link": null
         },
         {
@@ -155,6 +157,7 @@
           "description": "Our platform analyzes your business needs and suggests the optimal combination of services for maximum impact",
           "icon": "Sparkles",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&w=600&q=80",
           "link": null
         },
         {
@@ -162,6 +165,7 @@
           "description": "AI-assisted content creation for websites, marketing materials, and communications—faster and more consistent",
           "icon": "FileText",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=600&q=80",
           "link": null
         },
         {
@@ -169,6 +173,7 @@
           "description": "Deep analytics powered by AI to uncover patterns, predict trends, and optimize your digital presence continuously",
           "icon": "BarChart",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
           "link": null
         },
         {
@@ -176,6 +181,7 @@
           "description": "End-to-end automation using n8n to connect your tools, streamline processes, and eliminate manual work",
           "icon": "Workflow",
           "image": null,
+          "image_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
           "link": null
         }
       ]
