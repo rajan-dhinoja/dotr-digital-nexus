@@ -19,6 +19,9 @@ export default function AdminSettings() {
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState('general');
+  const [allSettingsJson, setAllSettingsJson] = useState<Record<string, SettingValue>>({});
+  const [jsonIsValid, setJsonIsValid] = useState(true);
 
   const { data: settings = {}, isLoading } = useQuery({
     queryKey: ['site-settings'],

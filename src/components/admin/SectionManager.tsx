@@ -599,7 +599,7 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  const updateItem = (index: number, field: string, value: string) => {
+  const updateItem = (index: number, field: string, value: string | string[]) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
@@ -2028,7 +2028,7 @@ function SectionContentEditor({ section }: SectionContentEditorProps) {
                   </div>
                   <Input
                     placeholder="Image URL"
-                    value={(item.url as string) || (item as string)}
+                    value={(item.url as string) || (typeof item === 'string' ? item : '')}
                     onChange={(e) => updateItem(index, 'url', e.target.value)}
                   />
                 </div>

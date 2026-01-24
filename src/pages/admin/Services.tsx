@@ -230,7 +230,7 @@ export default function AdminServices() {
     }
 
     // Use JSON data if JSON tab is active, otherwise use form data
-    const data: Partial<Service> = activeTab === 'json' ? {
+    const data = activeTab === 'json' ? {
       name: (jsonData.name as string) || '',
       slug: (jsonData.slug as string) || '',
       category_id,
@@ -240,11 +240,11 @@ export default function AdminServices() {
       image_url: (jsonData.image_url as string) || null,
       is_featured: isFeatured,
       display_order: Number(form.get('display_order')) || 0,
-      features: (jsonData.features as unknown) || [],
-      process_steps: (jsonData.process_steps as unknown) || [],
-      faqs: (jsonData.faqs as unknown) || [],
-      technologies: (jsonData.technologies as unknown) || [],
-      pricing: (jsonData.pricing as unknown) || null,
+      features: jsonData.features || [],
+      process_steps: jsonData.process_steps || [],
+      faqs: jsonData.faqs || [],
+      technologies: jsonData.technologies || [],
+      pricing: jsonData.pricing || null,
     } : {
       name,
       slug,
@@ -255,14 +255,14 @@ export default function AdminServices() {
       image_url: imageUrl || null,
       is_featured: isFeatured,
       display_order: Number(form.get('display_order')) || 0,
-      features: features as unknown as any,
-      process_steps: processSteps as unknown as any,
-      faqs: faqs as unknown as any,
-      technologies: technologies as unknown as any,
+      features: features,
+      process_steps: processSteps,
+      faqs: faqs,
+      technologies: technologies,
       pricing: null,
     };
 
-    saveMutation.mutate(data);
+    saveMutation.mutate(data as never);
   };
 
   const addFeature = () => {
