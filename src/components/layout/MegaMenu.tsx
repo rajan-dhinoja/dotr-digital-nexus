@@ -1,33 +1,135 @@
-import { ReactNode, useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { megaMenuConfig, MegaMenuDefinition, iconMap } from "@/config/megaMenu";
+import { useMegaMenu } from "@/hooks/useMegaMenu";
+import { resolveIcon, type MegaMenuDefinition } from "@/lib/menuUtils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MegaMenuProps {
   label: string;
   href: string;
   slug?: string;
+  menuItemId?: string;
   isActive: boolean;
 }
 
-export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
+export const MegaMenu = ({ label, href, slug, menuItemId, isActive }: MegaMenuProps) => {
   const [open, setOpen] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
-  const key = slug || href.replace(/^\//, "");
-  const config: MegaMenuDefinition | undefined = megaMenuConfig[key];
+  // Use slug, menuItemId, or label to identify the menu item
+  const identifier = menuItemId || slug || label;
+
+  // Fetch mega menu data only when shouldFetch is true (hover-based loading)
+  const { data: megaMenuData, isLoading, isError } = useMegaMenu(
+    shouldFetch ? identifier : null,
+    "header",
+    { enabled: shouldFetch }
+  );
 
   // Clear timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
     };
   }, []);
 
-  if (!config) {
+  // Handle keyboard navigation
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setShouldFetch(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
+  // Focus trap when menu is open
+  useEffect(() => {
+    if (!open || !menuRef.current) return;
+
+    const focusableElements = menuRef.current.querySelectorAll(
+      'a, button, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleTab);
+    firstElement?.focus();
+
+    return () => document.removeEventListener("keydown", handleTab);
+  }, [open, megaMenuData]);
+
+  const handleMouseEnter = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    // Start fetching on hover
+    setShouldFetch(true);
+    // Small delay before opening to allow data to load
+    timeoutRef.current = setTimeout(() => {
+      setOpen(true);
+    }, 100);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    // Add a small delay before closing to allow mouse movement
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+      // Keep fetching enabled for a bit in case user hovers again
+      setTimeout(() => {
+        if (!open) {
+          setShouldFetch(false);
+        }
+      }, 500);
+    }, 150);
+  }, [open]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    // If no mega menu data, navigate normally
+    if (!megaMenuData) {
+      navigate(href);
+      return;
+    }
+    // Otherwise, toggle the menu
+    e.preventDefault();
+    setOpen(!open);
+    if (!open) {
+      setShouldFetch(true);
+    }
+  }, [megaMenuData, href, navigate, open]);
+
+  // If no mega menu data available, render as simple link
+  if (!shouldFetch && !megaMenuData) {
     return (
       <Link
         to={href}
@@ -37,6 +139,7 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
             ? "text-primary"
             : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
         )}
+        aria-label={label}
       >
         <span className="relative z-10">{label}</span>
         {isActive && (
@@ -47,26 +150,90 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
     );
   }
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setOpen(true);
-  };
+  // Show loading state
+  if (isLoading && shouldFetch) {
+    return (
+      <div
+        className="relative"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <button
+          className={cn(
+            "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group flex items-center gap-1",
+            isActive
+              ? "text-primary"
+              : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+          )}
+          aria-label={label}
+          aria-expanded={false}
+          aria-haspopup="true"
+        >
+          <span className="relative z-10">{label}</span>
+          <ChevronDown className="h-4 w-4 transition-transform" />
+          {isActive && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+          )}
+        </button>
+        {open && (
+          <div
+            className="absolute left-1/2 top-full z-[60] w-screen max-w-6xl -translate-x-1/2"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="absolute -top-1 left-0 right-0 h-1" />
+            <div className="mt-1 overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur p-8">
+              <Skeleton className="h-8 w-48 mb-4" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-3/4 mb-6" />
+              <div className="grid grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-3 w-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
-  const handleMouseLeave = () => {
-    // Add a small delay before closing to allow mouse movement
-    timeoutRef.current = setTimeout(() => {
-      setOpen(false);
-    }, 150);
-  };
+  // If error or no data after loading, render as simple link
+  if (isError || (!megaMenuData && !isLoading)) {
+    return (
+      <Link
+        to={href}
+        className={cn(
+          "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg group",
+          isActive
+            ? "text-primary"
+            : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+        )}
+        aria-label={label}
+      >
+        <span className="relative z-10">{label}</span>
+        {isActive && (
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+        )}
+      </Link>
+    );
+  }
 
+  // Render mega menu
   return (
     <div
       className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      ref={menuRef}
     >
       <button
         className={cn(
@@ -75,6 +242,11 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
             ? "text-primary"
             : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
         )}
+        onClick={handleClick}
+        aria-label={label}
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-controls={`mega-menu-${identifier}`}
       >
         <span className="relative z-10">{label}</span>
         <ChevronDown
@@ -88,90 +260,106 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
         )}
       </button>
 
-      {open && (
-        <div 
-          className="absolute left-1/2 top-full z-[60] w-screen max-w-5xl -translate-x-1/2"
+      {open && megaMenuData && (
+        <div
+          id={`mega-menu-${identifier}`}
+          className="absolute left-1/2 top-full z-[60] w-screen max-w-6xl -translate-x-1/2"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          role="menu"
+          aria-label={`${label} submenu`}
         >
-          {/* Invisible bridge to fill any gap - extends upward to connect with button */}
+          {/* Invisible bridge to fill any gap */}
           <div className="absolute -top-1 left-0 right-0 h-1" />
           <div className="mt-1 overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
-            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-              {/* Left summary column */}
-              <div className="relative bg-gradient-to-b from-primary/5 via-primary/10 to-primary/5 p-8 md:p-10 flex flex-col justify-between">
+            {/* Horizontal Layout: Left panel + Right columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,1fr)_minmax(600px,2fr)]">
+              {/* Left: Summary Panel */}
+              <div className="relative bg-gradient-to-b from-primary/5 via-primary/10 to-primary/5 p-8 lg:p-10 flex flex-col justify-between">
                 <div>
                   <h3 className="text-xl font-semibold mb-3">
-                    {config.summaryTitle}
+                    {megaMenuData.summaryTitle}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {config.summaryText}
+                    {megaMenuData.summaryText}
                   </p>
                 </div>
-                {config.ctaLabel && config.ctaHref && (
+                {megaMenuData.ctaLabel && megaMenuData.ctaHref && (
                   <div className="mt-6">
                     <Link
-                      to={config.ctaHref}
-                      className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow"
+                      to={megaMenuData.ctaHref}
+                      className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      role="menuitem"
                     >
-                      {config.ctaLabel}
+                      {megaMenuData.ctaLabel}
                     </Link>
                   </div>
                 )}
               </div>
 
-              {/* Right columns */}
-              <div className="p-6 md:p-8 grid gap-6 md:grid-cols-3">
-                {config.sections.map(section => {
-                  const SectionIcon = section.iconName ? iconMap[section.iconName] : null;
-                  return (
-                    <div key={section.title} className="space-y-3">
-                      <div className="flex items-start gap-3">
-                        {SectionIcon && (
-                          <span className="text-primary mt-0.5 flex-shrink-0">
-                            <SectionIcon className="h-5 w-5" />
-                          </span>
-                        )}
-                        <div>
-                          <p className="text-sm font-semibold text-foreground">
-                            {section.title}
-                          </p>
-                          {section.description && (
-                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                              {section.description}
-                            </p>
+              {/* Right: Categories in horizontal columns */}
+              <div className="p-6 lg:p-8">
+                {megaMenuData.sections.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {megaMenuData.sections.map((section) => {
+                      const SectionIcon = section.icon || resolveIcon(section.iconName || undefined);
+                      return (
+                        <div key={section.title} className="space-y-3" role="group" aria-label={section.title}>
+                          <div className="flex items-start gap-3">
+                            {SectionIcon && (
+                              <span className="text-primary mt-0.5 flex-shrink-0" aria-hidden="true">
+                                {React.createElement(SectionIcon, { className: "h-5 w-5" })}
+                              </span>
+                            )}
+                            <div>
+                              <p className="text-sm font-semibold text-foreground">
+                                {section.title}
+                              </p>
+                              {section.description && (
+                                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                                  {section.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          {section.items && section.items.length > 0 && (
+                            <div className="space-y-1.5" role="group">
+                              {section.items.map((item) => {
+                                const ItemIcon = item.icon || resolveIcon(item.iconName || undefined);
+                                return (
+                                  <Link
+                                    key={item.title}
+                                    to={item.href}
+                                    className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                                    role="menuitem"
+                                  >
+                                    {ItemIcon && (
+                                      <span className="mt-0.5 text-primary flex-shrink-0" aria-hidden="true">
+                                        {React.createElement(ItemIcon, { className: "h-4 w-4" })}
+                                      </span>
+                                    )}
+                                    <div>
+                                      <p className="font-medium">{item.title}</p>
+                                      {item.description && (
+                                        <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                          {item.description}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                            </div>
                           )}
                         </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        {section.items?.map(item => {
-                          const ItemIcon = item.iconName ? iconMap[item.iconName] : null;
-                          return (
-                            <Link
-                              key={item.title}
-                              to={item.href}
-                              className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors"
-                            >
-                              {ItemIcon && (
-                                <span className="mt-0.5 text-primary flex-shrink-0">
-                                  <ItemIcon className="h-4 w-4" />
-                                </span>
-                              )}
-                              <div>
-                                <p className="font-medium">{item.title}</p>
-                                {item.description && (
-                                  <p className="mt-0.5 text-[11px] text-muted-foreground">
-                                    {item.description}
-                                  </p>
-                                )}
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No menu items available</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -180,4 +368,3 @@ export const MegaMenu = ({ label, href, slug, isActive }: MegaMenuProps) => {
     </div>
   );
 };
-

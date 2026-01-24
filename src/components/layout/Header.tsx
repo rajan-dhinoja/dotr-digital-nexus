@@ -118,12 +118,13 @@ export const Header = () => {
 
   const navigationFromPages = buildNavigationFromPages(pages);
 
-  const navigationFromDb: NavItem[] | null = headerMenu && headerMenu.length > 0
+  const navigationFromDb: (NavItem & { menuItemId?: string })[] | null = headerMenu && headerMenu.length > 0
     ? headerMenu.map((item: NavigationTreeItem) => ({
         name: item.label,
         href: item.url || "#",
         slug: undefined,
         description: undefined,
+        menuItemId: item.id,
         children: (item.children ?? []).map((child: NavigationTreeItem) => ({
           name: child.label,
           href: child.url || "#",
@@ -180,6 +181,7 @@ export const Header = () => {
                 label={item.name}
                 href={item.href}
                 slug={item.slug}
+                menuItemId={(item as any).menuItemId}
                 isActive={isActive(item.href)}
               />
             ))}

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +25,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useActivityLog } from "@/hooks/useActivityLog";
+import { IconPicker } from "@/components/admin/IconPicker";
+import { resolveIcon } from "@/lib/menuUtils";
 import {
   Plus,
   GripVertical,
@@ -32,6 +36,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import { cn } from "@/lib/utils";
 
 type MenuItem = Tables<"menu_items">;
 
@@ -57,6 +62,10 @@ export default function AdminMenus() {
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [isItemActive, setIsItemActive] = useState(true);
+  const [menuType, setMenuType] = useState<string>("simple");
+  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
+  const [itemLevel, setItemLevel] = useState<number>(0);
+  const [iconName, setIconName] = useState<string | null>(null);
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
   const queryClient = useQueryClient();
@@ -111,6 +120,34 @@ export default function AdminMenus() {
   };
 
   const itemsTree = buildTree(flatItems);
+
+  // Calculate item level based on parent selection
+  useEffect(() => {
+    if (!selectedParentId) {
+      setItemLevel(0);
+    } else {
+      const parent = flatItems.find(item => item.id === selectedParentId);
+      if (parent) {
+        const parentLevel = parent.item_level ?? 0;
+        setItemLevel(parentLevel + 1);
+      } else {
+        setItemLevel(0);
+      }
+    }
+  }, [selectedParentId, flatItems]);
+
+  // Reset form when dialog opens/closes
+  useEffect(() => {
+    if (isItemDialogOpen && editingItem) {
+      setMenuType(editingItem.menu_type ?? "simple");
+      setSelectedParentId(editingItem.parent_id ?? null);
+      setItemLevel(editingItem.item_level ?? 0);
+    } else if (!isItemDialogOpen) {
+      setMenuType("simple");
+      setSelectedParentId(null);
+      setItemLevel(0);
+    }
+  }, [isItemDialogOpen, editingItem]);
 
   const itemSaveMutation = useMutation({
     mutationFn: async (payload: Partial<MenuItem>) => {
@@ -244,6 +281,18 @@ export default function AdminMenus() {
       url = externalUrl;
     }
 
+    const parentId = form.get("parent_id")?.toString() || null;
+    const currentMenuType = form.get("menu_type")?.toString() ?? "simple";
+    
+    // Calculate item level
+    let calculatedLevel = 0;
+    if (parentId) {
+      const parent = flatItems.find(item => item.id === parentId);
+      if (parent) {
+        calculatedLevel = (parent.item_level ?? 0) + 1;
+      }
+    }
+
     const payload: Partial<MenuItem> = {
       label,
       url,
@@ -251,72 +300,118 @@ export default function AdminMenus() {
       target: form.get("target")?.toString() ?? "_self",
       is_active: isItemActive,
       display_order: Number(form.get("display_order")) || 0,
-      parent_id: form.get("parent_id")?.toString() || null,
+      parent_id: parentId,
+      menu_type: currentMenuType,
+      item_level: calculatedLevel,
+      description: form.get("description")?.toString() || null,
+      icon_name: form.get("icon_name")?.toString() || null,
+      mega_summary_title: form.get("mega_summary_title")?.toString() || null,
+      mega_summary_text: form.get("mega_summary_text")?.toString() || null,
+      mega_cta_label: form.get("mega_cta_label")?.toString() || null,
+      mega_cta_href: form.get("mega_cta_href")?.toString() || null,
     };
 
     itemSaveMutation.mutate(payload);
   };
 
+  const getLevelLabel = (level: number | null | undefined) => {
+    switch (level) {
+      case 0: return "Top";
+      case 1: return "Category";
+      case 2: return "Item";
+      default: return "Unknown";
+    }
+  };
+
+  const getLevelColor = (level: number | null | undefined) => {
+    switch (level) {
+      case 0: return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case 1: return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+      case 2: return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      default: return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+    }
+  };
+
   const renderTree = (nodes: TreeNode[], depth = 0) => {
     return (
       <div className={depth === 0 ? "space-y-2" : "space-y-1 pl-6"}>
-        {nodes.map((item) => (
-          <Card key={item.id}>
-            <CardContent className="p-3 flex items-center gap-3">
-              <GripVertical className="h-4 w-4 text-foreground/60 cursor-grab" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-medium truncate">{item.label}</p>
+        {nodes.map((item) => {
+          const Icon = item.icon_name ? resolveIcon(item.icon_name) : null;
+          const level = item.item_level ?? 0;
+          const isMega = item.menu_type === "mega";
+          
+          return (
+            <Card key={item.id}>
+              <CardContent className="p-3 flex items-center gap-3">
+                <GripVertical className="h-4 w-4 text-foreground/60 cursor-grab" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    {Icon && <Icon className="h-4 w-4 text-primary" />}
+                    <p className="font-medium truncate">{item.label}</p>
+                    <Badge 
+                      variant="outline" 
+                      className={cn("text-xs", getLevelColor(level))}
+                    >
+                      {getLevelLabel(level)}
+                    </Badge>
+                    {isMega && (
+                      <Badge variant="secondary" className="text-xs">
+                        Mega
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/70 mt-0.5">
+                    {item.url || "No link"}
+                  </p>
                 </div>
-                <p className="text-xs text-foreground/70 mt-0.5">
-                  {item.url || "No link"}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                {item.target === "_blank" && (
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    itemToggleVisibilityMutation.mutate({
-                      id: item.id,
-                      is_active: !item.is_active,
-                    })
-                  }
-                >
-                  {item.is_active ? (
-                    <Eye className="h-4 w-4" />
-                  ) : (
-                    <EyeOff className="h-4 w-4 text-foreground/60" />
+                <div className="flex items-center gap-2">
+                  {item.target === "_blank" && (
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
                   )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setEditingItem(item);
-                    setIsItemActive(item.is_active ?? true);
-                    setIsItemDialogOpen(true);
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => itemDeleteMutation.mutate(item.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </CardContent>
-            {item.children && item.children.length > 0 && (
-              <div className="pb-2">{renderTree(item.children, depth + 1)}</div>
-            )}
-          </Card>
-        ))}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() =>
+                      itemToggleVisibilityMutation.mutate({
+                        id: item.id,
+                        is_active: !item.is_active,
+                      })
+                    }
+                  >
+                    {item.is_active ? (
+                      <Eye className="h-4 w-4" />
+                    ) : (
+                      <EyeOff className="h-4 w-4 text-foreground/60" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditingItem(item);
+                      setIsItemActive(item.is_active ?? true);
+                      setMenuType(item.menu_type ?? "simple");
+                      setSelectedParentId(item.parent_id ?? null);
+                      setIsItemDialogOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => itemDeleteMutation.mutate(item.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardContent>
+              {item.children && item.children.length > 0 && (
+                <div className="pb-2">{renderTree(item.children, depth + 1)}</div>
+              )}
+            </Card>
+          );
+        })}
       </div>
     );
   };
@@ -402,6 +497,31 @@ export default function AdminMenus() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="menu_type">Menu Type</Label>
+              <Select 
+                name="menu_type" 
+                value={menuType}
+                onValueChange={setMenuType}
+                disabled={itemLevel !== 0}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select menu type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="simple">Simple Link</SelectItem>
+                  <SelectItem value="mega" disabled={itemLevel !== 0}>
+                    Mega Menu {itemLevel !== 0 && "(Top-level only)"}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              {itemLevel !== 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Mega menus can only be set for top-level items (level 0)
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="link_type">Link Type</Label>
               <Select name="link_type" defaultValue={getDefaultLinkType()}>
                 <SelectTrigger>
@@ -448,7 +568,8 @@ export default function AdminMenus() {
               <Label htmlFor="parent_id">Parent Item (optional)</Label>
               <Select
                 name="parent_id"
-                defaultValue={editingItem?.parent_id ?? ""}
+                value={selectedParentId ?? ""}
+                onValueChange={(value) => setSelectedParentId(value || null)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="None (top level)" />
@@ -459,12 +580,90 @@ export default function AdminMenus() {
                     .filter((item) => item.id !== editingItem?.id)
                     .map((item) => (
                       <SelectItem key={item.id} value={item.id}>
-                        {item.label}
+                        {item.label} (Level {item.item_level ?? 0})
                       </SelectItem>
                     ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                Current level: {itemLevel} ({getLevelLabel(itemLevel)})
+              </p>
             </div>
+
+            {/* Description field - shown for level 1 and 2 items */}
+            {(itemLevel === 1 || itemLevel === 2) && (
+              <div className="space-y-2">
+                <Label htmlFor="description">
+                  Description {itemLevel === 1 ? "(Category description)" : "(Item description)"}
+                </Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  defaultValue={editingItem?.description ?? ""}
+                  placeholder={itemLevel === 1 ? "Describe this category..." : "Describe this item..."}
+                />
+              </div>
+            )}
+
+            {/* Icon picker - shown for level 1 and 2 items */}
+            {(itemLevel === 1 || itemLevel === 2) && (
+              <div className="space-y-2">
+                <Label>Icon</Label>
+                <IconPicker
+                  value={iconName}
+                  onValueChange={setIconName}
+                  placeholder="Select an icon..."
+                />
+                <input
+                  type="hidden"
+                  id="icon_name"
+                  name="icon_name"
+                  value={iconName ?? ""}
+                />
+              </div>
+            )}
+
+            {/* Mega menu fields - shown only for level 0 items with menu_type='mega' */}
+            {itemLevel === 0 && menuType === "mega" && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="mega_summary_title">Mega Menu Summary Title</Label>
+                  <Input
+                    id="mega_summary_title"
+                    name="mega_summary_title"
+                    defaultValue={editingItem?.mega_summary_title ?? ""}
+                    placeholder="e.g., Services"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mega_summary_text">Mega Menu Summary Text</Label>
+                  <Textarea
+                    id="mega_summary_text"
+                    name="mega_summary_text"
+                    defaultValue={editingItem?.mega_summary_text ?? ""}
+                    placeholder="Describe what this section offers..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mega_cta_label">Call-to-Action Label</Label>
+                  <Input
+                    id="mega_cta_label"
+                    name="mega_cta_label"
+                    defaultValue={editingItem?.mega_cta_label ?? ""}
+                    placeholder="e.g., Explore More"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mega_cta_href">Call-to-Action Link</Label>
+                  <Input
+                    id="mega_cta_href"
+                    name="mega_cta_href"
+                    defaultValue={editingItem?.mega_cta_href ?? ""}
+                    placeholder="/services"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="target">Open in</Label>

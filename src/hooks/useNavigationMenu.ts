@@ -15,7 +15,10 @@ export function useNavigationMenu(menuLocation: string, options?: { enabled?: bo
     queryFn: async () => {
       const { data: items, error } = await supabase
         .from("menu_items")
-        .select("*")
+        .select(`
+          *,
+          page:pages(id, slug, title)
+        `)
         .eq("menu_location", menuLocation)
         .eq("is_active", true)
         .order("display_order", { ascending: true });
