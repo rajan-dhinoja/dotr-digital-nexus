@@ -58,7 +58,7 @@ export function AnimateInView({
   staggerMax = DEFAULT_STAGGER_MAX,
   disabled = false,
   threshold = 0.1,
-  rootMargin = "0px 0px 100px 0",
+  rootMargin = "0px 0px 100px 0px",
 }: AnimateInViewProps) {
   const prefersReducedMotion = useReducedMotion();
   const { ref, inView, wasAboveFold } = useSectionInView({

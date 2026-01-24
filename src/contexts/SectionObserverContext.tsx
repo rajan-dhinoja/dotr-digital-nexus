@@ -9,7 +9,7 @@ import {
 } from "react";
 
 const DEFAULT_THRESHOLD = 0.1;
-const DEFAULT_ROOT_MARGIN = "0px 0px 100px 0";
+const DEFAULT_ROOT_MARGIN = "0px 0px 100px 0px";
 
 type RegisteredEntry = {
   setInView: (v: boolean) => void;
