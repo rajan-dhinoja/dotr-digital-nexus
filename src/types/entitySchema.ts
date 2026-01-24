@@ -23,7 +23,8 @@ export type EntityType =
   | 'blog_category'
   | 'service_category'
   | 'menu_item'
-  | 'page_section';
+  | 'page_section'
+  | 'pages_and_menu';
 
 export interface EntitySchema {
   entityType: EntityType;

@@ -54,7 +54,7 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const { data: pages = [], isLoading } = useNavPages();
-  const { data: headerMenu } = useNavigationMenu("header-main", {
+  const { data: headerMenu } = useNavigationMenu("header", {
     enabled: USE_DB_NAVIGATION,
   });
 

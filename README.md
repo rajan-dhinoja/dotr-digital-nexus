@@ -50,6 +50,10 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## Pages & Menu bulk import
+
+The **Pages** admin supports **Bulk Import** and **Export** of pages and navigation menu items via JSON. Use it to build or restore the Mega Menu quickly. See [docs/PAGES-BULK-IMPORT.md](docs/PAGES-BULK-IMPORT.md) for the JSON format, menu locations (`header`, `footer`, `mobile`), and import modes.
+
 ## What technologies are used for this project?
 
 This project is built with:

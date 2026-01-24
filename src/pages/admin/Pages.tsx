@@ -16,8 +16,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useActivityLog } from '@/hooks/useActivityLog';
-import { useEntityFormSync } from '@/hooks/useEntityFormSync';
-import { Plus } from 'lucide-react';
+import { usePagesImportExport } from '@/hooks/usePagesImportExport';
+import { PagesImportModal } from '@/components/admin/PagesImportModal';
+import { Plus, Upload, Download } from 'lucide-react';
 
 interface Page {
   id: string;
@@ -60,8 +61,10 @@ export default function AdminPages() {
   const [activeTab, setActiveTab] = useState('general');
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonContent, setJsonContent] = useState<Record<string, unknown>>({});
+  const [importModalOpen, setImportModalOpen] = useState(false);
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
+  const { exportPagesMenu } = usePagesImportExport();
   const queryClient = useQueryClient();
 
   const { data: pages = [], isLoading } = useQuery({
@@ -220,21 +223,36 @@ export default function AdminPages() {
           <h1 className="text-2xl font-bold">Pages</h1>
           <p className="text-muted-foreground">Manage website pages and their visibility</p>
         </div>
-        <Button onClick={() => { 
-          setEditing(null); 
-          setIsActive(true); 
-          setShowInNav(true); 
-          setShowInNavigation(true);
-          setDefaultMenuType('header');
-          setNavigationLabelOverride('');
-          setNavigationPriority(0);
-          setJsonContent({});
-          setActiveTab('general');
-          setOpen(true); 
-        }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Page
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setImportModalOpen(true)}
+          >
+            <Upload className="h-4 w-4 mr-2" /> Bulk Import
+          </Button>
+          <Button variant="outline" onClick={() => exportPagesMenu()}>
+            <Download className="h-4 w-4 mr-2" /> Export
+          </Button>
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setIsActive(true);
+              setShowInNav(true);
+              setShowInNavigation(true);
+              setDefaultMenuType('header');
+              setNavigationLabelOverride('');
+              setNavigationPriority(0);
+              setJsonContent({});
+              setActiveTab('general');
+              setOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4 mr-2" /> Add Page
+          </Button>
+        </div>
       </div>
+
+      <PagesImportModal open={importModalOpen} onOpenChange={setImportModalOpen} />
 
       <DataTable
         data={pages}
