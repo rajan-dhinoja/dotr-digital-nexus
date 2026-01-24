@@ -260,8 +260,18 @@ export function transformToMegaMenu(
   topLevelItem: MenuItemWithChildren,
   pagesMap?: Map<string, string>
 ): MegaMenuDefinition | null {
-  // Validate that this is a mega menu item
-  if (topLevelItem.menu_type !== 'mega' || topLevelItem.item_level !== 0) {
+  // Validate that this is a top-level item
+  const itemLevel = topLevelItem.item_level ?? 0;
+  if (itemLevel !== 0) {
+    return null;
+  }
+
+  // Check if it's a mega menu type OR has children that could form a mega menu structure
+  const isMegaType = topLevelItem.menu_type === 'mega';
+  const hasChildren = topLevelItem.children && topLevelItem.children.length > 0;
+  
+  // If not explicitly mega type and no children, return null
+  if (!isMegaType && !hasChildren) {
     return null;
   }
   
@@ -271,10 +281,18 @@ export function transformToMegaMenu(
   const ctaLabel = topLevelItem.mega_cta_label || undefined;
   const ctaHref = topLevelItem.mega_cta_href || topLevelItem.url || undefined;
   
-  // Get categories (level 1 children)
+  // Get categories (level 1 children, or any direct children if levels aren't set)
   const categories = (topLevelItem.children || []).filter(
-    child => child.item_level === 1 && child.is_active !== false
+    child => {
+      const childLevel = child.item_level ?? (hasChildren ? 1 : 0);
+      return childLevel === 1 && child.is_active !== false;
+    }
   );
+  
+  // If no level 1 children but we have direct children, treat them as categories
+  const effectiveCategories = categories.length > 0 
+    ? categories 
+    : (topLevelItem.children || []).filter(child => child.is_active !== false);
   
   // Helper to resolve URL from page_id or use direct URL
   const resolveUrl = (item: MenuItem): string => {
@@ -291,10 +309,14 @@ export function transformToMegaMenu(
   };
   
   // Transform categories into sections
-  const sections: MegaMenuSection[] = categories.map((category) => {
-    // Get items within this category (level 2 children)
+  const sections: MegaMenuSection[] = effectiveCategories.map((category) => {
+    // Get items within this category (level 2 children, or direct children if levels aren't set)
+    const categoryLevel = category.item_level ?? 1;
     const items = (category.children || []).filter(
-      item => item.item_level === 2 && item.is_active !== false
+      item => {
+        const itemLevel = item.item_level ?? (category.children?.length ? 2 : 1);
+        return itemLevel === 2 && item.is_active !== false;
+      }
     );
     
     // Transform items
