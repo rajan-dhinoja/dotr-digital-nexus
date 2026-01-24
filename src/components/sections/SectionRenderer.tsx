@@ -1,4 +1,5 @@
 import { PageSection } from '@/hooks/usePageSections';
+import { AnimateInView, type AnimateInViewPreset } from '@/components/interactive/AnimateInView';
 import { HeroSection } from './HeroSection';
 import { FeaturesSection } from './FeaturesSection';
 import { ProcessSection } from './ProcessSection';
@@ -48,6 +49,29 @@ import { ExitIntentCtaSection } from './ExitIntentCtaSection';
 import { AboutUsSection } from './AboutUsSection';
 import { ValuesCultureSection } from './ValuesCultureSection';
 
+export interface SectionAnimationConfig {
+  enabled?: boolean;
+  preset?: AnimateInViewPreset;
+  stagger?: boolean;
+}
+
+function getSectionAnimationConfig(section: PageSection): {
+  enabled: boolean;
+  preset: AnimateInViewPreset;
+  stagger: boolean;
+} {
+  const raw = (section.content as Record<string, unknown>)?.animation as SectionAnimationConfig | undefined;
+  const preset = raw?.preset ?? "subtle";
+  const validPreset: AnimateInViewPreset =
+    preset === "smooth" || preset === "scale" || preset === "none" ? preset : "subtle";
+  const formNoAnimation = section.section_type === "form";
+  return {
+    enabled: formNoAnimation ? false : (raw?.enabled !== false),
+    preset: formNoAnimation ? "none" : validPreset,
+    stagger: raw?.stagger !== false,
+  };
+}
+
 interface SectionRendererProps {
   sections: PageSection[];
 }
@@ -56,9 +80,32 @@ export function SectionRenderer({ sections }: SectionRendererProps) {
   return (
     <>
       {sections.map((section) => (
-        <DynamicSection key={section.id} section={section} />
+        <SectionAnimationWrapper key={section.id} section={section} />
       ))}
     </>
+  );
+}
+
+interface SectionAnimationWrapperProps {
+  section: PageSection;
+}
+
+function SectionAnimationWrapper({ section }: SectionAnimationWrapperProps) {
+  const config = getSectionAnimationConfig(section);
+  const child = <DynamicSection section={section} />;
+
+  if (!config.enabled || config.preset === "none") {
+    return child;
+  }
+
+  return (
+    <AnimateInView
+      animation={config.preset}
+      disabled={!config.enabled}
+      staggerMax={6}
+    >
+      {child}
+    </AnimateInView>
   );
 }
 

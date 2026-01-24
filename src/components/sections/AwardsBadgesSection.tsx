@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { Award, Trophy, Medal, Star } from "lucide-react";
 
 interface AwardItem {
@@ -29,25 +28,22 @@ export const AwardsBadgesSection = ({ title, subtitle, content }: AwardsBadgesSe
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {title || "Awards & Recognition"}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        </ScrollReveal>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {title || "Awards & Recognition"}
+          </h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {items.map((item, index) => {
             const IconComponent = icons[index % icons.length];
             return (
-              <ScrollReveal key={index} delay={index * 100}>
-                <div className="text-center p-6 rounded-lg border border-border bg-card hover:shadow-lg transition-shadow">
+              <div key={index} className="text-center p-6 rounded-lg border border-border bg-card hover:shadow-lg transition-shadow">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.title} className="h-16 mx-auto mb-4 object-contain" />
                   ) : (
@@ -62,8 +58,7 @@ export const AwardsBadgesSection = ({ title, subtitle, content }: AwardsBadgesSe
                       {item.year}
                     </span>
                   )}
-                </div>
-              </ScrollReveal>
+              </div>
             );
           })}
         </div>

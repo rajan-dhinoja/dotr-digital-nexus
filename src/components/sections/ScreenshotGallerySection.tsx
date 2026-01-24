@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -35,21 +34,18 @@ export const ScreenshotGallerySection = ({ title, subtitle, content }: Screensho
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {title || "Product Screenshots"}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        </ScrollReveal>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {title || "Product Screenshots"}
+          </h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+        </div>
 
-        <ScrollReveal>
-          <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto">
             {/* Main Image */}
             <div className="relative rounded-lg overflow-hidden bg-card shadow-xl mb-4">
               <img
@@ -108,7 +104,6 @@ export const ScreenshotGallerySection = ({ title, subtitle, content }: Screensho
               </div>
             )}
           </div>
-        </ScrollReveal>
 
         {/* Lightbox */}
         {lightboxOpen && (

@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { Star } from "lucide-react";
 
 interface ReviewPlatform {
@@ -33,36 +32,33 @@ export const RatingsReviewsSection = ({ title, subtitle, content }: RatingsRevie
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {title || "What Our Clients Say"}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            )}
-            {content?.show_aggregate !== false && (
-              <div className="mt-6">
-                <div className="inline-flex items-center gap-2 bg-card rounded-full px-6 py-3 shadow-sm">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                    ))}
-                  </div>
-                  <span className="text-2xl font-bold">{averageRating}</span>
-                  <span className="text-muted-foreground">from {totalReviews}+ reviews</span>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {title || "What Our Clients Say"}
+          </h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+          {content?.show_aggregate !== false && (
+            <div className="mt-6">
+              <div className="inline-flex items-center gap-2 bg-card rounded-full px-6 py-3 shadow-sm">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                  ))}
                 </div>
+                <span className="text-2xl font-bold">{averageRating}</span>
+                <span className="text-muted-foreground">from {totalReviews}+ reviews</span>
               </div>
-            )}
-          </div>
-        </ScrollReveal>
+            </div>
+          )}
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((item, index) => (
-            <ScrollReveal key={index} delay={index * 100}>
-              <div className="bg-card rounded-lg p-6 text-center border border-border">
+            <div key={index} className="bg-card rounded-lg p-6 text-center border border-border">
                 {item.logo_url ? (
                   <img src={item.logo_url} alt={item.platform} className="h-8 mx-auto mb-4" />
                 ) : (
@@ -79,7 +75,6 @@ export const RatingsReviewsSection = ({ title, subtitle, content }: RatingsRevie
                 <div className="text-2xl font-bold mb-1">{item.rating}</div>
                 <div className="text-sm text-muted-foreground">{item.review_count} reviews</div>
               </div>
-            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import * as Icons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -31,21 +30,19 @@ export const UspStripSection = ({ content }: UspStripSectionProps) => {
 
   return (
     <section className="py-4 bg-primary text-primary-foreground">
-      <ScrollReveal>
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
-            {items.map((item, index) => {
-              const IconComponent = getIcon(item.icon || "Star");
-              return (
-                <div key={index} className="flex items-center gap-2">
-                  <IconComponent className="h-5 w-5" />
-                  <span className="text-sm font-medium">{item.text}</span>
-                </div>
-              );
-            })}
-          </div>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
+          {items.map((item, index) => {
+            const IconComponent = getIcon(item.icon || "Star");
+            return (
+              <div key={index} className="flex items-center gap-2">
+                <IconComponent className="h-5 w-5" />
+                <span className="text-sm font-medium">{item.text}</span>
+              </div>
+            );
+          })}
         </div>
-      </ScrollReveal>
+      </div>
     </section>
   );
 };

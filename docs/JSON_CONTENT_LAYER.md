@@ -51,6 +51,28 @@ All major admin entities support JSON editing:
 - ✅ Testimonials
 - ✅ Site Settings
 
+## Page section animation (`content.animation`)
+
+Page Builder sections support optional animation config via `content.animation` (stored in `page_sections.content` JSONB). Configurable in the section edit form (Animation card) or via JSON.
+
+**Shape:**
+
+```json
+{
+  "animation": {
+    "enabled": true,
+    "preset": "subtle",
+    "stagger": true
+  }
+}
+```
+
+- **`enabled`** (boolean, default `true`): Enable/disable entrance animation for the section.
+- **`preset`** (`"subtle"` | `"smooth"` | `"scale"` | `"none"`, default `"subtle"`): Animation style. `"none"` disables entrance.
+- **`stagger`** (boolean, default `true`): Whether to stagger child animations where applicable.
+
+Form sections always use `enabled: false` and `preset: "none"`. Safe defaults apply when `animation` is omitted.
+
 ## Usage
 
 ### Adding JSON Editing to a New Entity

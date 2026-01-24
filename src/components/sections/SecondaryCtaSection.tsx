@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -21,17 +20,15 @@ export const SecondaryCtaSection = ({ content }: SecondaryCtaSectionProps) => {
   return (
     <section className="py-8 bg-muted/30">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
-            <p className="text-muted-foreground">{text}</p>
-            <Button variant="outline" size="sm" asChild>
-              <Link to={buttonUrl}>
-                {buttonText}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </ScrollReveal>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
+          <p className="text-muted-foreground">{text}</p>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={buttonUrl}>
+              {buttonText}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

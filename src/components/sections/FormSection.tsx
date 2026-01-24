@@ -11,7 +11,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ScrollReveal } from '@/components/interactive/ScrollReveal';
 import { Loader2, Check } from 'lucide-react';
 
 interface FormField {
@@ -347,23 +346,21 @@ export function FormSection({ title, subtitle, content, sectionId }: FormSection
     return (
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Check className="w-8 h-8 text-primary" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                {successMessage}
-              </h2>
-              <Button
-                variant="outline"
-                onClick={() => setIsSubmitted(false)}
-                className="mt-4"
-              >
-                Submit Another Response
-              </Button>
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-8 h-8 text-primary" />
             </div>
-          </ScrollReveal>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+              {successMessage}
+            </h2>
+            <Button
+              variant="outline"
+              onClick={() => setIsSubmitted(false)}
+              className="mt-4"
+            >
+              Submit Another Response
+            </Button>
+          </div>
         </div>
       </section>
     );
@@ -372,41 +369,39 @@ export function FormSection({ title, subtitle, content, sectionId }: FormSection
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {formTitle}
-              </h2>
-              {formDescription && (
-                <p className="text-lg text-muted-foreground">
-                  {formDescription}
-                </p>
-              )}
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {formTitle}
+            </h2>
+            {formDescription && (
+              <p className="text-lg text-muted-foreground">
+                {formDescription}
+              </p>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {fields.map(renderField)}
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {fields.map(renderField)}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  submitButtonText
-                )}
-              </Button>
-            </form>
-          </div>
-        </ScrollReveal>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                submitButtonText
+              )}
+            </Button>
+          </form>
+        </div>
       </div>
     </section>
   );

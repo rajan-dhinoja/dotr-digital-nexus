@@ -1,4 +1,3 @@
-import { ScrollReveal } from '@/components/interactive/ScrollReveal';
 import { GlassCard } from '@/components/interactive/GlassCard';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
@@ -38,26 +37,23 @@ export function ContactInfoSection({ title, subtitle, content }: ContactInfoSect
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          {(title || subtitle) && (
-            <div className="text-center mb-12">
-              {title && (
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  {title}
-                </h2>
-              )}
-              {subtitle && (
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-          )}
-        </ScrollReveal>
+        {(title || subtitle) && (
+          <div className="text-center mb-12">
+            {title && (
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                {title}
+              </h2>
+            )}
+            {subtitle && (
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {subtitle}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <ScrollReveal delay={0.1}>
-            <GlassCard className="p-8 h-full">
+          <GlassCard className="p-8 h-full">
               <h3 className="text-xl font-semibold text-foreground mb-6">Get in Touch</h3>
               
               <div className="space-y-6">
@@ -108,20 +104,17 @@ export function ContactInfoSection({ title, subtitle, content }: ContactInfoSect
                 </div>
               )}
             </GlassCard>
-          </ScrollReveal>
 
           {mapEmbedUrl && (
-            <ScrollReveal delay={0.2}>
-              <div className="rounded-lg overflow-hidden h-full min-h-[300px]">
-                <iframe
-                  src={mapEmbedUrl}
-                  className="w-full h-full border-0"
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            </ScrollReveal>
+            <div className="rounded-lg overflow-hidden h-full min-h-[300px]">
+              <iframe
+                src={mapEmbedUrl}
+                className="w-full h-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
           )}
         </div>
       </div>

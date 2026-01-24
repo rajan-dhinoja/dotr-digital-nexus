@@ -1,6 +1,5 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { ScrollReveal } from "./ScrollReveal";
 
 interface TimelineItem {
   title: string;
@@ -17,21 +16,17 @@ interface InteractiveTimelineProps {
 export const InteractiveTimeline = ({ items, className }: InteractiveTimelineProps) => {
   return (
     <div className={cn("relative", className)}>
-      {/* Vertical line */}
       <div className="absolute left-8 top-0 bottom-0 w-px bg-border md:left-1/2 md:-translate-x-px" />
-      
+
       {items.map((item, index) => (
-        <ScrollReveal
+        <div
           key={index}
-          animation={index % 2 === 0 ? "fade-in-left" : "fade-in-right"}
-          delay={index * 100}
           className={cn(
             "relative flex items-start gap-6 pb-12 last:pb-0",
             "md:items-center",
             index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
           )}
         >
-          {/* Content */}
           <div
             className={cn(
               "flex-1 ml-16 md:ml-0",
@@ -52,8 +47,7 @@ export const InteractiveTimeline = ({ items, className }: InteractiveTimelinePro
               </p>
             </div>
           </div>
-          
-          {/* Center dot */}
+
           <div
             className={cn(
               "absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full",
@@ -61,10 +55,9 @@ export const InteractiveTimeline = ({ items, className }: InteractiveTimelinePro
               "ring-4 ring-background"
             )}
           />
-          
-          {/* Spacer for alignment on desktop */}
+
           <div className="hidden md:block flex-1" />
-        </ScrollReveal>
+        </div>
       ))}
     </div>
   );

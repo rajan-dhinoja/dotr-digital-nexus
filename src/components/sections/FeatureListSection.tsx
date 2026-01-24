@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { Check } from "lucide-react";
 import * as Icons from "lucide-react";
 import { LucideIcon } from "lucide-react";
@@ -43,31 +42,27 @@ export const FeatureListSection = ({ title, subtitle, content }: FeatureListSect
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {title || "Everything You Need"}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        </ScrollReveal>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {title || "Everything You Need"}
+          </h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+        </div>
 
         <div className={`max-w-3xl mx-auto grid ${gridCols[columns]} gap-4`}>
           {items.map((item, index) => {
             const IconComponent = getIcon(item.icon || "Check");
             return (
-              <ScrollReveal key={index} delay={index * 50}>
-                <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <IconComponent className="h-4 w-4 text-primary" />
-                  </div>
-                  <span className="font-medium">{item.text}</span>
+              <div key={index} className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <IconComponent className="h-4 w-4 text-primary" />
                 </div>
-              </ScrollReveal>
+                <span className="font-medium">{item.text}</span>
+              </div>
             );
           })}
         </div>

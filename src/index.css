@@ -164,6 +164,17 @@ All colors MUST be HSL.
   }
 }
 
+/* Respect prefers-reduced-motion: disable decorative animations and section entrance transitions */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-bounce-subtle {
+    animation: none;
+  }
+  [data-animate-in-view] {
+    transition-duration: 0s !important;
+  }
+}
+
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent;

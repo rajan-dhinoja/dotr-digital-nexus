@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ScrollReveal } from '@/components/interactive/ScrollReveal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, CheckCircle } from 'lucide-react';
@@ -52,8 +51,7 @@ export function NewsletterSection({ title, subtitle, content }: NewsletterSectio
   return (
     <section className="py-16 md:py-24 bg-muted/50">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="max-w-2xl mx-auto text-center">
+        <div className="max-w-2xl mx-auto text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <Mail className="w-8 h-8 text-primary" />
             </div>
@@ -90,7 +88,6 @@ export function NewsletterSection({ title, subtitle, content }: NewsletterSectio
               </form>
             )}
           </div>
-        </ScrollReveal>
       </div>
     </section>
   );

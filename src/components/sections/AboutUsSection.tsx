@@ -1,5 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
-
 interface AboutUsSectionProps {
   title?: string;
   subtitle?: string;
@@ -26,23 +24,19 @@ export const AboutUsSection = ({ title, subtitle, content }: AboutUsSectionProps
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <ScrollReveal>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                {title || "About Us"}
-              </h2>
-              {subtitle && (
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-          </ScrollReveal>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              {title || "About Us"}
+            </h2>
+            {subtitle && (
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {subtitle}
+              </p>
+            )}
+          </div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <ScrollReveal>
-              <div>
+            <div>
                 <h3 className="text-xl font-semibold mb-4">Our Story</h3>
                 <p className="text-muted-foreground mb-6">{story}</p>
                 
@@ -65,36 +59,32 @@ export const AboutUsSection = ({ title, subtitle, content }: AboutUsSectionProps
                     Founded in {foundedYear}
                   </p>
                 )}
-              </div>
-            </ScrollReveal>
+            </div>
 
-            {/* Founder/Image */}
-            <ScrollReveal delay={100}>
-              <div className="text-center">
-                {founderImage ? (
-                  <div className="relative inline-block">
-                    <img
-                      src={founderImage}
-                      alt={founderName || "Founder"}
-                      className="w-64 h-64 rounded-full object-cover mx-auto shadow-xl"
-                    />
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-card px-4 py-2 rounded-full shadow-lg">
-                      <p className="font-semibold">{founderName}</p>
-                      {founderTitle && (
-                        <p className="text-sm text-muted-foreground">{founderTitle}</p>
-                      )}
-                    </div>
+            <div className="text-center">
+              {founderImage ? (
+                <div className="relative inline-block">
+                  <img
+                    src={founderImage}
+                    alt={founderName || "Founder"}
+                    className="w-64 h-64 rounded-full object-cover mx-auto shadow-xl"
+                  />
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-card px-4 py-2 rounded-full shadow-lg">
+                    <p className="font-semibold">{founderName}</p>
+                    {founderTitle && (
+                      <p className="text-sm text-muted-foreground">{founderTitle}</p>
+                    )}
                   </div>
-                ) : (
-                  <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg p-8 text-center">
-                    <div className="text-6xl font-bold text-primary/20 mb-4">
-                      {foundedYear || new Date().getFullYear()}
-                    </div>
-                    <p className="text-muted-foreground">Years of Excellence</p>
+                </div>
+              ) : (
+                <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg p-8 text-center">
+                  <div className="text-6xl font-bold text-primary/20 mb-4">
+                    {foundedYear || new Date().getFullYear()}
                   </div>
-                )}
-              </div>
-            </ScrollReveal>
+                  <p className="text-muted-foreground">Years of Excellence</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

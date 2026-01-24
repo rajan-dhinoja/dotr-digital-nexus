@@ -1,5 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
-
 interface DividerSectionProps {
   title?: string;
   subtitle?: string;
@@ -55,11 +53,9 @@ export const DividerSection = ({ content }: DividerSectionProps) => {
 
   return (
     <div className={`${spacingClasses[spacing]}`}>
-      <ScrollReveal>
-        <div className={`mx-auto ${widthClasses[width]}`}>
-          {renderDivider()}
-        </div>
-      </ScrollReveal>
+      <div className={`mx-auto ${widthClasses[width]}`}>
+        {renderDivider()}
+      </div>
     </div>
   );
 };

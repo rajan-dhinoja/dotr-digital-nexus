@@ -2,7 +2,7 @@ import { useState, lazy, Suspense, createElement } from 'react';
 import { Plus, GripVertical, Trash2, Edit2, ChevronDown, ChevronUp, Layers, Star, Zap, Settings, Users, Quote, HelpCircle, Phone, Image, DollarSign, Clock, TrendingUp, BarChart, FileText, Copy, ClipboardPaste, Download, Upload as UploadIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -143,6 +143,14 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
         items: contentItems,
       };
     }
+
+    const animPreset = formData.get('animation_preset')?.toString() || 'subtle';
+    const validPreset = ['subtle', 'smooth', 'scale', 'none'].includes(animPreset) ? animPreset : 'subtle';
+    contentData.animation = {
+      enabled: formData.get('animation_enabled')?.toString() !== 'false',
+      preset: validPreset,
+      stagger: formData.get('animation_stagger')?.toString() !== 'false',
+    };
 
     const data: Partial<PageSection> = {
       section_type: editingSection.section_type,
@@ -470,6 +478,60 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
                 <TabsContent value="form" className="flex-1 min-h-0 overflow-y-auto mt-4 pr-2 space-y-4">
                   {/* Content fields based on section type */}
                   <SectionContentEditor section={editingSection} />
+                  {/* Animation (optional per section) */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Animation</CardTitle>
+                      <CardDescription>Subtle motion when scrolling. Does not delay content.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Animation</Label>
+                        <select
+                          name="animation_enabled"
+                          defaultValue={
+                            ((editingSection.content as Record<string, unknown>)?.animation as Record<string, unknown>)?.enabled !== false
+                              ? 'true'
+                              : 'false'
+                          }
+                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                        >
+                          <option value="true">On</option>
+                          <option value="false">Off</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Preset</Label>
+                        <select
+                          name="animation_preset"
+                          defaultValue={
+                            ((editingSection.content as Record<string, unknown>)?.animation as Record<string, unknown>)?.preset as string || 'subtle'
+                          }
+                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                        >
+                          <option value="subtle">Subtle</option>
+                          <option value="smooth">Smooth</option>
+                          <option value="scale">Scale</option>
+                          <option value="none">None</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Stagger children</Label>
+                        <select
+                          name="animation_stagger"
+                          defaultValue={
+                            ((editingSection.content as Record<string, unknown>)?.animation as Record<string, unknown>)?.stagger !== false
+                              ? 'true'
+                              : 'false'
+                          }
+                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                        >
+                          <option value="true">On</option>
+                          <option value="false">Off</option>
+                        </select>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </TabsContent>
                 
                 <TabsContent value="json" className="flex-1 min-h-0 overflow-y-auto mt-4 pr-2">

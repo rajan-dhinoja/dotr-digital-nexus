@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import { Quote } from "lucide-react";
 
 interface PressItem {
@@ -26,24 +25,21 @@ export const PressMentionsSection = ({ title, subtitle, content }: PressMentions
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <div className="text-center mb-12">
-            <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">As Seen In</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {title || "Press & Media"}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        </ScrollReveal>
+        <div className="text-center mb-12">
+          <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">As Seen In</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {title || "Press & Media"}
+          </h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          )}
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {items.map((item, index) => (
-            <ScrollReveal key={index} delay={index * 100}>
-              <div className="text-center p-6">
+            <div key={index} className="text-center p-6">
                 {item.logo_url ? (
                   <img 
                     src={item.logo_url} 
@@ -59,8 +55,7 @@ export const PressMentionsSection = ({ title, subtitle, content }: PressMentions
                     <p className="text-muted-foreground italic">"{item.quote}"</p>
                   </div>
                 )}
-              </div>
-            </ScrollReveal>
+            </div>
           ))}
         </div>
       </div>

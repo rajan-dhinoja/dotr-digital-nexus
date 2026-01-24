@@ -1,4 +1,3 @@
-import { ScrollReveal } from "@/components/interactive/ScrollReveal";
 import * as Icons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -50,18 +49,16 @@ export const FeatureHighlightsSection = ({ title, subtitle, content }: FeatureHi
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
         {(title || subtitle) && (
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              {title && (
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-              )}
-              {subtitle && (
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-          </ScrollReveal>
+          <div className="text-center mb-16">
+            {title && (
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
+            )}
+            {subtitle && (
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {subtitle}
+              </p>
+            )}
+          </div>
         )}
 
         <div className="space-y-16 md:space-y-24">
@@ -71,8 +68,7 @@ export const FeatureHighlightsSection = ({ title, subtitle, content }: FeatureHi
             const imgSrc = item.image_url || item.image;
 
             return (
-              <ScrollReveal key={index}>
-                <div className={`flex flex-col ${isEven ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 md:gap-12`}>
+              <div key={index} className={`flex flex-col ${isEven ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 md:gap-12`}>
                   {/* Image */}
                   {imgSrc && (
                     <div className="flex-1 w-full">
@@ -105,7 +101,6 @@ export const FeatureHighlightsSection = ({ title, subtitle, content }: FeatureHi
                     )}
                   </div>
                 </div>
-              </ScrollReveal>
             );
           })}
         </div>
