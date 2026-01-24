@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import {
   parsePagesMenuFile,
   validatePagesMenuImportData,
@@ -159,9 +160,8 @@ export function usePagesImportExport() {
         parent_id?: string | null;
         is_active?: boolean | null;
         show_in_nav?: boolean | null;
-        show_in_navigation?: boolean | null;
         display_order?: number | null;
-        content?: unknown;
+        content?: Record<string, unknown> | null;
       }>;
       const menuItems = (menuRes.data ?? []) as Array<{
         id: string;
@@ -174,7 +174,7 @@ export function usePagesImportExport() {
         target?: string | null;
         is_active?: boolean | null;
       }>;
-      exportPagesMenuToFile(pages, menuItems);
+      exportPagesMenuToFile(pages as Parameters<typeof exportPagesMenuToFile>[0], menuItems);
       await logJsonExport('pages_and_menu', pages.length + menuItems.length);
       toast({
         title: 'Export completed',
@@ -235,12 +235,12 @@ export function usePagesImportExport() {
         }
 
         const [existingPagesRes, existingMenuRes] = await Promise.all([
-          supabase.from('pages').select('id, slug, title, description, meta_title, meta_description, template, parent_id, is_active, show_in_nav, show_in_navigation, display_order, content'),
+          supabase.from('pages').select('id, slug, title, description, meta_title, meta_description, template, parent_id, is_active, show_in_nav, display_order, content'),
           supabase.from('menu_items').select('id, menu_location, label, url, page_id, parent_id, display_order, target, is_active'),
         ]);
         if (existingPagesRes.error) throw existingPagesRes.error;
         if (existingMenuRes.error) throw existingMenuRes.error;
-        const existingPages = (existingPagesRes.data ?? []) as Array<{
+        const existingPages = (existingPagesRes.data ?? []) as unknown as Array<{
           id: string;
           slug: string;
           [k: string]: unknown;
@@ -295,7 +295,7 @@ export function usePagesImportExport() {
               const parentId = p.parent_slug ? slugToId.get(p.parent_slug) ?? null : null;
               const { data: inserted, error } = await supabase
                 .from('pages')
-                .insert({
+                .insert([{
                   slug: p.slug,
                   title: p.title,
                   description: p.description ?? null,
@@ -305,10 +305,9 @@ export function usePagesImportExport() {
                   parent_id: parentId,
                   is_active: p.is_active ?? true,
                   show_in_nav: p.show_in_nav ?? true,
-                  show_in_navigation: p.show_in_navigation ?? true,
                   display_order: p.display_order ?? 0,
-                  content: (p.content as Record<string, unknown>) ?? {},
-                })
+                  content: ((p.content as Record<string, unknown>) ?? {}) as Json,
+                }])
                 .select('id')
                 .single();
               if (error) throw error;
