@@ -1,15 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const seoSchema: JSONSchemaType<{
-  meta_title?: string;
-  meta_description?: string;
-  og_title?: string;
-  og_description?: string;
-  og_image?: string;
-  og_type?: string;
-  twitter_card?: string;
-  canonical_url?: string;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const seoSchema = {
   type: 'object',
   properties: {
     meta_title: { type: 'string', nullable: true },
@@ -22,7 +12,7 @@ export const seoSchema: JSONSchemaType<{
     canonical_url: { type: 'string', nullable: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const seoExample = {
   meta_title: 'Page Title - SEO Optimized',

@@ -8,8 +8,7 @@ import logoLight from "@/assets/dotr-logo-light.jpg";
 import logoDark from "@/assets/dotr-logo-dark.jpg";
 import { useNavPages, Page } from "@/hooks/usePages";
 import { MegaMenu } from "@/components/layout/MegaMenu";
-import { useNavigationMenu } from "@/hooks/useNavigationMenu";
-import { mapTreeToUi, UiNavItem } from "@/lib/navigation/transform";
+import { useNavigationMenu, NavigationTreeItem } from "@/hooks/useNavigationMenu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -119,17 +118,17 @@ export const Header = () => {
 
   const navigationFromPages = buildNavigationFromPages(pages);
 
-  const navigationFromDb: NavItem[] | null = headerMenu
-    ? mapTreeToUi(headerMenu.items).map((item) => ({
+  const navigationFromDb: NavItem[] | null = headerMenu && headerMenu.length > 0
+    ? headerMenu.map((item: NavigationTreeItem) => ({
         name: item.label,
-        href: item.href || "#",
+        href: item.url || "#",
         slug: undefined,
-        description: item.description ?? undefined,
-        children: (item.children ?? []).map((child) => ({
+        description: undefined,
+        children: (item.children ?? []).map((child: NavigationTreeItem) => ({
           name: child.label,
-          href: child.href || "#",
+          href: child.url || "#",
           slug: undefined,
-          description: child.description ?? undefined,
+          description: undefined,
         })),
       }))
     : null;

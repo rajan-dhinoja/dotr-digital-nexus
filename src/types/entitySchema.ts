@@ -1,5 +1,3 @@
-import type { JSONSchemaType } from 'ajv';
-
 export interface ValidationResult {
   valid: boolean;
   errors: Array<{
@@ -10,7 +8,7 @@ export interface ValidationResult {
 }
 
 export interface JsonSchemaDefinition {
-  schema: JSONSchemaType<unknown>;
+  schema: Record<string, unknown>;
   example: Record<string, unknown>;
 }
 
@@ -30,7 +28,7 @@ export type EntityType =
 export interface EntitySchema {
   entityType: EntityType;
   version: string;
-  schema: JSONSchemaType<unknown>;
+  schema: Record<string, unknown>;
   example: Record<string, unknown>;
   description?: string;
 }

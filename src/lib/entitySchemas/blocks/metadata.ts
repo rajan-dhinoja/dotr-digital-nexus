@@ -1,12 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const metadataSchema: JSONSchemaType<{
-  display_order?: number;
-  is_featured?: boolean;
-  is_active?: boolean;
-  tags?: string[];
-  custom_fields?: Record<string, unknown>;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const metadataSchema = {
   type: 'object',
   properties: {
     display_order: { type: 'number', nullable: true },
@@ -20,7 +13,7 @@ export const metadataSchema: JSONSchemaType<{
     custom_fields: { type: 'object', nullable: true, additionalProperties: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const metadataExample = {
   display_order: 0,

@@ -74,50 +74,46 @@ export function useEntityImportExport({
           const { id, ...entityData } = entity;
           
           if (id) {
-            // Check if entity exists
-            const { data: existing } = await supabase
-              .from(tableName)
+            // Check if entity exists - use type assertion for dynamic table access
+            const { data: existing } = await (supabase
+              .from(tableName as 'pages') // Type assertion to allow dynamic table name
               .select('id')
-              .eq('id', id)
-              .maybeSingle();
+              .eq('id', id as string)
+              .maybeSingle() as Promise<{ data: { id: string } | null; error: unknown }>);
 
             if (existing) {
               if (onConflict === 'skip') {
                 continue;
               } else if (onConflict === 'overwrite') {
-                const { error } = await supabase
-                  .from(tableName)
-                  .update(entityData)
-                  .eq('id', id);
-                if (error) throw error;
+                await (supabase
+                  .from(tableName as 'pages')
+                  .update(entityData as Record<string, unknown>)
+                  .eq('id', id as string) as Promise<{ error: unknown }>);
               } else if (onConflict === 'merge') {
-                const { data: current } = await supabase
-                  .from(tableName)
+                const { data: current } = await (supabase
+                  .from(tableName as 'pages')
                   .select('*')
-                  .eq('id', id)
-                  .single();
+                  .eq('id', id as string)
+                  .single() as Promise<{ data: Record<string, unknown> | null; error: unknown }>);
                 
                 if (current) {
                   const merged = { ...current, ...entityData };
-                  const { error } = await supabase
-                    .from(tableName)
+                  await (supabase
+                    .from(tableName as 'pages')
                     .update(merged)
-                    .eq('id', id);
-                  if (error) throw error;
+                    .eq('id', id as string) as Promise<{ error: unknown }>);
                 }
               }
             } else if (createNew) {
-              const { error } = await supabase
-                .from(tableName)
-                .insert({ ...entityData, id });
-              if (error) throw error;
+              await (supabase
+                .from(tableName as 'pages')
+                .insert({ ...entityData, id } as Record<string, unknown>) as Promise<{ error: unknown }>);
             }
           } else if (createNew) {
             // Create new entity
-            const { error } = await supabase
-              .from(tableName)
-              .insert(entityData);
-            if (error) throw error;
+            await (supabase
+              .from(tableName as 'pages')
+              .insert(entityData as Record<string, unknown>) as Promise<{ error: unknown }>);
           }
           
           successCount++;

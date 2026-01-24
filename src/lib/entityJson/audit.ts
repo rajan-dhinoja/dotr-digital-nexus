@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { EntityType } from '@/types/entitySchema';
+import type { Json } from '@/integrations/supabase/types';
 
 interface AuditLogEntry {
   action: 'create' | 'update' | 'delete' | 'import' | 'export';
@@ -23,7 +24,7 @@ export async function logJsonOperation(entry: AuditLogEntry): Promise<void> {
       entity_type: entry.entity_type,
       entity_id: entry.entity_id || null,
       entity_name: entry.entity_name || null,
-      details: entry.details || {},
+      details: (entry.details || {}) as Json,
     });
   } catch (error) {
     // Fail silently - audit logging should not break the app

@@ -5,7 +5,16 @@ import { ctaSchema, ctaExample } from './blocks/cta';
 import { metadataSchema, metadataExample } from './blocks/metadata';
 import { socialLinksSchema, socialLinksExample } from './blocks/socialLinks';
 import { contactSchema, contactExample } from './blocks/contact';
-import type { JSONSchemaType } from 'ajv';
+
+// Plain JSON schema type for use without strictNullChecks
+type PlainJsonSchema = {
+  type: string;
+  properties?: Record<string, unknown>;
+  additionalProperties?: boolean;
+  items?: unknown;
+  required?: string[];
+  nullable?: boolean;
+};
 
 // Schema registry for all entities
 const entitySchemas: Map<EntityType, EntitySchema> = new Map();
@@ -13,8 +22,8 @@ const entitySchemas: Map<EntityType, EntitySchema> = new Map();
 /**
  * Merge multiple schemas into one
  */
-function mergeSchemas(...schemas: JSONSchemaType<unknown>[]): JSONSchemaType<unknown> {
-  const merged: JSONSchemaType<unknown> = {
+function mergeSchemas(...schemas: PlainJsonSchema[]): PlainJsonSchema {
+  const merged: PlainJsonSchema = {
     type: 'object',
     properties: {},
     additionalProperties: true,
@@ -40,11 +49,7 @@ function mergeExamples(...examples: Record<string, unknown>[]): Record<string, u
 }
 
 // Register Page schema
-const pageSchema: JSONSchemaType<{
-  title?: string;
-  description?: string;
-  content?: Record<string, unknown>;
-}> = mergeSchemas(seoSchema, {
+const pageSchema = mergeSchemas(seoSchema, {
   type: 'object',
   properties: {
     title: { type: 'string', nullable: true },
@@ -57,7 +62,7 @@ const pageSchema: JSONSchemaType<{
 entitySchemas.set('page', {
   entityType: 'page',
   version: '1.0',
-  schema: pageSchema,
+  schema: pageSchema as EntitySchema['schema'],
   example: mergeExamples(seoExample, {
     title: 'Page Title',
     description: 'Page description',
@@ -67,32 +72,7 @@ entitySchemas.set('page', {
 });
 
 // Register Service schema
-const serviceSchema: JSONSchemaType<{
-  name?: string;
-  slug?: string;
-  tagline?: string;
-  description?: string;
-  features?: Array<{
-    title: string;
-    description: string;
-    icon?: string;
-  }>;
-  process_steps?: Array<{
-    title: string;
-    description: string;
-    icon?: string;
-  }>;
-  faqs?: Array<{
-    question: string;
-    answer: string;
-  }>;
-  technologies?: string[];
-  pricing?: Array<{
-    name: string;
-    price: string;
-    features: string[];
-  }>;
-}> = mergeSchemas(mediaSchema, {
+const serviceSchema = mergeSchemas(mediaSchema, {
   type: 'object',
   properties: {
     name: { type: 'string', nullable: true },
@@ -169,7 +149,7 @@ const serviceSchema: JSONSchemaType<{
 entitySchemas.set('service', {
   entityType: 'service',
   version: '1.0',
-  schema: serviceSchema,
+  schema: serviceSchema as EntitySchema['schema'],
   example: mergeExamples(mediaExample, {
     name: 'Service Name',
     slug: 'service-slug',
@@ -194,15 +174,7 @@ entitySchemas.set('service', {
 });
 
 // Register Blog Post schema
-const blogPostSchema: JSONSchemaType<{
-  title?: string;
-  slug?: string;
-  excerpt?: string;
-  content?: string;
-  cover_image?: string;
-  author_id?: string;
-  categories?: string[];
-}> = mergeSchemas(seoSchema, mediaSchema, {
+const blogPostSchema = mergeSchemas(seoSchema, mediaSchema, {
   type: 'object',
   properties: {
     title: { type: 'string', nullable: true },
@@ -223,7 +195,7 @@ const blogPostSchema: JSONSchemaType<{
 entitySchemas.set('blog_post', {
   entityType: 'blog_post',
   version: '1.0',
-  schema: blogPostSchema,
+  schema: blogPostSchema as EntitySchema['schema'],
   example: mergeExamples(seoExample, mediaExample, {
     title: 'Blog Post Title',
     slug: 'blog-post-slug',
@@ -237,17 +209,7 @@ entitySchemas.set('blog_post', {
 });
 
 // Register Project schema
-const projectSchema: JSONSchemaType<{
-  title?: string;
-  slug?: string;
-  client?: string;
-  description?: string;
-  challenge?: string;
-  solution?: string;
-  results?: string;
-  project_url?: string;
-  technologies?: string[];
-}> = mergeSchemas(mediaSchema, {
+const projectSchema = mergeSchemas(mediaSchema, {
   type: 'object',
   properties: {
     title: { type: 'string', nullable: true },
@@ -270,7 +232,7 @@ const projectSchema: JSONSchemaType<{
 entitySchemas.set('project', {
   entityType: 'project',
   version: '1.0',
-  schema: projectSchema,
+  schema: projectSchema as EntitySchema['schema'],
   example: mergeExamples(mediaExample, {
     title: 'Project Title',
     slug: 'project-slug',
@@ -286,13 +248,7 @@ entitySchemas.set('project', {
 });
 
 // Register Team Member schema
-const teamMemberSchema: JSONSchemaType<{
-  name?: string;
-  role?: string;
-  bio?: string;
-  email?: string;
-  image_url?: string;
-}> = mergeSchemas(socialLinksSchema, contactSchema, {
+const teamMemberSchema = mergeSchemas(socialLinksSchema, contactSchema, {
   type: 'object',
   properties: {
     name: { type: 'string', nullable: true },
@@ -307,7 +263,7 @@ const teamMemberSchema: JSONSchemaType<{
 entitySchemas.set('team_member', {
   entityType: 'team_member',
   version: '1.0',
-  schema: teamMemberSchema,
+  schema: teamMemberSchema as EntitySchema['schema'],
   example: mergeExamples(socialLinksExample, contactExample, {
     name: 'John Doe',
     role: 'Senior Developer',
@@ -319,14 +275,7 @@ entitySchemas.set('team_member', {
 });
 
 // Register Testimonial schema
-const testimonialSchema: JSONSchemaType<{
-  author_name?: string;
-  author_role?: string;
-  author_company?: string;
-  content?: string;
-  rating?: number;
-  author_image?: string;
-}> = mergeSchemas(mediaSchema, {
+const testimonialSchema = mergeSchemas(mediaSchema, {
   type: 'object',
   properties: {
     author_name: { type: 'string', nullable: true },
@@ -342,7 +291,7 @@ const testimonialSchema: JSONSchemaType<{
 entitySchemas.set('testimonial', {
   entityType: 'testimonial',
   version: '1.0',
-  schema: testimonialSchema,
+  schema: testimonialSchema as EntitySchema['schema'],
   example: mergeExamples(mediaExample, {
     author_name: 'Jane Smith',
     author_role: 'CEO',
@@ -355,7 +304,7 @@ entitySchemas.set('testimonial', {
 });
 
 // Register Site Setting schema (flexible key-value)
-const siteSettingSchema: JSONSchemaType<Record<string, unknown>> = {
+const siteSettingSchema = {
   type: 'object',
   additionalProperties: true,
 };
@@ -363,7 +312,7 @@ const siteSettingSchema: JSONSchemaType<Record<string, unknown>> = {
 entitySchemas.set('site_setting', {
   entityType: 'site_setting',
   version: '1.0',
-  schema: siteSettingSchema,
+  schema: siteSettingSchema as EntitySchema['schema'],
   example: {
     site_name: 'My Site',
     tagline: 'Site tagline',
