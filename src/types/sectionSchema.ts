@@ -1,5 +1,4 @@
 import type { Json } from '@/integrations/supabase/types';
-import type { JSONSchemaType } from 'ajv';
 
 export interface SectionSchema {
   fields?: string[];
@@ -16,7 +15,16 @@ export interface ValidationResult {
   }>;
 }
 
+// Plain JSON schema type (no strictNullChecks required)
+export type PlainJsonSchema = {
+  type: string;
+  properties?: Record<string, unknown>;
+  additionalProperties?: boolean;
+  items?: unknown;
+  required?: string[];
+};
+
 export interface JsonSchemaDefinition {
-  schema: JSONSchemaType<unknown>;
+  schema: PlainJsonSchema;
   example: Record<string, unknown>;
 }

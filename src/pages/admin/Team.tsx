@@ -75,7 +75,7 @@ export default function AdminTeam() {
     setIsFeatured(member.is_featured ?? false);
     
     // Load JSON data from member
-    const socialLinks = (member.social_links as Record<string, unknown>) || {};
+    const socialLinks: Record<string, unknown> = {};
     setJsonData({
       name: member.name || '',
       role: member.role || '',
@@ -120,15 +120,6 @@ export default function AdminTeam() {
       linkedin_url: (jsonData.linkedin as string) || null,
       twitter_url: (jsonData.twitter as string) || null,
       github_url: (jsonData.github as string) || null,
-      social_links: {
-        linkedin: jsonData.linkedin || '',
-        twitter: jsonData.twitter || '',
-        github: jsonData.github || '',
-        facebook: jsonData.facebook || '',
-        instagram: jsonData.instagram || '',
-        youtube: jsonData.youtube || '',
-        website: jsonData.website || '',
-      } as any,
       is_featured: (jsonData.is_featured as boolean) || false,
       display_order: Number(jsonData.display_order) || 0,
     } : (() => {

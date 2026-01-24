@@ -57,12 +57,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      const queryPromise = supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+      
       const result = await withTimeout(
-        supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', userId)
-          .then(res => res),
+        Promise.resolve(queryPromise),
         8000,
         'Role check'
       );
