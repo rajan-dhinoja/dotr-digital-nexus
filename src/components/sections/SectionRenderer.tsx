@@ -103,7 +103,7 @@ function SectionAnimationWrapper({ section }: SectionAnimationWrapperProps) {
     <AnimateInView
       animation={config.preset}
       disabled={!config.enabled}
-      staggerMax={6}
+      staggerMax={config.stagger ? 6 : 0}
     >
       {child}
     </AnimateInView>
