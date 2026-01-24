@@ -1,28 +1,36 @@
-import Ajv, { type ValidateFunction } from 'ajv';
-import addFormats from 'ajv-formats';
 import type { Json } from '@/integrations/supabase/types';
-import type { JSONSchemaType } from 'ajv';
 import type { SectionSchema, ValidationResult, JsonSchemaDefinition } from '@/types/sectionSchema';
 import { getSectionExample } from './sectionExamples';
+import Ajv, { type ValidateFunction } from 'ajv';
+import addFormats from 'ajv-formats';
 
 // Initialize AJV with formats support
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 
+// Plain JSON schema type (no strictNullChecks required)
+type PlainJsonSchema = {
+  type: string;
+  properties?: Record<string, unknown>;
+  additionalProperties?: boolean;
+  items?: unknown;
+  required?: string[];
+};
+
 /**
  * Converts a database section schema to JSON Schema format
  */
-export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSONSchemaType<unknown> {
+export function convertToJsonSchema(sectionSchema: Json | null | undefined): PlainJsonSchema {
   if (!sectionSchema || typeof sectionSchema !== 'object') {
     // Fallback: permissive schema that allows any object
     return {
       type: 'object',
       additionalProperties: true,
-    } as JSONSchemaType<unknown>;
+    };
   }
 
   const schema = sectionSchema as SectionSchema;
-  const properties: Record<string, JSONSchemaType<unknown>> = {};
+  const properties: Record<string, PlainJsonSchema> = {};
   const required: string[] = [];
 
   // Handle top-level fields
@@ -49,13 +57,13 @@ export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSO
 
       properties[field] = {
         type: fieldType,
-      } as JSONSchemaType<unknown>;
+      };
     }
   }
 
   // Handle items array schema
   if (schema.items_schema && typeof schema.items_schema === 'object') {
-    const itemProperties: Record<string, JSONSchemaType<unknown>> = {};
+    const itemProperties: Record<string, PlainJsonSchema> = {};
     
     for (const [key, typeStr] of Object.entries(schema.items_schema)) {
       if (typeof key !== 'string' || typeof typeStr !== 'string') continue;
@@ -70,7 +78,7 @@ export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSO
 
       itemProperties[key] = {
         type: itemType,
-      } as JSONSchemaType<unknown>;
+      };
     }
 
     // Only add items property if we have item properties or if 'items' is in fields
@@ -82,7 +90,7 @@ export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSO
           properties: itemProperties,
           additionalProperties: true, // Allow extra fields in items
         },
-      } as JSONSchemaType<unknown>;
+      };
     }
   }
 
@@ -90,7 +98,7 @@ export function convertToJsonSchema(sectionSchema: Json | null | undefined): JSO
     type: 'object',
     properties,
     additionalProperties: true, // Allow extra fields not in schema
-  } as JSONSchemaType<unknown>;
+  };
 }
 
 /**

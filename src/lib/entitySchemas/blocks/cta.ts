@@ -1,14 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const ctaSchema: JSONSchemaType<{
-  cta_text?: string;
-  cta_link?: string;
-  cta_style?: string;
-  primary_cta_text?: string;
-  primary_cta_link?: string;
-  secondary_cta_text?: string;
-  secondary_cta_link?: string;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const ctaSchema = {
   type: 'object',
   properties: {
     cta_text: { type: 'string', nullable: true },
@@ -20,7 +11,7 @@ export const ctaSchema: JSONSchemaType<{
     secondary_cta_link: { type: 'string', nullable: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const ctaExample = {
   cta_text: 'Get Started',

@@ -57,14 +57,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const { data, error } = await withTimeout(
+      const result = await withTimeout(
         supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', userId),
+          .eq('user_id', userId)
+          .then(res => res),
         8000,
         'Role check'
       );
+      const { data, error } = result;
       
       if (error) {
         console.error('Error checking role:', error);

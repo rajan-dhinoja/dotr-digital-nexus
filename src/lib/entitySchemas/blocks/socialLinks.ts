@@ -1,14 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const socialLinksSchema: JSONSchemaType<{
-  facebook?: string;
-  twitter?: string;
-  instagram?: string;
-  linkedin?: string;
-  youtube?: string;
-  github?: string;
-  website?: string;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const socialLinksSchema = {
   type: 'object',
   properties: {
     facebook: { type: 'string', nullable: true },
@@ -20,7 +11,7 @@ export const socialLinksSchema: JSONSchemaType<{
     website: { type: 'string', nullable: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const socialLinksExample = {
   facebook: 'https://facebook.com/username',

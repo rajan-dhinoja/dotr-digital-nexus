@@ -1,14 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const contactSchema: JSONSchemaType<{
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  country?: string;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const contactSchema = {
   type: 'object',
   properties: {
     email: { type: 'string', format: 'email', nullable: true },
@@ -20,7 +11,7 @@ export const contactSchema: JSONSchemaType<{
     country: { type: 'string', nullable: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const contactExample = {
   email: 'contact@example.com',

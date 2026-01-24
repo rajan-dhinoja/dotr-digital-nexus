@@ -1,13 +1,5 @@
-import type { JSONSchemaType } from 'ajv';
-
-export const mediaSchema: JSONSchemaType<{
-  image_url?: string;
-  image_alt?: string;
-  image_caption?: string;
-  video_url?: string;
-  video_poster?: string;
-  background_image?: string;
-}> = {
+// Plain schema object - avoids AJV JSONSchemaType strictNullChecks requirement
+export const mediaSchema = {
   type: 'object',
   properties: {
     image_url: { type: 'string', nullable: true },
@@ -18,7 +10,7 @@ export const mediaSchema: JSONSchemaType<{
     background_image: { type: 'string', nullable: true },
   },
   additionalProperties: false,
-};
+} as const;
 
 export const mediaExample = {
   image_url: 'https://example.com/image.jpg',

@@ -1,6 +1,5 @@
 import Ajv, { type ValidateFunction } from 'ajv';
 import addFormats from 'ajv-formats';
-import type { JSONSchemaType } from 'ajv';
 import type { ValidationResult } from '@/types/entitySchema';
 
 // Initialize AJV with formats support
@@ -12,7 +11,7 @@ addFormats(ajv);
  */
 export function validateEntityJson(
   json: unknown,
-  schema: JSONSchemaType<unknown>
+  schema: Record<string, unknown>
 ): ValidationResult {
   try {
     // First, ensure json is an object
@@ -38,7 +37,7 @@ export function validateEntityJson(
           // Improve error messages
           let message = error.message || 'Validation error';
           if (error.keyword === 'type') {
-            message = `Expected ${error.params?.type || 'valid type'}, got ${typeof (json as any)[error.instancePath?.replace('/', '') || '']}`;
+            message = `Expected ${error.params?.type || 'valid type'}, got ${typeof (json as Record<string, unknown>)[error.instancePath?.replace('/', '') || '']}`;
           } else if (error.keyword === 'required') {
             message = `Missing required field: ${error.params?.missingProperty || 'unknown'}`;
           } else if (error.keyword === 'format') {
