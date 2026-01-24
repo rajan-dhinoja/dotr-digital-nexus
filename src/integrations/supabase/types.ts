@@ -364,6 +364,7 @@ export type Database = {
           meta_title: string | null
           parent_id: string | null
           show_in_nav: boolean | null
+          show_in_navigation: boolean | null
           slug: string
           template: string | null
           title: string
@@ -381,6 +382,7 @@ export type Database = {
           meta_title?: string | null
           parent_id?: string | null
           show_in_nav?: boolean | null
+          show_in_navigation?: boolean | null
           slug: string
           template?: string | null
           title: string
@@ -398,6 +400,7 @@ export type Database = {
           meta_title?: string | null
           parent_id?: string | null
           show_in_nav?: boolean | null
+          show_in_navigation?: boolean | null
           slug?: string
           template?: string | null
           title?: string
