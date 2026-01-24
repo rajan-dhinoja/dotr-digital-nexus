@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import {
+  AnimateInView,
+  type AnimateInViewPreset,
+} from "@/components/interactive/AnimateInView";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -9,8 +13,27 @@ interface ScrollRevealProps {
   threshold?: number;
   duration?: number;
   once?: boolean;
+  /** Disable entrance (e.g. forms). Content stays visible. */
+  disabled?: boolean;
 }
 
+const ANIMATION_TO_PRESET: Record<
+  NonNullable<ScrollRevealProps["animation"]>,
+  AnimateInViewPreset
+> = {
+  "fade-in": "subtle",
+  "fade-in-left": "subtle",
+  "fade-in-right": "subtle",
+  "scale-in": "scale",
+  "slide-up": "smooth",
+};
+
+/**
+ * Visible-first scroll reveal. Children render visible immediately; when in view
+ * a subtle transform-only entrance runs. Respects prefers-reduced-motion.
+ * Use AnimateInView directly for section-level wrapping; ScrollReveal remains
+ * for local use with legacy animation names.
+ */
 export const ScrollReveal = ({
   children,
   className,
@@ -19,74 +42,21 @@ export const ScrollReveal = ({
   threshold = 0.1,
   duration = 600,
   once = true,
+  disabled = false,
 }: ScrollRevealProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          if (once) {
-            observer.unobserve(entry.target);
-          }
-        } else if (!once) {
-          setIsVisible(false);
-        }
-      },
-      { threshold, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    observer.observe(element);
-
-    return () => {
-      observer.unobserve(element);
-    };
-  }, [threshold, once]);
-
-  const animationStyles = {
-    "fade-in": {
-      initial: "opacity-0 translate-y-6",
-      animate: "opacity-100 translate-y-0",
-    },
-    "fade-in-left": {
-      initial: "opacity-0 -translate-x-8",
-      animate: "opacity-100 translate-x-0",
-    },
-    "fade-in-right": {
-      initial: "opacity-0 translate-x-8",
-      animate: "opacity-100 translate-x-0",
-    },
-    "scale-in": {
-      initial: "opacity-0 scale-95",
-      animate: "opacity-100 scale-100",
-    },
-    "slide-up": {
-      initial: "opacity-0 translate-y-12",
-      animate: "opacity-100 translate-y-0",
-    },
-  };
-
-  const styles = animationStyles[animation];
+  const preset = ANIMATION_TO_PRESET[animation];
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "transition-all ease-out",
-        isVisible ? styles.animate : styles.initial,
-        className
-      )}
-      style={{ 
-        transitionDelay: `${delay}ms`,
-        transitionDuration: `${duration}ms`
-      }}
+    <AnimateInView
+      className={cn(className)}
+      animation={disabled ? "none" : preset}
+      delay={delay}
+      duration={duration}
+      disabled={disabled}
+      threshold={threshold}
+      rootMargin="0px 0px 100px 0"
     >
       {children}
-    </div>
+    </AnimateInView>
   );
 };

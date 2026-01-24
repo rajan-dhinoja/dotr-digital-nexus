@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useSectionObserverContext } from "@/contexts/SectionObserverContext";
 
 export interface UseSectionInViewOptions {
   /** Fraction of element visible to consider "in view" (0–1). Default 0.1 */
   threshold?: number;
-  /** Root margin for IO, e.g. "100px" to trigger slightly before entry. Default "0px 0px -50px 0px" */
+  /** Root margin for IO, e.g. "0px 0px 100px 0" to trigger slightly before entry. Default "0px 0px 100px 0" */
   rootMargin?: string;
   /** Stop observing after first intersection. Default true */
   once?: boolean;
@@ -18,28 +19,34 @@ export interface UseSectionInViewResult {
 
 /**
  * Intersection Observer hook for section-level animation triggers.
- * Returns inView, wasAboveFold, and ref. Use wasAboveFold to avoid entrance animations
- * for above-the-fold content (visible first, optional emphasis-only).
+ * Uses shared observer from SectionObserverProvider when available (e.g. inside SectionRenderer);
+ * otherwise creates a per-hook observer. Returns inView, wasAboveFold, and ref.
  */
 export function useSectionInView(
   options: UseSectionInViewOptions = {}
 ): UseSectionInViewResult {
-  const { threshold = 0.1, rootMargin = "0px 0px -50px 0px", once = true } = options;
+  const { threshold = 0.1, rootMargin = "0px 0px 100px 0", once = true } = options;
+  const ctx = useSectionObserverContext();
   const ref = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(false);
   const [wasAboveFold, setWasAboveFold] = useState(false);
-  const measuredRef = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    if (!measuredRef.current) {
-      measuredRef.current = true;
-      const rect = el.getBoundingClientRect();
-      const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-      setWasAboveFold(rect.top < viewportHeight);
+    if (ctx) {
+      const unregister = ctx.register(el, {
+        once,
+        setInView,
+        setWasAboveFold,
+      });
+      return unregister;
     }
+
+    const rect = el.getBoundingClientRect();
+    const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+    setWasAboveFold(rect.top < viewportHeight);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -55,7 +62,7 @@ export function useSectionInView(
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold, rootMargin, once]);
+  }, [ctx, threshold, rootMargin, once]);
 
   return { ref, inView, wasAboveFold };
 }

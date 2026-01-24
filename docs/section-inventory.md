@@ -103,6 +103,10 @@ form
 
 32 sections use arrays for their primary content structure.
 
+## Section animation (`content.animation`)
+
+All sections support optional animation via `content.animation` (JSONB). SectionRenderer wraps each section with `AnimateInView` when enabled. Configurable per section in the admin form (Animation card) or JSON. See [JSON_CONTENT_LAYER](JSON_CONTENT_LAYER.md#page-section-animation-contentanimation) for the full schema. Form sections always use `enabled: false` and `preset: "none"`.
+
 ## Notes
 
 - All sections have corresponding React components

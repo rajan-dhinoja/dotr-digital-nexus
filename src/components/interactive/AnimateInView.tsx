@@ -22,7 +22,7 @@ export interface AnimateInViewProps {
   disabled?: boolean;
   /** IO threshold 0–1. Default 0.1. */
   threshold?: number;
-  /** IO rootMargin. Default "0px 0px -50px 0px". */
+  /** IO rootMargin. Default "0px 0px 100px 0". */
   rootMargin?: string;
 }
 
@@ -58,7 +58,7 @@ export function AnimateInView({
   staggerMax = DEFAULT_STAGGER_MAX,
   disabled = false,
   threshold = 0.1,
-  rootMargin = "0px 0px -50px 0px",
+  rootMargin = "0px 0px 100px 0",
 }: AnimateInViewProps) {
   const prefersReducedMotion = useReducedMotion();
   const { ref, inView, wasAboveFold } = useSectionInView({

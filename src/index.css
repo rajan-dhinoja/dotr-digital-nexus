@@ -164,13 +164,16 @@ All colors MUST be HSL.
   }
 }
 
-/* Respect prefers-reduced-motion: disable decorative animations and section entrance transitions */
+/* Respect prefers-reduced-motion: disable decorative animations and section entrance */
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
-  .animate-bounce-subtle {
+  .animate-bounce-subtle,
+  .animate-pulse,
+  .animate-spin-slow {
     animation: none;
   }
   [data-animate-in-view] {
+    animation: none !important;
     transition-duration: 0s !important;
   }
 }

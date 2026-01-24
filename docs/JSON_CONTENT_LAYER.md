@@ -73,6 +73,8 @@ Page Builder sections support optional animation config via `content.animation` 
 
 Form sections always use `enabled: false` and `preset: "none"`. Safe defaults apply when `animation` is omitted.
 
+**Accessibility:** Entrance animations respect `prefers-reduced-motion: reduce` (disabled when set). Content is always visible on first paint; animations are optional enhancement. Above-the-fold sections use emphasis-only or no entrance.
+
 ## Usage
 
 ### Adding JSON Editing to a New Entity

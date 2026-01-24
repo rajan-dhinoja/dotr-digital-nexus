@@ -1,5 +1,6 @@
 import { PageSection } from '@/hooks/usePageSections';
 import { AnimateInView, type AnimateInViewPreset } from '@/components/interactive/AnimateInView';
+import { SectionObserverProvider } from '@/contexts/SectionObserverContext';
 import { HeroSection } from './HeroSection';
 import { FeaturesSection } from './FeaturesSection';
 import { ProcessSection } from './ProcessSection';
@@ -78,11 +79,11 @@ interface SectionRendererProps {
 
 export function SectionRenderer({ sections }: SectionRendererProps) {
   return (
-    <>
+    <SectionObserverProvider>
       {sections.map((section) => (
         <SectionAnimationWrapper key={section.id} section={section} />
       ))}
-    </>
+    </SectionObserverProvider>
   );
 }
 

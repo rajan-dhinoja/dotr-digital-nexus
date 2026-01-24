@@ -144,11 +144,12 @@ export function SectionManager({ pageType, entityId, maxSections = 10 }: Section
       };
     }
 
+    const isFormSection = editingSection.section_type === 'form';
     const animPreset = formData.get('animation_preset')?.toString() || 'subtle';
     const validPreset = ['subtle', 'smooth', 'scale', 'none'].includes(animPreset) ? animPreset : 'subtle';
     contentData.animation = {
-      enabled: formData.get('animation_enabled')?.toString() !== 'false',
-      preset: validPreset,
+      enabled: isFormSection ? false : formData.get('animation_enabled')?.toString() !== 'false',
+      preset: isFormSection ? 'none' : validPreset,
       stagger: formData.get('animation_stagger')?.toString() !== 'false',
     };
 
