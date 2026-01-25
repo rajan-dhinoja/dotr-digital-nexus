@@ -33,16 +33,14 @@ export function useBulkActions(options: UseBulkActionsOptions): UseBulkActionsRe
       for (let i = 0; i < ids.length; i += BATCH_SIZE) {
         const batch = ids.slice(i, i + BATCH_SIZE);
         
-        const { error } = await supabase
-          .from(tableName)
+        const { error } = await (supabase.from as any)(tableName)
           .delete()
           .in('id', batch);
 
         if (error) {
           // If batch fails, try individual deletes to identify which ones failed
           for (const id of batch) {
-            const { error: individualError } = await supabase
-              .from(tableName)
+            const { error: individualError } = await (supabase.from as any)(tableName)
               .delete()
               .eq('id', id);
 
@@ -108,16 +106,14 @@ export function useBulkActions(options: UseBulkActionsOptions): UseBulkActionsRe
       for (let i = 0; i < ids.length; i += BATCH_SIZE) {
         const batch = ids.slice(i, i + BATCH_SIZE);
         
-        const { error } = await supabase
-          .from(tableName)
+        const { error } = await (supabase.from as any)(tableName)
           .update(updates)
           .in('id', batch);
 
         if (error) {
           // If batch fails, try individual updates
           for (const id of batch) {
-            const { error: individualError } = await supabase
-              .from(tableName)
+            const { error: individualError } = await (supabase.from as any)(tableName)
               .update(updates)
               .eq('id', id);
 

@@ -218,11 +218,7 @@ export function useMegaMenu(
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
     enabled: (options?.enabled ?? true) && !!identifier,
-    // Don't cache null results - always try to fetch fresh data
     gcTime: 5 * 60 * 1000, // 5 minutes garbage collection
-    },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    enabled: (options?.enabled ?? true) && !!identifier,
   });
 }
 
