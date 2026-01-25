@@ -258,11 +258,19 @@ export type Database = {
       menu_items: {
         Row: {
           created_at: string | null
+          description: string | null
           display_order: number | null
+          icon_name: string | null
           id: string
           is_active: boolean | null
+          item_level: number | null
           label: string
+          mega_cta_href: string | null
+          mega_cta_label: string | null
+          mega_summary_text: string | null
+          mega_summary_title: string | null
           menu_location: string
+          menu_type: string | null
           page_id: string | null
           parent_id: string | null
           target: string | null
@@ -270,11 +278,19 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          description?: string | null
           display_order?: number | null
+          icon_name?: string | null
           id?: string
           is_active?: boolean | null
+          item_level?: number | null
           label: string
+          mega_cta_href?: string | null
+          mega_cta_label?: string | null
+          mega_summary_text?: string | null
+          mega_summary_title?: string | null
           menu_location: string
+          menu_type?: string | null
           page_id?: string | null
           parent_id?: string | null
           target?: string | null
@@ -282,11 +298,19 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          description?: string | null
           display_order?: number | null
+          icon_name?: string | null
           id?: string
           is_active?: boolean | null
+          item_level?: number | null
           label?: string
+          mega_cta_href?: string | null
+          mega_cta_label?: string | null
+          mega_summary_text?: string | null
+          mega_summary_title?: string | null
           menu_location?: string
+          menu_type?: string | null
           page_id?: string | null
           parent_id?: string | null
           target?: string | null
@@ -355,6 +379,7 @@ export type Database = {
         Row: {
           content: Json | null
           created_at: string | null
+          default_menu_type: string | null
           description: string | null
           display_order: number | null
           id: string
@@ -362,6 +387,8 @@ export type Database = {
           is_system: boolean | null
           meta_description: string | null
           meta_title: string | null
+          navigation_label_override: string | null
+          navigation_priority: number | null
           parent_id: string | null
           show_in_nav: boolean | null
           show_in_navigation: boolean | null
@@ -373,6 +400,7 @@ export type Database = {
         Insert: {
           content?: Json | null
           created_at?: string | null
+          default_menu_type?: string | null
           description?: string | null
           display_order?: number | null
           id?: string
@@ -380,6 +408,8 @@ export type Database = {
           is_system?: boolean | null
           meta_description?: string | null
           meta_title?: string | null
+          navigation_label_override?: string | null
+          navigation_priority?: number | null
           parent_id?: string | null
           show_in_nav?: boolean | null
           show_in_navigation?: boolean | null
@@ -391,6 +421,7 @@ export type Database = {
         Update: {
           content?: Json | null
           created_at?: string | null
+          default_menu_type?: string | null
           description?: string | null
           display_order?: number | null
           id?: string
@@ -398,6 +429,8 @@ export type Database = {
           is_system?: boolean | null
           meta_description?: string | null
           meta_title?: string | null
+          navigation_label_override?: string | null
+          navigation_priority?: number | null
           parent_id?: string | null
           show_in_nav?: boolean | null
           show_in_navigation?: boolean | null

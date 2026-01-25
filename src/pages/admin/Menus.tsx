@@ -38,6 +38,7 @@ import {
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 
+// MenuItem type now includes mega menu columns from database
 type MenuItem = Tables<"menu_items">;
 
 interface Page {
