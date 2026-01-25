@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { DataTable } from '@/components/admin/DataTable';
-import { VisibilityToggle, VisibilityBadge } from '@/components/admin/VisibilityToggle';
+import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
+import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +20,10 @@ import { useToast } from '@/hooks/use-toast';
 import { useActivityLog } from '@/hooks/useActivityLog';
 import { usePagesImportExport } from '@/hooks/usePagesImportExport';
 import { PagesImportModal } from '@/components/admin/PagesImportModal';
-import { Plus, Upload, Download } from 'lucide-react';
+import { useAdminList } from '@/hooks/useAdminList';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { getModuleConfig } from '@/config/adminModules';
+import { Upload, Download } from 'lucide-react';
 
 interface Page {
   id: string;
@@ -62,16 +67,40 @@ export default function AdminPages() {
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonContent, setJsonContent] = useState<Record<string, unknown>>({});
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
   const { exportPagesMenu } = usePagesImportExport();
   const queryClient = useQueryClient();
 
-  const { data: pages = [], isLoading } = useQuery({
+  const moduleConfig = getModuleConfig('pages');
+  const {
+    data: pages = [],
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    sortConfig,
+    setSortConfig,
+    filters,
+    setFilter,
+    clearFilters,
+  } = useAdminList<Page>({
+    tableName: 'pages',
     queryKey: ['admin-pages'],
-    queryFn: async () => {
-      const { data } = await supabase.from('pages').select('*').order('display_order');
-      return (data ?? []) as Page[];
+    searchFields: moduleConfig?.searchFields || ['title', 'slug'],
+    defaultSort: moduleConfig?.defaultSort,
+    pageSize: moduleConfig?.pageSize || 20,
+  });
+
+  const { bulkDelete, isPending: isBulkDeleting } = useBulkActions({
+    tableName: 'pages',
+    queryKey: ['admin-pages'],
+    onSuccess: (action, count) => {
+      toast({ title: `Deleted ${count} pages` });
+      setSelectedIds([]);
+      queryClient.invalidateQueries({ queryKey: ['pages'] });
+      queryClient.invalidateQueries({ queryKey: ['nav-pages'] });
     },
   });
 
@@ -225,10 +254,24 @@ export default function AdminPages() {
     saveMutation.mutate(data);
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    const result = await bulkDelete(selectedIds);
+    setBulkDeleteOpen(false);
+    if (result.failed > 0) {
+      toast({
+        title: 'Some deletions failed',
+        description: `${result.success} deleted, ${result.failed} failed`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const columns = [
     { 
       key: 'title', 
       label: 'Title',
+      sortable: true,
       render: (p: Page) => (
         <div className="flex items-center gap-2">
           {p.title}
@@ -248,53 +291,78 @@ export default function AdminPages() {
         />
       ),
     },
-    { key: 'display_order', label: 'Order' },
+    { key: 'display_order', label: 'Order', sortable: true },
   ];
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <div>
           <h1 className="text-2xl font-bold">Pages</h1>
           <p className="text-muted-foreground">Manage website pages and their visibility</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setImportModalOpen(true)}
-          >
-            <Upload className="h-4 w-4 mr-2" /> Bulk Import
-          </Button>
-          <Button variant="outline" onClick={() => exportPagesMenu()}>
-            <Download className="h-4 w-4 mr-2" /> Export
-          </Button>
-          <Button
-            onClick={() => {
-              setEditing(null);
-              setIsActive(true);
-              setShowInNav(true);
-              setShowInNavigation(true);
-              setDefaultMenuType('header');
-              setNavigationLabelOverride('');
-              setNavigationPriority(0);
-              setJsonContent({});
-              setActiveTab('general');
-              setOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" /> Add Page
-          </Button>
-        </div>
+      </div>
+
+      <div className="mb-6 flex gap-2">
+        <Button
+          variant="outline"
+          onClick={() => setImportModalOpen(true)}
+        >
+          <Upload className="h-4 w-4 mr-2" /> Bulk Import
+        </Button>
+        <Button variant="outline" onClick={() => exportPagesMenu()}>
+          <Download className="h-4 w-4 mr-2" /> Export
+        </Button>
       </div>
 
       <PagesImportModal open={importModalOpen} onOpenChange={setImportModalOpen} />
 
-      <DataTable
-        data={pages}
-        columns={columns}
-        loading={isLoading}
-        onEdit={handleEdit}
-        onDelete={(p) => deleteMutation.mutate(p.id)}
+      <AdminToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        filters={moduleConfig?.filters || []}
+        filterValues={filters}
+        onFilterChange={setFilter}
+        selectedCount={selectedIds.length}
+        onBulkDelete={() => setBulkDeleteOpen(true)}
+        onAddNew={() => {
+          setEditing(null);
+          setIsActive(true);
+          setShowInNav(true);
+          setShowInNavigation(true);
+          setDefaultMenuType('header');
+          setNavigationLabelOverride('');
+          setNavigationPriority(0);
+          setJsonContent({});
+          setActiveTab('general');
+          setOpen(true);
+        }}
+        addButtonLabel="Add Page"
+        onClearFilters={clearFilters}
+      />
+
+      <div className="mt-6">
+        <AdminDataTable
+          data={pages}
+          columns={columns}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sortConfig={sortConfig}
+          onSortChange={(field, direction) => setSortConfig({ field, direction })}
+          loading={isLoading}
+          onEdit={handleEdit}
+          onDelete={(p) => deleteMutation.mutate(p.id)}
+          emptyMessage="No pages found"
+        />
+      </div>
+
+      <BulkDeleteDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        count={selectedIds.length}
+        onConfirm={handleBulkDelete}
+        isLoading={isBulkDeleting}
+        itemName="pages"
       />
 
       <Dialog open={open} onOpenChange={setOpen}>

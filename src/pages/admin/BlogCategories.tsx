@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { DataTable } from '@/components/admin/DataTable';
+import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +12,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useActivityLog } from '@/hooks/useActivityLog';
-import { Plus } from 'lucide-react';
+import { useAdminList } from '@/hooks/useAdminList';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { getModuleConfig } from '@/config/adminModules';
 import type { Tables } from '@/integrations/supabase/types';
 
 type BlogCategory = Tables<'blog_categories'>;
@@ -18,16 +22,29 @@ type BlogCategory = Tables<'blog_categories'>;
 export default function AdminBlogCategories() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BlogCategory | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const { toast } = useToast();
   const { logActivity } = useActivityLog();
   const queryClient = useQueryClient();
 
-  const { data: categories = [], isLoading } = useQuery({
+  const moduleConfig = getModuleConfig('blog-categories');
+  const {
+    data: categories = [],
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    sortConfig,
+    setSortConfig,
+    filters,
+    setFilter,
+    clearFilters,
+  } = useAdminList<BlogCategory>({
+    tableName: 'blog_categories',
     queryKey: ['admin-blog-categories'],
-    queryFn: async () => {
-      const { data } = await supabase.from('blog_categories').select('*').order('name');
-      return data ?? [];
-    },
+    searchFields: moduleConfig?.searchFields || ['name', 'slug'],
+    defaultSort: moduleConfig?.defaultSort,
+    pageSize: moduleConfig?.pageSize || 20,
   });
 
   // Get post counts for each category
@@ -103,8 +120,40 @@ export default function AdminBlogCategories() {
     saveMutation.mutate(data);
   };
 
+  const { bulkDelete, isPending: isBulkDeleting } = useBulkActions({
+    tableName: 'blog_categories',
+    queryKey: ['admin-blog-categories'],
+    onSuccess: (action, count) => {
+      toast({ title: `Deleted ${count} categories` });
+      setSelectedIds([]);
+    },
+  });
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    // Check if any category has posts
+    const categoriesWithPosts = selectedIds.filter(id => (postCounts[id] || 0) > 0);
+    if (categoriesWithPosts.length > 0) {
+      toast({
+        title: 'Cannot Delete',
+        description: 'Some categories have posts. Remove all posts first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const result = await bulkDelete(selectedIds);
+    setBulkDeleteOpen(false);
+    if (result.failed > 0) {
+      toast({
+        title: 'Some deletions failed',
+        description: `${result.success} deleted, ${result.failed} failed`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const columns = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'slug', label: 'Slug' },
     { 
       key: 'posts', 
@@ -115,32 +164,58 @@ export default function AdminBlogCategories() {
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <div>
           <h1 className="text-2xl font-bold">Blog Categories</h1>
           <p className="text-muted-foreground">Organize your blog posts into categories</p>
         </div>
-        <Button onClick={() => { setEditing(null); setOpen(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Category
-        </Button>
       </div>
 
-      <DataTable
-        data={categories}
-        columns={columns}
-        loading={isLoading}
-        onEdit={(c) => { setEditing(c); setOpen(true); }}
-        onDelete={(c) => {
-          if (postCounts[c.id] > 0) {
-            toast({ 
-              title: 'Cannot Delete', 
-              description: 'Remove all posts from this category first', 
-              variant: 'destructive' 
-            });
-            return;
-          }
-          deleteMutation.mutate(c.id);
-        }}
+      <AdminToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        filters={moduleConfig?.filters || []}
+        filterValues={filters}
+        onFilterChange={setFilter}
+        selectedCount={selectedIds.length}
+        onBulkDelete={() => setBulkDeleteOpen(true)}
+        onAddNew={() => { setEditing(null); setOpen(true); }}
+        addButtonLabel="Add Category"
+        onClearFilters={clearFilters}
+      />
+
+      <div className="mt-6">
+        <AdminDataTable
+          data={categories}
+          columns={columns}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sortConfig={sortConfig}
+          onSortChange={(field, direction) => setSortConfig({ field, direction })}
+          loading={isLoading}
+          onEdit={(c) => { setEditing(c); setOpen(true); }}
+          onDelete={(c) => {
+            if (postCounts[c.id] > 0) {
+              toast({ 
+                title: 'Cannot Delete', 
+                description: 'Remove all posts from this category first', 
+                variant: 'destructive' 
+              });
+              return;
+            }
+            deleteMutation.mutate(c.id);
+          }}
+          emptyMessage="No categories found"
+        />
+      </div>
+
+      <BulkDeleteDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        count={selectedIds.length}
+        onConfirm={handleBulkDelete}
+        isLoading={isBulkDeleting}
+        itemName="categories"
       />
 
       <Dialog open={open} onOpenChange={setOpen}>

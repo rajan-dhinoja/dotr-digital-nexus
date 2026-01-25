@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { DataTable } from '@/components/admin/DataTable';
+import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
@@ -14,7 +16,9 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Plus } from 'lucide-react';
+import { useAdminList } from '@/hooks/useAdminList';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { getModuleConfig } from '@/config/adminModules';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Project = Tables<'projects'>;
@@ -27,14 +31,36 @@ export default function AdminProjects() {
   const [activeTab, setActiveTab] = useState('details');
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: projects = [], isLoading } = useQuery({
+  const moduleConfig = getModuleConfig('projects');
+  const {
+    data: projects = [],
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    sortConfig,
+    setSortConfig,
+    filters,
+    setFilter,
+    clearFilters,
+  } = useAdminList<Project>({
+    tableName: 'projects',
     queryKey: ['admin-projects'],
-    queryFn: async () => {
-      const { data } = await supabase.from('projects').select('*').order('display_order');
-      return data ?? [];
+    searchFields: moduleConfig?.searchFields || ['name', 'slug'],
+    defaultSort: moduleConfig?.defaultSort,
+    pageSize: moduleConfig?.pageSize || 20,
+  });
+
+  const { bulkDelete, isPending: isBulkDeleting } = useBulkActions({
+    tableName: 'projects',
+    queryKey: ['admin-projects'],
+    onSuccess: (action, count) => {
+      toast({ title: `Deleted ${count} projects` });
+      setSelectedIds([]);
     },
   });
 
@@ -147,6 +173,19 @@ export default function AdminProjects() {
     saveMutation.mutate(data);
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    const result = await bulkDelete(selectedIds);
+    setBulkDeleteOpen(false);
+    if (result.failed > 0) {
+      toast({
+        title: 'Some deletions failed',
+        description: `${result.success} deleted, ${result.failed} failed`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const columns = [
     {
       key: 'cover_image',
@@ -155,33 +194,59 @@ export default function AdminProjects() {
         <img src={p.cover_image} alt="" className="h-10 w-16 object-cover rounded" />
       ) : '-',
     },
-    { key: 'title', label: 'Title' },
+    { key: 'title', label: 'Title', sortable: true },
     { key: 'client', label: 'Client' },
-    { key: 'display_order', label: 'Order' },
+    { key: 'display_order', label: 'Order', sortable: true },
   ];
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <Button onClick={() => { 
-          setEditing(null); 
-          setCoverImage(''); 
-          setIsFeatured(false); 
-          setJsonData({});
-          setActiveTab('details');
-          setOpen(true); 
-        }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Project
-        </Button>
       </div>
 
-      <DataTable
-        data={projects}
-        columns={columns}
-        loading={isLoading}
-        onEdit={handleEdit}
-        onDelete={(p) => deleteMutation.mutate(p.id)}
+      <AdminToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        filters={moduleConfig?.filters || []}
+        filterValues={filters}
+        onFilterChange={setFilter}
+        selectedCount={selectedIds.length}
+        onBulkDelete={() => setBulkDeleteOpen(true)}
+        onAddNew={() => {
+          setEditing(null);
+          setCoverImage('');
+          setIsFeatured(false);
+          setJsonData({});
+          setActiveTab('details');
+          setOpen(true);
+        }}
+        addButtonLabel="Add Project"
+        onClearFilters={clearFilters}
+      />
+
+      <div className="mt-6">
+        <AdminDataTable
+          data={projects}
+          columns={columns}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sortConfig={sortConfig}
+          onSortChange={(field, direction) => setSortConfig({ field, direction })}
+          loading={isLoading}
+          onEdit={handleEdit}
+          onDelete={(p) => deleteMutation.mutate(p.id)}
+          emptyMessage="No projects found"
+        />
+      </div>
+
+      <BulkDeleteDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        count={selectedIds.length}
+        onConfirm={handleBulkDelete}
+        isLoading={isBulkDeleting}
+        itemName="projects"
       />
 
       <Dialog open={open} onOpenChange={setOpen}>

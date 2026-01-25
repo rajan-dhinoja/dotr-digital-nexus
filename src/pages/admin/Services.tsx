@@ -2,7 +2,9 @@ import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { DataTable } from '@/components/admin/DataTable';
+import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
@@ -16,7 +18,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useEntityImportExport } from '@/hooks/useEntityImportExport';
-import { Plus, X, GripVertical, Download, Upload as UploadIcon } from 'lucide-react';
+import { useAdminList } from '@/hooks/useAdminList';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { getModuleConfig } from '@/config/adminModules';
+import { X, GripVertical, Download, Upload as UploadIcon } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Service = Tables<'services'>;
@@ -58,6 +63,8 @@ export default function AdminServices() {
   const [activeTab, setActiveTab] = useState('basic');
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const importFileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -67,11 +74,31 @@ export default function AdminServices() {
     queryKey: ['admin-services'],
   });
 
-  const { data: services = [], isLoading } = useQuery({
+  const moduleConfig = getModuleConfig('services');
+  const {
+    data: services = [],
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    sortConfig,
+    setSortConfig,
+    filters,
+    setFilter,
+    clearFilters,
+  } = useAdminList<Service>({
+    tableName: 'services',
     queryKey: ['admin-services'],
-    queryFn: async () => {
-      const { data } = await supabase.from('services').select('*').order('display_order');
-      return data ?? [];
+    searchFields: moduleConfig?.searchFields || ['name', 'slug'],
+    defaultSort: moduleConfig?.defaultSort,
+    pageSize: moduleConfig?.pageSize || 20,
+  });
+
+  const { bulkDelete, isPending: isBulkDeleting } = useBulkActions({
+    tableName: 'services',
+    queryKey: ['admin-services'],
+    onSuccess: (action, count) => {
+      toast({ title: `Deleted ${count} services` });
+      setSelectedIds([]);
     },
   });
 
@@ -318,69 +345,109 @@ export default function AdminServices() {
     setTechnologies(technologies.filter((_, i) => i !== index));
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    const result = await bulkDelete(selectedIds);
+    setBulkDeleteOpen(false);
+    if (result.failed > 0) {
+      toast({
+        title: 'Some deletions failed',
+        description: `${result.success} deleted, ${result.failed} failed`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const columns = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'slug', label: 'Slug' },
     {
       key: 'category_id',
       label: 'Category',
       render: (s: Service) => categories.find(c => c.id === s.category_id)?.name ?? '-',
     },
-    { key: 'display_order', label: 'Order' },
+    { key: 'display_order', label: 'Order', sortable: true },
   ];
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold">Services</h1>
-        <div className="flex gap-2">
-          <input
-            ref={importFileRef}
-            type="file"
-            accept=".json"
-            onChange={handleImport}
-            className="hidden"
-          />
-          <Button
-            variant="outline"
-            onClick={() => importFileRef.current?.click()}
-          >
-            <UploadIcon className="h-4 w-4 mr-2" /> Import
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleExportAll}
-            disabled={services.length === 0}
-          >
-            <Download className="h-4 w-4 mr-2" /> Export All
-          </Button>
-          <Button onClick={() => { 
-            setEditing(null); 
-            resetForm(); 
-            setJsonData({});
-            setActiveTab('basic');
-            setOpen(true); 
-          }}>
-            <Plus className="h-4 w-4 mr-2" /> Add Service
-          </Button>
-        </div>
       </div>
 
-      <DataTable
-        data={services}
-        columns={columns}
-        loading={isLoading}
-        onEdit={(s) => loadEditingData(s)}
-        onDelete={(s) => deleteMutation.mutate(s.id)}
-        actions={(s) => (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleExportService(s)}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-        )}
+      <div className="mb-6 flex gap-2">
+        <input
+          ref={importFileRef}
+          type="file"
+          accept=".json"
+          onChange={handleImport}
+          className="hidden"
+        />
+        <Button
+          variant="outline"
+          onClick={() => importFileRef.current?.click()}
+        >
+          <UploadIcon className="h-4 w-4 mr-2" /> Import
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleExportAll}
+          disabled={services.length === 0}
+        >
+          <Download className="h-4 w-4 mr-2" /> Export All
+        </Button>
+      </div>
+
+      <AdminToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        filters={moduleConfig?.filters || []}
+        filterValues={filters}
+        onFilterChange={setFilter}
+        selectedCount={selectedIds.length}
+        onBulkDelete={() => setBulkDeleteOpen(true)}
+        onAddNew={() => {
+          setEditing(null);
+          resetForm();
+          setJsonData({});
+          setActiveTab('basic');
+          setOpen(true);
+        }}
+        addButtonLabel="Add Service"
+        onClearFilters={clearFilters}
+      />
+
+      <div className="mt-6">
+        <AdminDataTable
+          data={services}
+          columns={columns}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sortConfig={sortConfig}
+          onSortChange={(field, direction) => setSortConfig({ field, direction })}
+          loading={isLoading}
+          onEdit={(s) => loadEditingData(s)}
+          onDelete={(s) => deleteMutation.mutate(s.id)}
+          actions={(s) => (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleExportService(s)}
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          )}
+          emptyMessage="No services found"
+        />
+      </div>
+
+      <BulkDeleteDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        count={selectedIds.length}
+        onConfirm={handleBulkDelete}
+        isLoading={isBulkDeleting}
+        itemName="services"
       />
 
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditing(null); resetForm(); }}}>

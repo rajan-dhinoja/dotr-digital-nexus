@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { DataTable } from '@/components/admin/DataTable';
+import { AdminDataTable } from '@/components/admin/AdminDataTable';
+import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
 import { Button } from '@/components/ui/button';
@@ -14,7 +16,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Plus } from 'lucide-react';
+import { useAdminList } from '@/hooks/useAdminList';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { getModuleConfig } from '@/config/adminModules';
 import type { Tables } from '@/integrations/supabase/types';
 
 type BlogPost = Tables<'blog_posts'>;
@@ -27,14 +31,36 @@ export default function AdminBlogPosts() {
   const [activeTab, setActiveTab] = useState('form');
   const [jsonIsValid, setJsonIsValid] = useState(true);
   const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: posts = [], isLoading } = useQuery({
+  const moduleConfig = getModuleConfig('blog-posts');
+  const {
+    data: posts = [],
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    sortConfig,
+    setSortConfig,
+    filters,
+    setFilter,
+    clearFilters,
+  } = useAdminList<BlogPost>({
+    tableName: 'blog_posts',
     queryKey: ['admin-blog-posts'],
-    queryFn: async () => {
-      const { data } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
-      return data ?? [];
+    searchFields: moduleConfig?.searchFields || ['title', 'slug'],
+    defaultSort: moduleConfig?.defaultSort,
+    pageSize: moduleConfig?.pageSize || 20,
+  });
+
+  const { bulkDelete, isPending: isBulkDeleting } = useBulkActions({
+    tableName: 'blog_posts',
+    queryKey: ['admin-blog-posts'],
+    onSuccess: (action, count) => {
+      toast({ title: `Deleted ${count} posts` });
+      setSelectedIds([]);
     },
   });
 
@@ -137,6 +163,19 @@ export default function AdminBlogPosts() {
     saveMutation.mutate(data);
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    const result = await bulkDelete(selectedIds);
+    setBulkDeleteOpen(false);
+    if (result.failed > 0) {
+      toast({
+        title: 'Some deletions failed',
+        description: `${result.success} deleted, ${result.failed} failed`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const columns = [
     {
       key: 'cover_image',
@@ -145,7 +184,7 @@ export default function AdminBlogPosts() {
         <img src={p.cover_image} alt="" className="h-10 w-16 object-cover rounded" />
       ) : '-',
     },
-    { key: 'title', label: 'Title' },
+    { key: 'title', label: 'Title', sortable: true },
     {
       key: 'is_published',
       label: 'Status',
@@ -159,31 +198,58 @@ export default function AdminBlogPosts() {
       key: 'created_at',
       label: 'Created',
       render: (p: BlogPost) => new Date(p.created_at).toLocaleDateString(),
+      sortable: true,
     },
   ];
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold">Blog Posts</h1>
-        <Button onClick={() => { 
-          setEditing(null); 
-          setCoverImage(''); 
-          setIsPublished(false); 
-          setJsonData({});
-          setActiveTab('form');
-          setOpen(true); 
-        }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Post
-        </Button>
       </div>
 
-      <DataTable
-        data={posts}
-        columns={columns}
-        loading={isLoading}
-        onEdit={handleEdit}
-        onDelete={(p) => deleteMutation.mutate(p.id)}
+      <AdminToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        filters={moduleConfig?.filters || []}
+        filterValues={filters}
+        onFilterChange={setFilter}
+        selectedCount={selectedIds.length}
+        onBulkDelete={() => setBulkDeleteOpen(true)}
+        onAddNew={() => {
+          setEditing(null);
+          setCoverImage('');
+          setIsPublished(false);
+          setJsonData({});
+          setActiveTab('form');
+          setOpen(true);
+        }}
+        addButtonLabel="Add Post"
+        onClearFilters={clearFilters}
+      />
+
+      <div className="mt-6">
+        <AdminDataTable
+          data={posts}
+          columns={columns}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sortConfig={sortConfig}
+          onSortChange={(field, direction) => setSortConfig({ field, direction })}
+          loading={isLoading}
+          onEdit={handleEdit}
+          onDelete={(p) => deleteMutation.mutate(p.id)}
+          emptyMessage="No blog posts found"
+        />
+      </div>
+
+      <BulkDeleteDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        count={selectedIds.length}
+        onConfirm={handleBulkDelete}
+        isLoading={isBulkDeleting}
+        itemName="posts"
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
