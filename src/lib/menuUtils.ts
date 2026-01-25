@@ -135,6 +135,7 @@ export const menuIconMap: Record<string, LucideIcon> = {
   pen_tool: PenTool,
 } as const;
 
+// MenuItem type from database (now includes mega menu columns)
 export type MenuItem = Tables<"menu_items">;
 
 export interface MenuItemWithChildren extends MenuItem {
