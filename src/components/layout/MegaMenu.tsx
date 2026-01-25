@@ -338,14 +338,14 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                   "flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all",
                                   isActive
                                     ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-500"
-                                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                                 )}
                                 role="menuitem"
                               >
                                 {SectionIcon && (
                                   <span className={cn(
                                     "flex-shrink-0",
-                                    isActive ? "text-cyan-600" : "text-foreground/60"
+                                    isActive ? "text-cyan-600" : "text-gray-600"
                                   )} aria-hidden="true">
                                     {React.createElement(SectionIcon, { className: "h-5 w-5" })}
                                   </span>
@@ -353,12 +353,12 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                 <div className="flex-1 min-w-0">
                                   <p className={cn(
                                     "text-sm font-medium truncate",
-                                    isActive ? "text-cyan-700" : "text-foreground"
+                                    isActive ? "text-cyan-700" : "text-gray-800"
                                   )}>
                                     {section.title}
                                   </p>
                                   {section.description && (
-                                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                    <p className="text-xs text-gray-600 truncate mt-0.5">
                                       {section.description}
                                     </p>
                                   )}
@@ -375,7 +375,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                   "flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all",
                                   isActive
                                     ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-500"
-                                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                                 )}
                                 role="button"
                                 tabIndex={0}
@@ -389,7 +389,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                 {SectionIcon && (
                                   <span className={cn(
                                     "flex-shrink-0",
-                                    isActive ? "text-cyan-600" : "text-foreground/60"
+                                    isActive ? "text-cyan-600" : "text-gray-600"
                                   )} aria-hidden="true">
                                     {React.createElement(SectionIcon, { className: "h-5 w-5" })}
                                   </span>
@@ -397,12 +397,12 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                 <div className="flex-1 min-w-0">
                                   <p className={cn(
                                     "text-sm font-medium truncate",
-                                    isActive ? "text-cyan-700" : "text-foreground"
+                                    isActive ? "text-cyan-700" : "text-gray-800"
                                   )}>
                                     {section.title}
                                   </p>
                                   {section.description && (
-                                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                    <p className="text-xs text-gray-600 truncate mt-0.5">
                                       {section.description}
                                     </p>
                                   )}
@@ -426,7 +426,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                     )}>
                       {/* Mobile: Show category title */}
                       <div className="md:hidden mb-4 pb-3 border-b border-border/50">
-                        <h4 className="text-sm font-semibold text-foreground">
+                        <h4 className="text-sm font-semibold text-gray-800">
                           {megaMenuData.sections[selectedCategoryIndex]?.title}
                         </h4>
                       </div>
@@ -450,7 +450,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                                         {React.createElement(ItemIcon, { className: "h-8 w-8 lg:h-10 lg:w-10" })}
                                       </div>
                                     )}
-                                    <p className="text-sm lg:text-base font-semibold text-foreground group-hover:text-cyan-700 transition-colors">
+                                    <p className="text-sm lg:text-base font-semibold text-gray-800 group-hover:text-cyan-700 transition-colors">
                                       {item.title}
                                     </p>
                                   </Link>
@@ -458,7 +458,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                               })}
                             </div>
                           ) : (
-                            <div className="text-center py-12 text-muted-foreground">
+                            <div className="text-center py-12 text-gray-600">
                               <p className="text-sm">No items available in this category</p>
                             </div>
                           )}
@@ -467,7 +467,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                     </div>
                   </>
                 ) : (
-                  <div className="col-span-full text-center py-12 text-muted-foreground">
+                  <div className="col-span-full text-center py-12 text-gray-600">
                     <p>No menu items available</p>
                   </div>
                 )}
@@ -475,7 +475,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
             ) : (
               // Empty state - show simple link if no mega menu data
               <div className="p-6 lg:p-8">
-                <div className="text-center text-muted-foreground">
+                <div className="text-center text-gray-700">
                   <p className="text-sm mb-2">No menu items configured yet.</p>
                   <Link
                     to={href}
@@ -484,7 +484,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                   >
                     Explore {label}
                   </Link>
-                  <p className="text-xs mt-3">Go to Admin → Menus to set up this mega menu.</p>
+                  <p className="text-xs mt-3 text-gray-600">Go to Admin → Menus to set up this mega menu.</p>
                 </div>
               </div>
             )}
