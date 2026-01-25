@@ -1,4 +1,3 @@
-import type { PostgrestQueryBuilder, PostgrestFilterBuilder } from '@supabase/supabase-js';
 import type { QueryBuilderOptions, SortConfig } from '@/lib/types/admin';
 import { applySort } from './sortBuilder';
 import { applyFilters } from './filterBuilder';
@@ -7,9 +6,9 @@ import { applyFilters } from './filterBuilder';
  * Builds a Supabase query with search, sort, filter, and pagination
  */
 export function buildListQuery<T>(
-  query: PostgrestQueryBuilder<any, any, any, any>,
+  query: any,
   options: QueryBuilderOptions
-): PostgrestFilterBuilder<any, any, any, any> {
+): any {
   let builtQuery: any = query;
 
   // Apply search across multiple fields
@@ -55,9 +54,9 @@ export function buildListQuery<T>(
  * Builds a count query for pagination
  */
 export function buildCountQuery<T>(
-  query: PostgrestQueryBuilder<any, any, any, any>,
+  query: any,
   options: Omit<QueryBuilderOptions, 'sort' | 'page' | 'pageSize'>
-): PostgrestFilterBuilder<any, any, any, any> {
+): any {
   let builtQuery: any = query.select('*', { count: 'exact', head: true });
 
   // Apply search

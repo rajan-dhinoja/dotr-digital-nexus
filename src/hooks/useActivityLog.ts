@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface LogActivityParams {
-  action: 'create' | 'update' | 'delete' | 'login' | 'logout';
+  action: 'create' | 'update' | 'delete' | 'login' | 'logout' | 'bulk_delete' | 'bulk_update';
   entity_type: string;
   entity_id?: string;
   entity_name?: string;

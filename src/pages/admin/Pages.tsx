@@ -150,7 +150,7 @@ export default function AdminPages() {
         const { error } = await supabase.from('pages').update(safePage).eq('id', editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('pages').insert(safePage);
+        const { error } = await supabase.from('pages').insert([safePage as any]);
         if (error) throw error;
       }
     },
@@ -249,12 +249,7 @@ export default function AdminPages() {
       is_active: isActive,
       show_in_nav: showInNav,
       show_in_navigation: showInNavigation,
-      default_menu_type: defaultMenuType || null,
-      navigation_label_override: navigationLabelOverride || null,
-      navigation_priority: navigationPriority || null,
-      show_in_nav: showInNav,
-      show_in_navigation: showInNavigation,
-      default_menu_type: form.get('default_menu_type')?.toString() || defaultMenuType,
+      default_menu_type: form.get('default_menu_type')?.toString() || defaultMenuType || null,
       navigation_label_override: form.get('navigation_label_override')?.toString() || navigationLabelOverride || null,
       navigation_priority: Number(form.get('navigation_priority')) || navigationPriority || 0,
       display_order: Number(form.get('display_order')) || 0,

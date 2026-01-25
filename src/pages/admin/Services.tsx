@@ -22,7 +22,7 @@ import { useEntityImportExport } from '@/hooks/useEntityImportExport';
 import { useAdminList } from '@/hooks/useAdminList';
 import { useBulkActions } from '@/hooks/useBulkActions';
 import { getModuleConfig } from '@/config/adminModules';
-import { X, GripVertical, Download, Upload as UploadIcon } from 'lucide-react';
+import { X, GripVertical, Download, Upload as UploadIcon, Plus } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Service = Tables<'services'>;
