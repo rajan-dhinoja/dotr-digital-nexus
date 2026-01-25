@@ -77,11 +77,41 @@ export default function AdminPages() {
 
   const saveMutation = useMutation({
     mutationFn: async (page: Partial<Page>) => {
+      // Only include fields that exist in the schema to avoid errors
+      const safePage: Record<string, any> = {
+        title: page.title,
+        slug: page.slug,
+        description: page.description,
+        meta_title: page.meta_title,
+        meta_description: page.meta_description,
+        template: page.template,
+        parent_id: page.parent_id,
+        is_active: page.is_active,
+        show_in_nav: page.show_in_nav,
+        display_order: page.display_order,
+        content: page.content,
+      };
+      
+      // Only add navigation fields if they exist (check by trying to include them conditionally)
+      // These fields might not exist if migration hasn't run
+      if (page.show_in_navigation !== undefined) {
+        safePage.show_in_navigation = page.show_in_navigation;
+      }
+      if (page.default_menu_type !== undefined) {
+        safePage.default_menu_type = page.default_menu_type;
+      }
+      if (page.navigation_label_override !== undefined) {
+        safePage.navigation_label_override = page.navigation_label_override;
+      }
+      if (page.navigation_priority !== undefined) {
+        safePage.navigation_priority = page.navigation_priority;
+      }
+      
       if (editing) {
-        const { error } = await supabase.from('pages').update(page).eq('id', editing.id);
+        const { error } = await supabase.from('pages').update(safePage).eq('id', editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('pages').insert(page as any);
+        const { error } = await supabase.from('pages').insert(safePage);
         if (error) throw error;
       }
     },
@@ -178,6 +208,11 @@ export default function AdminPages() {
       template: form.get('template')?.toString() || 'default',
       parent_id: form.get('parent_id')?.toString() === 'none' ? null : form.get('parent_id')?.toString() || null,
       is_active: isActive,
+      show_in_nav: showInNav,
+      show_in_navigation: showInNavigation,
+      default_menu_type: defaultMenuType || null,
+      navigation_label_override: navigationLabelOverride || null,
+      navigation_priority: navigationPriority || null,
       show_in_nav: showInNav,
       show_in_navigation: showInNavigation,
       default_menu_type: form.get('default_menu_type')?.toString() || defaultMenuType,
