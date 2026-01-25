@@ -616,16 +616,35 @@ export default function AdminMenus() {
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Navigation & Menus</h1>
-          <p className="text-muted-foreground">
-            Configure header, footer, and mobile navigation.
-          </p>
-        </div>
-        <div className="flex gap-2">
+      <div className="space-y-4 mb-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Navigation & Menus</h1>
+            <p className="text-muted-foreground">
+              Configure header, footer, and mobile navigation.
+            </p>
+          </div>
           <Button
-            variant="outline"
+            onClick={() => {
+              setEditingItem(null);
+              setIsItemActive(true);
+              setIsItemDialogOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Menu Item
+          </Button>
+        </div>
+        <div className="flex items-center gap-2 p-4 bg-muted/50 rounded-lg border">
+          <RefreshCw className="h-5 w-5 text-primary" />
+          <div className="flex-1">
+            <p className="text-sm font-medium">Sync Pages to Menu</p>
+            <p className="text-xs text-muted-foreground">
+              Automatically create menu items from all pages marked for navigation
+            </p>
+          </div>
+          <Button
+            variant="default"
             onClick={() => {
               console.log('Syncing pages to menu for location:', activeLocation);
               syncPagesToMenuMutation.mutate(activeLocation, {
@@ -643,17 +662,7 @@ export default function AdminMenus() {
               "h-4 w-4 mr-2",
               syncPagesToMenuMutation.isPending && "animate-spin"
             )} />
-            {syncPagesToMenuMutation.isPending ? "Syncing..." : "Sync Pages to Menu"}
-          </Button>
-          <Button
-            onClick={() => {
-              setEditingItem(null);
-              setIsItemActive(true);
-              setIsItemDialogOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Menu Item
+            {syncPagesToMenuMutation.isPending ? "Syncing..." : "Sync Now"}
           </Button>
         </div>
       </div>
