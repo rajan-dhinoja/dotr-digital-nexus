@@ -85,6 +85,15 @@ export default function AdminPages() {
     filters,
     setFilter,
     clearFilters,
+    page,
+    totalPages,
+    totalCount,
+    pageSize,
+    hasNextPage,
+    hasPreviousPage,
+    goToPage,
+    nextPage,
+    previousPage,
   } = useAdminList<Page>({
     tableName: 'pages',
     queryKey: ['admin-pages'],
@@ -354,6 +363,19 @@ export default function AdminPages() {
           onDelete={(p) => deleteMutation.mutate(p.id)}
           emptyMessage="No pages found"
         />
+        {totalPages > 1 && (
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={goToPage}
+            onPrevious={previousPage}
+            onNext={nextPage}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
 
       <BulkDeleteDialog

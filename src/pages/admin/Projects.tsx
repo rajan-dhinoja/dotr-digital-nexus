@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { ProjectGalleryManager } from '@/components/admin/ProjectGalleryManager';
@@ -47,6 +48,15 @@ export default function AdminProjects() {
     filters,
     setFilter,
     clearFilters,
+    page,
+    totalPages,
+    totalCount,
+    pageSize,
+    hasNextPage,
+    hasPreviousPage,
+    goToPage,
+    nextPage,
+    previousPage,
   } = useAdminList<Project>({
     tableName: 'projects',
     queryKey: ['admin-projects'],
@@ -238,6 +248,19 @@ export default function AdminProjects() {
           onDelete={(p) => deleteMutation.mutate(p.id)}
           emptyMessage="No projects found"
         />
+        {totalPages > 1 && (
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={goToPage}
+            onPrevious={previousPage}
+            onNext={nextPage}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
 
       <BulkDeleteDialog

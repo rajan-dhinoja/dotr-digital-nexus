@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';
@@ -85,6 +86,15 @@ export default function AdminServices() {
     filters,
     setFilter,
     clearFilters,
+    page,
+    totalPages,
+    totalCount,
+    pageSize,
+    hasNextPage,
+    hasPreviousPage,
+    goToPage,
+    nextPage,
+    previousPage,
   } = useAdminList<Service>({
     tableName: 'services',
     queryKey: ['admin-services'],
@@ -439,6 +449,19 @@ export default function AdminServices() {
           )}
           emptyMessage="No services found"
         />
+        {totalPages > 1 && (
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={goToPage}
+            onPrevious={previousPage}
+            onNext={nextPage}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
 
       <BulkDeleteDialog

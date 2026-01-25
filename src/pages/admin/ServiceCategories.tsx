@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +38,15 @@ export default function AdminServiceCategories() {
     filters,
     setFilter,
     clearFilters,
+    page,
+    totalPages,
+    totalCount,
+    pageSize,
+    hasNextPage,
+    hasPreviousPage,
+    goToPage,
+    nextPage,
+    previousPage,
   } = useAdminList<ServiceCategory>({
     tableName: 'service_categories',
     queryKey: ['admin-service-categories'],
@@ -158,6 +168,19 @@ export default function AdminServiceCategories() {
           onDelete={(c) => deleteMutation.mutate(c.id)}
           emptyMessage="No categories found"
         />
+        {totalPages > 1 && (
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={goToPage}
+            onPrevious={previousPage}
+            onNext={nextPage}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
 
       <BulkDeleteDialog

@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +40,15 @@ export default function AdminBlogCategories() {
     filters,
     setFilter,
     clearFilters,
+    page,
+    totalPages,
+    totalCount,
+    pageSize,
+    hasNextPage,
+    hasPreviousPage,
+    goToPage,
+    nextPage,
+    previousPage,
   } = useAdminList<BlogCategory>({
     tableName: 'blog_categories',
     queryKey: ['admin-blog-categories'],
@@ -207,6 +217,19 @@ export default function AdminBlogCategories() {
           }}
           emptyMessage="No categories found"
         />
+        {totalPages > 1 && (
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={goToPage}
+            onPrevious={previousPage}
+            onNext={nextPage}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
 
       <BulkDeleteDialog
