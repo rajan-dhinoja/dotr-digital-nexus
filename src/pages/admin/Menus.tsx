@@ -144,10 +144,15 @@ export default function AdminMenus() {
       setMenuType(editingItem.menu_type ?? "simple");
       setSelectedParentId(editingItem.parent_id ?? null);
       setItemLevel(editingItem.item_level ?? 0);
+      setIconName(editingItem.icon_name ?? null);
+      setIsItemActive(editingItem.is_active ?? true);
     } else if (!isItemDialogOpen) {
       setMenuType("simple");
       setSelectedParentId(null);
       setItemLevel(0);
+      setIconName(null);
+      setIsItemActive(true);
+      setEditingItem(null);
     }
   }, [isItemDialogOpen, editingItem]);
 
@@ -413,7 +418,7 @@ export default function AdminMenus() {
         description: `${data.synced} pages synced successfully to ${menuLocation} menu`,
       });
       logActivity({
-        action: "sync",
+        action: "update",
         entity_type: "menu_items",
         entity_name: `Synced ${data.synced} pages to ${menuLocation} menu`,
       });
@@ -444,22 +449,16 @@ export default function AdminMenus() {
     const pageId = form.get("page_id")?.toString() || null;
     const externalUrl = form.get("url")?.toString() || null;
 
-    if (linkType === "page" && !pageId) {
-      toast({
-        title: "Validation Error",
-        description: "Select a page for page-type navigation items",
-        variant: "destructive",
-      });
-      return;
+    // Allow menu items without links (for parent items or placeholders)
+    // Only validate if a specific link type is selected
+    if (linkType === "page" && !pageId && !editingItem) {
+      // For new items, if page type is selected but no page chosen, allow it (will be null)
+      // This allows creating parent menu items without links
     }
 
-    if (linkType === "external" && !externalUrl) {
-      toast({
-        title: "Validation Error",
-        description: "Provide a URL for external navigation items",
-        variant: "destructive",
-      });
-      return;
+    if (linkType === "external" && !externalUrl && !editingItem) {
+      // For new items, if external type is selected but no URL, allow it (will be null)
+      // This allows creating parent menu items without links
     }
 
     // Get the URL based on link type
@@ -582,6 +581,7 @@ export default function AdminMenus() {
                       setIsItemActive(item.is_active ?? true);
                       setMenuType(item.menu_type ?? "simple");
                       setSelectedParentId(item.parent_id ?? null);
+                      setIconName(item.icon_name ?? null);
                       setIsItemDialogOpen(true);
                     }}
                   >
@@ -771,12 +771,13 @@ export default function AdminMenus() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="page_id">Page (if internal)</Label>
+              <Label htmlFor="page_id">Page (if internal) - Optional</Label>
               <Select name="page_id" defaultValue={editingItem?.page_id ?? ""}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a page" />
+                  <SelectValue placeholder="Select a page (optional)" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="">None (no link)</SelectItem>
                   {pages.map((page) => (
                     <SelectItem key={page.id} value={page.id}>
                       {page.title}
@@ -784,10 +785,13 @@ export default function AdminMenus() {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                Leave empty to create a menu item without a link (useful for parent items)
+              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="url">External URL (if external)</Label>
+              <Label htmlFor="url">External URL (if external) - Optional</Label>
               <Input
                 id="url"
                 name="url"
@@ -798,6 +802,9 @@ export default function AdminMenus() {
                     : ""
                 }
               />
+              <p className="text-xs text-muted-foreground">
+                Leave empty to create a menu item without a link (useful for parent items)
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -841,23 +848,24 @@ export default function AdminMenus() {
               </div>
             )}
 
-            {/* Icon picker - shown for level 1 and 2 items */}
-            {(itemLevel === 1 || itemLevel === 2) && (
-              <div className="space-y-2">
-                <Label>Icon</Label>
-                <IconPicker
-                  value={iconName}
-                  onValueChange={setIconName}
-                  placeholder="Select an icon..."
-                />
-                <input
-                  type="hidden"
-                  id="icon_name"
-                  name="icon_name"
-                  value={iconName ?? ""}
-                />
-              </div>
-            )}
+            {/* Icon picker - shown for all levels */}
+            <div className="space-y-2">
+              <Label>Icon (Optional)</Label>
+              <IconPicker
+                value={iconName}
+                onValueChange={setIconName}
+                placeholder="Select an icon..."
+              />
+              <input
+                type="hidden"
+                id="icon_name"
+                name="icon_name"
+                value={iconName ?? ""}
+              />
+              <p className="text-xs text-muted-foreground">
+                Icons are displayed in the navigation menu and help users identify menu items quickly
+              </p>
+            </div>
 
             {/* Mega menu fields - shown only for level 0 items with menu_type='mega' */}
             {itemLevel === 0 && menuType === "mega" && (
