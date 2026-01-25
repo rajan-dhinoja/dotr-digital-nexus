@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMegaMenu } from "@/hooks/useMegaMenu";
 import { resolveIcon, transformToMegaMenu, type MegaMenuDefinition } from "@/lib/menuUtils";
@@ -19,6 +19,7 @@ interface MegaMenuProps {
 export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: MegaMenuProps) => {
   const [open, setOpen] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +62,13 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
 
   // Use direct data if available, otherwise use fetched data
   const megaMenuData = directMegaMenuData || fetchedMegaMenuData;
+
+  // Reset selected category when menu opens or data changes
+  useEffect(() => {
+    if (open && megaMenuData && megaMenuData.sections.length > 0) {
+      setSelectedCategoryIndex(0);
+    }
+  }, [open, megaMenuData]);
 
   // Debug logging for query results (can be removed in production)
   useEffect(() => {
@@ -236,46 +244,64 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
           <div className="absolute -top-1 left-0 right-0 h-1" />
           <div className="mt-1 overflow-hidden rounded-3xl bg-background/95 shadow-2xl shadow-background/20 ring-1 ring-border/60 backdrop-blur">
             {isLoading && shouldFetch ? (
-              // Loading state
-              <div className="p-8">
-                <Skeleton className="h-8 w-48 mb-4" />
-                <Skeleton className="h-4 w-full mb-2" />
-                <Skeleton className="h-4 w-3/4 mb-6" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="space-y-3">
-                      <Skeleton className="h-5 w-32" />
-                      <Skeleton className="h-3 w-full" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-3/4" />
+              // Loading state - match three-column layout
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-0 min-h-[400px]">
+                <div className="md:col-span-3 bg-gradient-to-br from-cyan-500 to-teal-600 p-6 lg:p-8 rounded-tl-3xl md:rounded-bl-3xl">
+                  <Skeleton className="h-8 w-48 mb-4 bg-white/20" />
+                  <Skeleton className="h-4 w-full mb-2 bg-white/20" />
+                  <Skeleton className="h-4 w-3/4 mb-6 bg-white/20" />
+                  <Skeleton className="h-10 w-32 rounded-full bg-white/20" />
+                </div>
+                <div className="md:col-span-3 bg-white border-r border-border/50 p-4">
+                  <div className="space-y-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <Skeleton key={i} className="h-16 w-full" />
+                    ))}
+                  </div>
+                </div>
+                <div className="md:col-span-6 bg-white p-6 lg:p-8 rounded-br-3xl">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="flex flex-col items-center space-y-2">
+                        <Skeleton className="h-12 w-12 rounded-lg" />
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-3 w-full" />
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (megaMenuData && (!isLoading || !shouldFetch)) ? (
-              // Mega menu with data - HORIZONTAL LAYOUT
-              <div className="p-6 lg:p-8">
-                {/* Optional Summary Header (full width) */}
+              // Mega menu with data - THREE COLUMN HORIZONTAL LAYOUT
+              <div className={cn(
+                "grid gap-0 min-h-[400px]",
+                // Responsive grid: mobile stacks, tablet/desktop uses columns
+                "grid-cols-1 md:grid-cols-12",
+                // Adjust column spans based on whether summary panel exists
+                megaMenuData.summaryTitle || megaMenuData.summaryText
+                  ? "md:grid-cols-[1fr_auto_2fr]"
+                  : "md:grid-cols-[auto_2fr]"
+              )}>
+                {/* Left Panel: Summary Panel with Gradient Background */}
                 {(megaMenuData.summaryTitle || megaMenuData.summaryText) && (
-                  <div className="mb-6 pb-6 border-b border-border/50">
-                    {megaMenuData.summaryTitle && (
-                      <h3 className="text-xl font-semibold mb-2">
-                        {megaMenuData.summaryTitle}
-                      </h3>
-                    )}
-                    {megaMenuData.summaryText && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {megaMenuData.summaryText}
-                      </p>
-                    )}
+                  <div className="md:col-span-1 bg-gradient-to-br from-cyan-500 to-teal-600 text-white p-6 lg:p-8 rounded-tl-3xl md:rounded-bl-3xl md:rounded-tr-none rounded-tr-3xl flex flex-col justify-between">
+                    <div>
+                      {megaMenuData.summaryTitle && (
+                        <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-white">
+                          {megaMenuData.summaryTitle}
+                        </h3>
+                      )}
+                      {megaMenuData.summaryText && (
+                        <p className="text-sm lg:text-base text-white/90 leading-relaxed mb-6">
+                          {megaMenuData.summaryText}
+                        </p>
+                      )}
+                    </div>
                     {megaMenuData.ctaLabel && megaMenuData.ctaHref && (
-                      <div className="mt-4">
+                      <div>
                         <Link
                           to={megaMenuData.ctaHref}
-                          className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-cyan-600 shadow-lg hover:bg-white/90 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cyan-500"
                           role="menuitem"
                         >
                           {megaMenuData.ctaLabel}
@@ -285,74 +311,167 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                   </div>
                 )}
 
-                {/* Horizontal sections layout */}
+                {/* Middle Panel: Categories List (Vertical) */}
                 {megaMenuData.sections.length > 0 ? (
-                  <div className="flex flex-wrap gap-6">
-                    {megaMenuData.sections.map((section) => {
-                      const SectionIcon = section.icon || resolveIcon(section.iconName || undefined);
-                      return (
-                        <div key={section.title} className="flex-shrink-0 w-[240px] min-w-[200px] max-w-[280px] space-y-3" role="group" aria-label={section.title}>
-                          <div className="flex items-start gap-3">
-                            {SectionIcon && (
-                              <span className="text-primary mt-0.5 flex-shrink-0" aria-hidden="true">
-                                {React.createElement(SectionIcon, { className: "h-5 w-5" })}
-                              </span>
-                            )}
-                            <div className="flex-1">
+                  <>
+                    <div className={cn(
+                      "md:col-span-auto bg-white border-r border-border/50",
+                      // Responsive borders
+                      !(megaMenuData.summaryTitle || megaMenuData.summaryText) 
+                        ? "md:rounded-tl-3xl md:rounded-bl-3xl rounded-tl-3xl rounded-tr-3xl md:rounded-tr-none"
+                        : "md:rounded-none rounded-none",
+                      // Mobile: add bottom border, desktop: right border only
+                      "border-b md:border-b-0 md:border-r"
+                    )}>
+                      <div className="p-4 space-y-1 max-h-[500px] overflow-y-auto">
+                        {megaMenuData.sections.map((section, index) => {
+                          const SectionIcon = section.icon || resolveIcon(section.iconName || undefined);
+                          const isActive = index === selectedCategoryIndex;
+                          return (
+                            <React.Fragment key={section.title}>
                               {section.href ? (
-                                <Link
-                                  to={section.href}
-                                  className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                                >
-                                  {section.title}
-                                </Link>
-                              ) : (
-                                <p className="text-sm font-semibold text-foreground">
-                                  {section.title}
-                                </p>
-                              )}
-                              {section.description && (
-                                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                                  {section.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          {section.items && section.items.length > 0 && (
-                            <div className="space-y-1.5" role="group">
-                              {section.items.map((item) => {
+                              <Link
+                                to={section.href}
+                                onMouseEnter={() => setSelectedCategoryIndex(index)}
+                                className={cn(
+                                  "flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all",
+                                  isActive
+                                    ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-500"
+                                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                                )}
+                                role="menuitem"
+                              >
+                                {SectionIcon && (
+                                  <span className={cn(
+                                    "flex-shrink-0",
+                                    isActive ? "text-cyan-600" : "text-foreground/60"
+                                  )} aria-hidden="true">
+                                    {React.createElement(SectionIcon, { className: "h-5 w-5" })}
+                                  </span>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <p className={cn(
+                                    "text-sm font-medium truncate",
+                                    isActive ? "text-cyan-700" : "text-foreground"
+                                  )}>
+                                    {section.title}
+                                  </p>
+                                  {section.description && (
+                                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                      {section.description}
+                                    </p>
+                                  )}
+                                </div>
+                                {isActive && (
+                                  <ChevronRight className="h-4 w-4 text-cyan-600 flex-shrink-0" />
+                                )}
+                              </Link>
+                            ) : (
+                              <div
+                                onMouseEnter={() => setSelectedCategoryIndex(index)}
+                                onClick={() => setSelectedCategoryIndex(index)}
+                                className={cn(
+                                  "flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all",
+                                  isActive
+                                    ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-500"
+                                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                                )}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setSelectedCategoryIndex(index);
+                                  }
+                                }}
+                              >
+                                {SectionIcon && (
+                                  <span className={cn(
+                                    "flex-shrink-0",
+                                    isActive ? "text-cyan-600" : "text-foreground/60"
+                                  )} aria-hidden="true">
+                                    {React.createElement(SectionIcon, { className: "h-5 w-5" })}
+                                  </span>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <p className={cn(
+                                    "text-sm font-medium truncate",
+                                    isActive ? "text-cyan-700" : "text-foreground"
+                                  )}>
+                                    {section.title}
+                                  </p>
+                                  {section.description && (
+                                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                      {section.description}
+                                    </p>
+                                  )}
+                                </div>
+                                {isActive && (
+                                  <ChevronRight className="h-4 w-4 text-cyan-600 flex-shrink-0" />
+                                )}
+                              </div>
+                            )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Right Panel: Sub-categories Grid */}
+                    <div className={cn(
+                      "md:col-span-2 bg-white p-4 md:p-6 lg:p-8 rounded-br-3xl rounded-bl-3xl md:rounded-bl-none",
+                      // Mobile: show selected category title
+                      "md:block"
+                    )}>
+                      {/* Mobile: Show category title */}
+                      <div className="md:hidden mb-4 pb-3 border-b border-border/50">
+                        <h4 className="text-sm font-semibold text-foreground">
+                          {megaMenuData.sections[selectedCategoryIndex]?.title}
+                        </h4>
+                      </div>
+                      
+                      {megaMenuData.sections[selectedCategoryIndex] && (
+                        <div>
+                          {megaMenuData.sections[selectedCategoryIndex].items && 
+                           megaMenuData.sections[selectedCategoryIndex].items!.length > 0 ? (
+                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                              {megaMenuData.sections[selectedCategoryIndex].items!.map((item) => {
                                 const ItemIcon = item.icon || resolveIcon(item.iconName || undefined);
                                 return (
                                   <Link
                                     key={item.title}
                                     to={item.href}
-                                    className="group flex items-start gap-2 rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-muted/70 hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                                    className="group flex flex-col items-center text-center p-3 md:p-4 rounded-xl hover:bg-muted/50 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                     role="menuitem"
                                   >
                                     {ItemIcon && (
-                                      <span className="mt-0.5 text-primary flex-shrink-0" aria-hidden="true">
-                                        {React.createElement(ItemIcon, { className: "h-4 w-4" })}
-                                      </span>
+                                      <div className="mb-2 md:mb-3 p-2 md:p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                                        {React.createElement(ItemIcon, { className: "h-5 w-5 md:h-6 md:w-6" })}
+                                      </div>
                                     )}
-                                    <div className="flex-1">
-                                      <p className="font-medium">{item.title}</p>
-                                      {item.description && (
-                                        <p className="mt-0.5 text-[11px] text-muted-foreground">
-                                          {item.description}
-                                        </p>
-                                      )}
-                                    </div>
+                                    <p className="text-xs md:text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {item.title}
+                                    </p>
+                                    {item.description && (
+                                      <p className="mt-1 text-[10px] md:text-xs text-muted-foreground line-clamp-2">
+                                        {item.description}
+                                      </p>
+                                    )}
                                   </Link>
                                 );
                               })}
                             </div>
+                          ) : (
+                            <div className="text-center py-12 text-muted-foreground">
+                              <p className="text-sm">No items available in this category</p>
+                            </div>
                           )}
                         </div>
-                      );
-                    })}
-                  </div>
+                      )}
+                    </div>
+                  </>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div className="col-span-full text-center py-12 text-muted-foreground">
                     <p>No menu items available</p>
                   </div>
                 )}
