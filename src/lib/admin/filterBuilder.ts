@@ -1,12 +1,10 @@
-import type { PostgrestQueryBuilder } from '@supabase/supabase-js';
-
 /**
  * Applies filters to a Supabase query
  */
 export function applyFilters<T>(
-  query: PostgrestQueryBuilder<any, any, any, any>,
+  query: any,
   filters: Record<string, any> | undefined
-): PostgrestQueryBuilder<any, any, any, any> {
+): any {
   if (!filters || Object.keys(filters).length === 0) {
     return query;
   }

@@ -60,7 +60,7 @@ export function useAdminList<T extends BaseEntity>(
   } = useQuery({
     queryKey: [...queryKey, queryOptions],
     queryFn: async () => {
-      const baseQuery = supabase.from(tableName).select(columns);
+      const baseQuery = (supabase.from as any)(tableName).select(columns);
       const listQuery = buildListQuery(baseQuery, queryOptions);
       const { data, error: queryError } = await listQuery;
 
@@ -76,7 +76,7 @@ export function useAdminList<T extends BaseEntity>(
   const { data: countData } = useQuery({
     queryKey: [...queryKey, 'count', { search: debouncedSearch, searchFields, filters }],
     queryFn: async () => {
-      const baseQuery = supabase.from(tableName).select('*', { count: 'exact', head: true });
+      const baseQuery = (supabase.from as any)(tableName).select('*', { count: 'exact', head: true });
       const countQuery = buildCountQuery(baseQuery, {
         search: debouncedSearch,
         searchFields,
