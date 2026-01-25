@@ -21,8 +21,17 @@ export const MegaMenu = ({ label, href, slug, menuItemId, isActive }: MegaMenuPr
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Use slug, menuItemId, or label to identify the menu item
-  const identifier = menuItemId || slug || label;
+  // Extract slug from href if not provided
+  const extractSlugFromHref = (href: string): string | null => {
+    if (!href || href === '/') return null;
+    const slug = href.replace(/^\//, '').split('/')[0].toLowerCase();
+    return slug || null;
+  };
+
+  // Use menuItemId, slug (from prop or extracted from href), or normalized label to identify the menu item
+  // Prefer slug over label for better matching with static config
+  const extractedSlug = slug || extractSlugFromHref(href);
+  const identifier = menuItemId || extractedSlug || label.toLowerCase();
 
   // Fetch mega menu data only when shouldFetch is true (hover-based loading)
   const { data: megaMenuData, isLoading, isError } = useMegaMenu(
