@@ -34,6 +34,7 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
+  RefreshCw,
 } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
@@ -237,6 +238,162 @@ export default function AdminMenus() {
     },
   });
 
+  const syncPagesToMenuMutation = useMutation({
+    mutationFn: async (menuLocation: string) => {
+      // Fetch all active pages that should be in navigation
+      const { data: allPages, error: pagesError } = await supabase
+        .from("pages")
+        .select("*")
+        .eq("is_active", true)
+        .eq("show_in_nav", true)
+        .order("display_order");
+
+      if (pagesError) throw pagesError;
+      if (!allPages || allPages.length === 0) {
+        throw new Error("No pages found to sync");
+      }
+
+      // Get existing menu items for this location
+      const { data: existingMenuItems, error: menuError } = await supabase
+        .from("menu_items")
+        .select("*")
+        .eq("menu_location", menuLocation);
+
+      if (menuError) throw menuError;
+
+      // Create a map of page_id to existing menu item
+      const pageIdToMenuItem = new Map<string, typeof existingMenuItems[0]>();
+      existingMenuItems?.forEach((item) => {
+        if (item.page_id) {
+          pageIdToMenuItem.set(item.page_id, item);
+        }
+      });
+
+      // Build page hierarchy
+      const pagesByParent = new Map<string | null, Array<typeof allPages[0]>>();
+      const pageIdMap = new Map<string, typeof allPages[0]>();
+      
+      allPages.forEach((page) => {
+        pageIdMap.set(page.id, page);
+        const parentId = page.parent_id || null;
+        if (!pagesByParent.has(parentId)) {
+          pagesByParent.set(parentId, []);
+        }
+        pagesByParent.get(parentId)!.push(page);
+      });
+
+      // Helper to get page URL
+      const getPageUrl = (slug: string): string => {
+        const systemRoutes: Record<string, string> = {
+          'home': '/',
+          'about': '/about',
+          'services': '/services',
+          'portfolio': '/portfolio',
+          'blog': '/blog',
+          'contact': '/contact',
+          'testimonials': '/testimonials',
+          'privacy-policy': '/privacy-policy',
+          'terms-of-service': '/terms-of-service',
+        };
+        return systemRoutes[slug] || `/${slug}`;
+      };
+
+      // Recursive function to sync pages and their children
+      const syncPageRecursive = async (
+        page: typeof allPages[0],
+        parentMenuItemId: string | null,
+        level: number
+      ): Promise<string | null> => {
+        const existingItem = pageIdToMenuItem.get(page.id);
+        const url = getPageUrl(page.slug);
+        
+        // Determine menu type: mega for top-level items with children, simple otherwise
+        const hasChildren = pagesByParent.get(page.id)?.length > 0;
+        const menuType = level === 0 && hasChildren ? "mega" : "simple";
+
+        const menuItemData: Partial<MenuItem> = {
+          menu_location: menuLocation,
+          label: page.navigation_label_override || page.title,
+          url,
+          page_id: page.id,
+          parent_id: parentMenuItemId,
+          is_active: page.is_active ?? true,
+          display_order: page.display_order ?? 0,
+          menu_type: menuType,
+          item_level: level,
+          description: page.description || null,
+        };
+
+        let menuItemId: string | null = null;
+
+        if (existingItem) {
+          // Update existing menu item
+          const { data: updated, error } = await supabase
+            .from("menu_items")
+            .update(menuItemData)
+            .eq("id", existingItem.id)
+            .select("id")
+            .single();
+          
+          if (error) throw error;
+          menuItemId = updated?.id || null;
+        } else {
+          // Create new menu item
+          const { data: inserted, error } = await supabase
+            .from("menu_items")
+            .insert(menuItemData)
+            .select("id")
+            .single();
+          
+          if (error) throw error;
+          menuItemId = inserted?.id || null;
+        }
+
+        // Sync children
+        const children = pagesByParent.get(page.id) || [];
+        for (const child of children) {
+          await syncPageRecursive(child, menuItemId, level + 1);
+        }
+
+        return menuItemId;
+      };
+
+      // Sync all top-level pages (no parent)
+      const topLevelPages = pagesByParent.get(null) || [];
+      for (const page of topLevelPages) {
+        await syncPageRecursive(page, null, 0);
+      }
+
+      return { synced: allPages.length };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin-menu-items"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["navigation-menu"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["mega-menu"],
+      });
+      toast({
+        title: "Pages synced to menu",
+        description: `${data.synced} pages synced successfully`,
+      });
+      logActivity({
+        action: "sync",
+        entity_type: "menu_items",
+        entity_name: `Synced ${data.synced} pages to ${activeLocation} menu`,
+      });
+    },
+    onError: (e: Error) =>
+      toast({
+        title: "Sync failed",
+        description: e.message,
+        variant: "destructive",
+      }),
+  });
+
   const handleItemSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -434,16 +591,29 @@ export default function AdminMenus() {
             Configure header, footer, and mobile navigation.
           </p>
         </div>
-        <Button
-          onClick={() => {
-            setEditingItem(null);
-            setIsItemActive(true);
-            setIsItemDialogOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Menu Item
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => syncPagesToMenuMutation.mutate(activeLocation)}
+            disabled={syncPagesToMenuMutation.isPending}
+          >
+            <RefreshCw className={cn(
+              "h-4 w-4 mr-2",
+              syncPagesToMenuMutation.isPending && "animate-spin"
+            )} />
+            Sync Pages to Menu
+          </Button>
+          <Button
+            onClick={() => {
+              setEditingItem(null);
+              setIsItemActive(true);
+              setIsItemDialogOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Menu Item
+          </Button>
+        </div>
       </div>
 
       <Tabs value={activeLocation} onValueChange={setActiveLocation}>
@@ -459,15 +629,29 @@ export default function AdminMenus() {
           <TabsContent key={loc.value} value={loc.value}>
             <Card>
               <CardHeader>
-                <CardTitle>{loc.label}</CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle>{loc.label}</CardTitle>
+                  {loc.value === "header" && (
+                    <p className="text-xs text-muted-foreground">
+                      Use "Sync Pages to Menu" to automatically add pages from the Pages section
+                    </p>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {itemsLoading ? (
                   <p className="text-muted-foreground">Loading...</p>
                 ) : itemsTree.length === 0 ? (
-                  <p className="text-muted-foreground">
-                    No menu items yet. Add one to get started.
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-muted-foreground">
+                      No menu items yet. Add one to get started.
+                    </p>
+                    {loc.value === "header" && (
+                      <p className="text-xs text-muted-foreground">
+                        Tip: Click "Sync Pages to Menu" to automatically create menu items from your imported pages.
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   renderTree(itemsTree)
                 )}

@@ -130,6 +130,10 @@ export function useMegaMenu(
 
       // Find the top-level item by identifier (slug, ID, or label)
       const topLevelItem = allItems.find((item: MenuItem) => {
+        // Must be top-level (level 0) and active
+        const itemLevel = item.item_level ?? 0;
+        if (itemLevel !== 0 || !item.is_active) return false;
+        
         // Try to match by ID
         if (item.id === identifier) return true;
         
@@ -156,9 +160,9 @@ export function useMegaMenu(
         
         // Try to match by page slug if page_id exists
         if (item.page_id) {
-          const page = allItems.find((i: any) => i.id === item.id);
-          if (page?.page?.slug) {
-            const pageSlug = normalizeIdentifier(page.page.slug);
+          const pageItem = allItems.find((i: any) => i.id === item.id);
+          if (pageItem?.page?.slug) {
+            const pageSlug = normalizeIdentifier(pageItem.page.slug);
             if (pageSlug === normalizedIdentifier || 
                 pageSlug.includes(normalizedIdentifier) ||
                 normalizedIdentifier.includes(pageSlug)) {

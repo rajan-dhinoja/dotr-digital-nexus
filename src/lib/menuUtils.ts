@@ -291,9 +291,27 @@ export function transformToMegaMenu(
   );
   
   // If no level 1 children but we have direct children, treat them as categories
-  const effectiveCategories = categories.length > 0 
+  // Also, if we have level 2 children directly under level 0, create a default category
+  const directChildren = (topLevelItem.children || []).filter(child => child.is_active !== false);
+  const hasLevel2Children = directChildren.some(child => (child.item_level ?? 0) === 2);
+  
+  let effectiveCategories = categories.length > 0 
     ? categories 
-    : (topLevelItem.children || []).filter(child => child.is_active !== false);
+    : directChildren;
+  
+  // If we have level 2 children but no level 1 categories, create a default "All" category
+  if (hasLevel2Children && categories.length === 0) {
+    // Group level 2 items under their level 1 parents, or create a default category
+    const level2Items = directChildren.filter(child => (child.item_level ?? 0) === 2);
+    if (level2Items.length > 0) {
+      // Create a default category for level 2 items
+      effectiveCategories = [{
+        ...topLevelItem,
+        label: topLevelItem.label,
+        children: level2Items,
+      } as MenuItemWithChildren];
+    }
+  }
   
   // Helper to resolve URL from page_id or use direct URL
   const resolveUrl = (item: MenuItem): string => {
