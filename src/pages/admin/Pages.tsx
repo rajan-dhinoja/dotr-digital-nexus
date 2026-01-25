@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDataTable } from '@/components/admin/AdminDataTable';
 import { AdminToolbar } from '@/components/admin/AdminToolbar';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { BulkDeleteDialog } from '@/components/admin/BulkDeleteDialog';
 import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 import { EntityJsonEditor } from '@/components/admin/EntityJsonEditor';

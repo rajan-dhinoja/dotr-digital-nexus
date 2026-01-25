@@ -20,7 +20,7 @@ interface AdminPaginationProps {
   hasNextPage: boolean;
 }
 
-export function AdminPagination({
+function AdminPagination({
   page,
   totalPages,
   totalCount,
@@ -142,3 +142,6 @@ export function AdminPagination({
     </div>
   );
 }
+
+export { AdminPagination };
+export default AdminPagination;
