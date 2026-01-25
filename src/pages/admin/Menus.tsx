@@ -717,8 +717,8 @@ export default function AdminMenus() {
 
       {/* Item Dialog */}
       <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
+        <DialogContent className="max-w-lg max-h-[90vh] w-[95vw] sm:w-full flex flex-col p-0">
+          <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-4">
             <DialogTitle>
               {editingItem ? "Edit Menu Item" : "Add Menu Item"}
             </DialogTitle>
@@ -729,7 +729,8 @@ export default function AdminMenus() {
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleItemSubmit} className="space-y-4">
+          <form onSubmit={handleItemSubmit} className="flex flex-col flex-1 min-h-0">
+            <div className="space-y-4 overflow-y-auto flex-1 px-6 pb-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent">
             <div className="space-y-2">
               <Label htmlFor="label">Label *</Label>
               <Input
@@ -952,8 +953,9 @@ export default function AdminMenus() {
               />
               <Label htmlFor="is_active">Active</Label>
             </div>
+            </div>
 
-            <div className="flex justify-end gap-2 pt-4">
+            <div className="flex justify-end gap-2 px-6 py-4 border-t flex-shrink-0">
               <Button
                 type="button"
                 variant="outline"
