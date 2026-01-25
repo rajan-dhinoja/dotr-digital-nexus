@@ -240,10 +240,10 @@ export default function AdminMenus() {
 
   const syncPagesToMenuMutation = useMutation({
     mutationFn: async (menuLocation: string) => {
-      // Fetch all active pages that should be in navigation
+      // Fetch all active pages that should be in navigation with all required fields
       const { data: allPages, error: pagesError } = await supabase
         .from("pages")
-        .select("*")
+        .select("id, title, slug, description, parent_id, is_active, show_in_nav, display_order, navigation_label_override")
         .eq("is_active", true)
         .eq("show_in_nav", true)
         .order("display_order");
@@ -261,10 +261,10 @@ export default function AdminMenus() {
 
       if (menuError) throw menuError;
 
-      // Create a map of page_id to existing menu item
+      // Create a map of page_id to existing menu item (only for this location)
       const pageIdToMenuItem = new Map<string, typeof existingMenuItems[0]>();
       existingMenuItems?.forEach((item) => {
-        if (item.page_id) {
+        if (item.page_id && item.menu_location === menuLocation) {
           pageIdToMenuItem.set(item.page_id, item);
         }
       });
@@ -311,32 +311,44 @@ export default function AdminMenus() {
         const hasChildren = pagesByParent.get(page.id)?.length > 0;
         const menuType = level === 0 && hasChildren ? "mega" : "simple";
 
-        const menuItemData: Partial<MenuItem> = {
+        const menuItemData: TablesInsert<"menu_items"> = {
           menu_location: menuLocation,
           label: page.navigation_label_override || page.title,
-          url,
+          url: url || null,
           page_id: page.id,
           parent_id: parentMenuItemId,
+          target: "_self",
           is_active: page.is_active ?? true,
           display_order: page.display_order ?? 0,
           menu_type: menuType,
           item_level: level,
           description: page.description || null,
+          icon_name: null,
+          mega_summary_title: level === 0 && hasChildren ? (page.navigation_label_override || page.title) : null,
+          mega_summary_text: level === 0 && hasChildren ? (page.description || '') : null,
+          mega_cta_label: null,
+          mega_cta_href: null,
         };
 
         let menuItemId: string | null = null;
 
         if (existingItem) {
-          // Update existing menu item
+          // Update existing menu item - use Partial for update
+          const updateData: Partial<TablesInsert<"menu_items">> = {
+            ...menuItemData,
+          };
           const { data: updated, error } = await supabase
             .from("menu_items")
-            .update(menuItemData)
+            .update(updateData)
             .eq("id", existingItem.id)
             .select("id")
             .single();
           
-          if (error) throw error;
-          menuItemId = updated?.id || null;
+          if (error) {
+            console.error('Error updating menu item:', error);
+            throw error;
+          }
+          menuItemId = updated?.id || existingItem.id;
         } else {
           // Create new menu item
           const { data: inserted, error } = await supabase
@@ -345,7 +357,10 @@ export default function AdminMenus() {
             .select("id")
             .single();
           
-          if (error) throw error;
+          if (error) {
+            console.error('Error inserting menu item:', error);
+            throw error;
+          }
           menuItemId = inserted?.id || null;
         }
 
@@ -360,30 +375,47 @@ export default function AdminMenus() {
 
       // Sync all top-level pages (no parent)
       const topLevelPages = pagesByParent.get(null) || [];
+      let syncedCount = 0;
+      let errorCount = 0;
+      const errors: string[] = [];
+
       for (const page of topLevelPages) {
-        await syncPageRecursive(page, null, 0);
+        try {
+          await syncPageRecursive(page, null, 0);
+          syncedCount++;
+        } catch (error) {
+          errorCount++;
+          const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+          errors.push(`Failed to sync "${page.title}": ${errorMsg}`);
+          console.error(`Error syncing page ${page.title}:`, error);
+        }
       }
 
-      return { synced: allPages.length };
+      if (errorCount > 0) {
+        throw new Error(`Synced ${syncedCount} pages, but ${errorCount} failed:\n${errors.join('\n')}`);
+      }
+
+      return { synced: syncedCount };
     },
-    onSuccess: (data) => {
+    onSuccess: (data, menuLocation) => {
+      // Invalidate all menu-related queries
       queryClient.invalidateQueries({
-        queryKey: ["admin-menu-items"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["navigation-menu"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["mega-menu"],
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key === "admin-menu-items" || 
+                 key === "navigation-menu" || 
+                 key === "mega-menu" ||
+                 key === "nav-pages";
+        },
       });
       toast({
         title: "Pages synced to menu",
-        description: `${data.synced} pages synced successfully`,
+        description: `${data.synced} pages synced successfully to ${menuLocation} menu`,
       });
       logActivity({
         action: "sync",
         entity_type: "menu_items",
-        entity_name: `Synced ${data.synced} pages to ${activeLocation} menu`,
+        entity_name: `Synced ${data.synced} pages to ${menuLocation} menu`,
       });
     },
     onError: (e: Error) =>
@@ -594,14 +626,24 @@ export default function AdminMenus() {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => syncPagesToMenuMutation.mutate(activeLocation)}
+            onClick={() => {
+              console.log('Syncing pages to menu for location:', activeLocation);
+              syncPagesToMenuMutation.mutate(activeLocation, {
+                onError: (error) => {
+                  console.error('Sync error:', error);
+                },
+                onSuccess: (data) => {
+                  console.log('Sync success:', data);
+                },
+              });
+            }}
             disabled={syncPagesToMenuMutation.isPending}
           >
             <RefreshCw className={cn(
               "h-4 w-4 mr-2",
               syncPagesToMenuMutation.isPending && "animate-spin"
             )} />
-            Sync Pages to Menu
+            {syncPagesToMenuMutation.isPending ? "Syncing..." : "Sync Pages to Menu"}
           </Button>
           <Button
             onClick={() => {
