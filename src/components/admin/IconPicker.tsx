@@ -5,17 +5,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import { resolveIcon, getAvailableIconNames } from "@/lib/menuUtils";
 import { cn } from "@/lib/utils";
-import { Check, X } from "lucide-react";
+import { Check, X, Search } from "lucide-react";
 
 interface IconPickerProps {
   value?: string | null;
@@ -84,48 +77,63 @@ export function IconPicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0" align="start">
-        <Command>
-          <CommandInput 
-            placeholder="Search icons..." 
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList>
-            <CommandEmpty>No icons found.</CommandEmpty>
-            <CommandGroup>
-              {filteredIcons.map((iconName) => {
-                const Icon = resolveIcon(iconName);
-                const isSelected = value === iconName;
-                
-                return (
-                  <CommandItem
-                    key={iconName}
-                    value={iconName}
-                    onSelect={() => handleSelect(iconName)}
-                    className="flex items-center gap-2"
-                  >
-                    <div className={cn(
-                      "flex h-4 w-4 items-center justify-center",
-                      isSelected && "text-primary"
-                    )}>
-                      {Icon && React.createElement(Icon, { className: "h-4 w-4" })}
-                    </div>
-                    <span className={cn(
-                      "flex-1",
-                      isSelected && "font-medium"
-                    )}>
-                      {iconName}
-                    </span>
-                    {isSelected && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+      <PopoverContent className="w-[90vw] sm:w-[500px] md:w-[600px] p-0" align="start">
+        <div className="flex flex-col">
+          {/* Search bar */}
+          <div className="p-3 border-b">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search icons..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+          </div>
+          
+          {/* Icons grid */}
+          <div className="p-3 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent">
+            {filteredIcons.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground text-sm">
+                No icons found.
+              </div>
+            ) : (
+              <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+                {filteredIcons.map((iconName) => {
+                  const Icon = resolveIcon(iconName);
+                  const isSelected = value === iconName;
+                  
+                  if (!Icon) return null;
+                  
+                  return (
+                    <button
+                      key={iconName}
+                      type="button"
+                      onClick={() => handleSelect(iconName)}
+                      className={cn(
+                        "relative flex items-center justify-center h-10 w-10 rounded-lg transition-all",
+                        "hover:bg-accent hover:scale-110",
+                        "active:scale-95",
+                        isSelected 
+                          ? "bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2" 
+                          : "bg-muted/50 text-foreground"
+                      )}
+                      title={iconName}
+                    >
+                      {React.createElement(Icon, { className: "h-5 w-5" })}
+                      {isSelected && (
+                        <div className="absolute -top-1 -right-1 bg-primary rounded-full p-0.5">
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );
