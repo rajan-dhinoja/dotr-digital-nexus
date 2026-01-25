@@ -20,12 +20,18 @@ function normalizeIdentifier(identifier: string): string {
  * Gets static mega menu config by identifier (with fallback matching)
  */
 function getStaticMegaMenu(identifier: string): MegaMenuDefinition | null {
-  if (!identifier) return null;
+  if (!identifier) {
+    console.log('[getStaticMegaMenu] No identifier provided');
+    return null;
+  }
   
   const normalized = normalizeIdentifier(identifier);
+  console.log('[getStaticMegaMenu] Looking for:', identifier, 'normalized to:', normalized);
+  console.log('[getStaticMegaMenu] Available config keys:', Object.keys(megaMenuConfig));
   
   // Direct match
   if (megaMenuConfig[normalized]) {
+    console.log('[getStaticMegaMenu] Found direct match:', normalized);
     return megaMenuConfig[normalized];
   }
   
@@ -37,12 +43,15 @@ function getStaticMegaMenu(identifier: string): MegaMenuDefinition | null {
     normalized + 's', // Add trailing 's'
   ];
   
+  console.log('[getStaticMegaMenu] Trying variations:', variations);
   for (const variation of variations) {
     if (megaMenuConfig[variation]) {
+      console.log('[getStaticMegaMenu] Found match with variation:', variation);
       return megaMenuConfig[variation];
     }
   }
   
+  console.log('[getStaticMegaMenu] No match found for:', identifier);
   return null;
 }
 
@@ -64,24 +73,48 @@ export function useMegaMenu(
   return useQuery({
     queryKey: ["mega-menu", menuLocation, identifier],
     queryFn: async (): Promise<MegaMenuDefinition | null> => {
-      if (!identifier) return null;
+      // Always try static config first as a quick fallback, then database
+      const staticFallback = identifier ? getStaticMegaMenu(identifier) : null;
+      if (!identifier) {
+        console.log('[useMegaMenu] No identifier provided');
+        return null;
+      }
+
+      console.log('[useMegaMenu] Fetching mega menu for identifier:', identifier, 'location:', menuLocation);
 
       // Fetch all menu items for the location with page data
-      const { data: allItems, error } = await supabase
-        .from("menu_items")
-        .select(`
-          *,
-          page:pages(id, slug)
-        `)
-        .eq("menu_location", menuLocation)
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
+      let allItems = null;
+      try {
+        const { data, error } = await supabase
+          .from("menu_items")
+          .select(`
+            *,
+            page:pages(id, slug)
+          `)
+          .eq("menu_location", menuLocation)
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
 
-      if (error) throw error;
+        if (error) {
+          console.error('[useMegaMenu] Database error:', error);
+          // Don't throw - fall back to static config instead
+          console.log('[useMegaMenu] Falling back to static config due to database error');
+          return staticFallback;
+        }
+        
+        allItems = data;
+      } catch (err) {
+        console.error('[useMegaMenu] Exception fetching from database:', err);
+        // Fall back to static config on any error
+        return staticFallback;
+      }
       
-      // If no items in database, try static config fallback
+      console.log('[useMegaMenu] Database items found:', allItems?.length || 0);
+      
+      // If no items in database, return static config fallback
       if (!allItems || allItems.length === 0) {
-        return getStaticMegaMenu(identifier);
+        console.log('[useMegaMenu] No database items, using static config for:', identifier);
+        return staticFallback;
       }
 
       // Build pages map for URL resolution
@@ -137,10 +170,13 @@ export function useMegaMenu(
         return false;
       });
 
-      // If not found in database, try static config fallback
+      // If not found in database, return static config fallback
       if (!topLevelItem) {
-        return getStaticMegaMenu(identifier);
+        console.log('[useMegaMenu] Top level item not found in database, using static config for:', identifier);
+        return staticFallback;
       }
+      
+      console.log('[useMegaMenu] Found top level item in database:', topLevelItem.label);
 
       // Build the full tree structure
       const tree = buildMenuTree(allItems);
@@ -161,20 +197,29 @@ export function useMegaMenu(
 
       const topLevelTreeItem = findInTree(tree);
       
-      // If tree item not found or transformation fails, try static config
+      // If tree item not found or transformation fails, return static config
       if (!topLevelTreeItem) {
-        return getStaticMegaMenu(identifier);
+        console.log('[useMegaMenu] Tree item not found, using static config for:', identifier);
+        return staticFallback;
       }
 
       // Transform to mega menu structure
       const megaMenu = transformToMegaMenu(topLevelTreeItem, pagesMap);
+      console.log('[useMegaMenu] Transformed mega menu:', megaMenu ? `found with ${megaMenu.sections?.length || 0} sections` : 'null');
       
-      // If transformation returns null or empty, try static config fallback
+      // If transformation returns null or empty, return static config fallback
       if (!megaMenu || !megaMenu.sections || megaMenu.sections.length === 0) {
-        return getStaticMegaMenu(identifier);
+        console.log('[useMegaMenu] Transformation returned empty, using static config for:', identifier);
+        return staticFallback;
       }
       
+      console.log('[useMegaMenu] Returning database mega menu with', megaMenu.sections.length, 'sections');
       return megaMenu;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: (options?.enabled ?? true) && !!identifier,
+    // Don't cache null results - always try to fetch fresh data
+    gcTime: 5 * 60 * 1000, // 5 minutes garbage collection
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
     enabled: (options?.enabled ?? true) && !!identifier,

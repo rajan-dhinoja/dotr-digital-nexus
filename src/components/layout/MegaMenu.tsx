@@ -33,12 +33,40 @@ export const MegaMenu = ({ label, href, slug, menuItemId, isActive }: MegaMenuPr
   const extractedSlug = slug || extractSlugFromHref(href);
   const identifier = menuItemId || extractedSlug || label.toLowerCase();
 
+  // Debug logging
+  useEffect(() => {
+    if (shouldFetch) {
+      console.log('[MegaMenu] Fetching data for:', {
+        label,
+        href,
+        slug,
+        extractedSlug,
+        menuItemId,
+        identifier,
+        shouldFetch
+      });
+    }
+  }, [shouldFetch, label, href, slug, extractedSlug, menuItemId, identifier]);
+
   // Fetch mega menu data only when shouldFetch is true (hover-based loading)
   const { data: megaMenuData, isLoading, isError } = useMegaMenu(
     shouldFetch ? identifier : null,
     "header",
     { enabled: shouldFetch }
   );
+
+  // Debug logging for query results
+  useEffect(() => {
+    if (shouldFetch) {
+      console.log('[MegaMenu] Query state:', {
+        identifier,
+        isLoading,
+        isError,
+        hasData: !!megaMenuData,
+        sectionsCount: megaMenuData?.sections?.length || 0
+      });
+    }
+  }, [shouldFetch, identifier, isLoading, isError, megaMenuData]);
 
   // Clear timeout on unmount
   useEffect(() => {
@@ -200,7 +228,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, isActive }: MegaMenuPr
                   ))}
                 </div>
               </div>
-            ) : megaMenuData ? (
+            ) : (megaMenuData && (!isLoading || !shouldFetch)) ? (
               // Mega menu with data
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,1fr)_minmax(600px,2fr)]">
                 {/* Left: Summary Panel */}
