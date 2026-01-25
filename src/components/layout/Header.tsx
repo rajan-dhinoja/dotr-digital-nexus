@@ -45,8 +45,7 @@ interface NavItem {
   sections?: MegaMenuSection[];
 }
 
-const USE_DB_NAVIGATION = import.meta.env.VITE_USE_DB_NAVIGATION === "true";
-
+// Always try to use database navigation first, fallback to pages if no menu items exist
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,8 +53,9 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const { data: pages = [], isLoading } = useNavPages();
-  const { data: headerMenu } = useNavigationMenu("header", {
-    enabled: USE_DB_NAVIGATION,
+  // Always try to fetch from database - enabled by default
+  const { data: headerMenu, isLoading: menuLoading } = useNavigationMenu("header", {
+    enabled: true,
   });
 
   useEffect(() => {
@@ -118,23 +118,69 @@ export const Header = () => {
 
   const navigationFromPages = buildNavigationFromPages(pages);
 
-  const navigationFromDb: (NavItem & { menuItemId?: string })[] | null = headerMenu && headerMenu.length > 0
-    ? headerMenu.map((item: NavigationTreeItem) => ({
-        name: item.label,
-        href: item.url || "#",
-        slug: undefined,
-        description: undefined,
-        menuItemId: item.id,
-        children: (item.children ?? []).map((child: NavigationTreeItem) => ({
-          name: child.label,
-          href: child.url || "#",
-          slug: undefined,
-          description: undefined,
-        })),
-      }))
-    : null;
+  // Transform database menu items to NavItem format
+  const navigationFromDb: (NavItem & { menuItemId?: string; menuItem?: NavigationTreeItem })[] | null = 
+    headerMenu && headerMenu.length > 0
+      ? headerMenu.map((item: NavigationTreeItem) => {
+          // Resolve URL from page_id or use direct URL
+          let href = item.url || "#";
+          if (!href || href === "#") {
+            if (item.page_id && (item as any).page) {
+              const page = (item as any).page;
+              const systemRoutes: Record<string, string> = {
+                'home': '/',
+                'about': '/about',
+                'services': '/services',
+                'portfolio': '/portfolio',
+                'blog': '/blog',
+                'contact': '/contact',
+                'testimonials': '/testimonials',
+                'privacy-policy': '/privacy-policy',
+                'terms-of-service': '/terms-of-service',
+              };
+              href = systemRoutes[page.slug] || `/${page.slug}`;
+            }
+          }
 
-  const navigation = USE_DB_NAVIGATION && navigationFromDb
+          return {
+            name: item.label,
+            href: href,
+            slug: (item as any).page?.slug,
+            description: item.description,
+            menuItemId: item.id,
+            menuItem: item, // Pass full menu item for mega menu
+            children: (item.children ?? []).map((child: NavigationTreeItem) => {
+              let childHref = child.url || "#";
+              if (!childHref || childHref === "#") {
+                if (child.page_id && (child as any).page) {
+                  const childPage = (child as any).page;
+                  const systemRoutes: Record<string, string> = {
+                    'home': '/',
+                    'about': '/about',
+                    'services': '/services',
+                    'portfolio': '/portfolio',
+                    'blog': '/blog',
+                    'contact': '/contact',
+                    'testimonials': '/testimonials',
+                    'privacy-policy': '/privacy-policy',
+                    'terms-of-service': '/terms-of-service',
+                  };
+                  childHref = systemRoutes[childPage.slug] || `/${childPage.slug}`;
+                }
+              }
+              return {
+                name: child.label,
+                href: childHref,
+                slug: (child as any).page?.slug,
+                description: child.description,
+              };
+            }),
+          };
+        })
+      : null;
+
+  // Prefer database navigation if available, otherwise fallback to pages
+  const navigation = (navigationFromDb && navigationFromDb.length > 0)
     ? navigationFromDb
     : navigationFromPages;
 
@@ -175,16 +221,23 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
-            {navigation.map((item) => (
-              <MegaMenu
-                key={item.name}
-                label={item.name}
-                href={item.href}
-                slug={item.slug}
-                menuItemId={(item as any).menuItemId}
-                isActive={isActive(item.href)}
-              />
-            ))}
+            {navigation.length > 0 ? (
+              navigation.map((item) => (
+                <MegaMenu
+                  key={item.name}
+                  label={item.name}
+                  href={item.href}
+                  slug={item.slug}
+                  menuItemId={(item as any).menuItemId}
+                  menuItem={(item as any).menuItem}
+                  isActive={isActive(item.href)}
+                />
+              ))
+            ) : (
+              !menuLoading && !isLoading && (
+                <span className="text-sm text-muted-foreground">No menu items configured</span>
+              )
+            )}
           </div>
 
           <div className="hidden md:flex items-center gap-2">
