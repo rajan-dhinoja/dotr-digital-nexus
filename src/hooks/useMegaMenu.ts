@@ -6,10 +6,9 @@ import {
   type MenuItem,
   type MegaMenuDefinition 
 } from "@/lib/menuUtils";
-import { megaMenuConfig } from "@/config/megaMenu";
 
 /**
- * Normalizes an identifier to a key for static config lookup
+ * Normalizes an identifier for matching
  * Converts "Services" -> "services", handles slugs, etc.
  */
 function normalizeIdentifier(identifier: string): string {
@@ -17,47 +16,7 @@ function normalizeIdentifier(identifier: string): string {
 }
 
 /**
- * Gets static mega menu config by identifier (with fallback matching)
- */
-function getStaticMegaMenu(identifier: string): MegaMenuDefinition | null {
-  if (!identifier) {
-    console.log('[getStaticMegaMenu] No identifier provided');
-    return null;
-  }
-  
-  const normalized = normalizeIdentifier(identifier);
-  console.log('[getStaticMegaMenu] Looking for:', identifier, 'normalized to:', normalized);
-  console.log('[getStaticMegaMenu] Available config keys:', Object.keys(megaMenuConfig));
-  
-  // Direct match
-  if (megaMenuConfig[normalized]) {
-    console.log('[getStaticMegaMenu] Found direct match:', normalized);
-    return megaMenuConfig[normalized];
-  }
-  
-  // Try matching by common variations
-  // e.g., "Services" -> "services", "service" -> "services"
-  const variations = [
-    normalized,
-    normalized.replace(/s$/, ''), // Remove trailing 's'
-    normalized + 's', // Add trailing 's'
-  ];
-  
-  console.log('[getStaticMegaMenu] Trying variations:', variations);
-  for (const variation of variations) {
-    if (megaMenuConfig[variation]) {
-      console.log('[getStaticMegaMenu] Found match with variation:', variation);
-      return megaMenuConfig[variation];
-    }
-  }
-  
-  console.log('[getStaticMegaMenu] No match found for:', identifier);
-  return null;
-}
-
-/**
- * Fetches and transforms menu data for a mega menu display
- * Falls back to static config if database doesn't have the menu configured
+ * Fetches and transforms menu data for a mega menu display from the database
  * @param identifier - Menu item slug, ID, or label to find the top-level mega menu item
  * @param menuLocation - The menu location (e.g., 'header')
  * @param options - Query options including enabled flag for hover-based loading
@@ -73,8 +32,6 @@ export function useMegaMenu(
   return useQuery({
     queryKey: ["mega-menu", menuLocation, identifier],
     queryFn: async (): Promise<MegaMenuDefinition | null> => {
-      // Always try static config first as a quick fallback, then database
-      const staticFallback = identifier ? getStaticMegaMenu(identifier) : null;
       if (!identifier) {
         console.log('[useMegaMenu] No identifier provided');
         return null;
@@ -97,24 +54,21 @@ export function useMegaMenu(
 
         if (error) {
           console.error('[useMegaMenu] Database error:', error);
-          // Don't throw - fall back to static config instead
-          console.log('[useMegaMenu] Falling back to static config due to database error');
-          return staticFallback;
+          throw error;
         }
         
         allItems = data;
       } catch (err) {
         console.error('[useMegaMenu] Exception fetching from database:', err);
-        // Fall back to static config on any error
-        return staticFallback;
+        throw err;
       }
       
       console.log('[useMegaMenu] Database items found:', allItems?.length || 0);
       
-      // If no items in database, return static config fallback
+      // If no items in database, return null (no static fallback)
       if (!allItems || allItems.length === 0) {
-        console.log('[useMegaMenu] No database items, using static config for:', identifier);
-        return staticFallback;
+        console.log('[useMegaMenu] No database items found for:', identifier);
+        return null;
       }
 
       // Build pages map for URL resolution
@@ -174,10 +128,10 @@ export function useMegaMenu(
         return false;
       });
 
-      // If not found in database, return static config fallback
+      // If not found in database, return null
       if (!topLevelItem) {
-        console.log('[useMegaMenu] Top level item not found in database, using static config for:', identifier);
-        return staticFallback;
+        console.log('[useMegaMenu] Top level item not found in database for:', identifier);
+        return null;
       }
       
       console.log('[useMegaMenu] Found top level item in database:', topLevelItem.label);
@@ -201,20 +155,20 @@ export function useMegaMenu(
 
       const topLevelTreeItem = findInTree(tree);
       
-      // If tree item not found or transformation fails, return static config
+      // If tree item not found or transformation fails, return null
       if (!topLevelTreeItem) {
-        console.log('[useMegaMenu] Tree item not found, using static config for:', identifier);
-        return staticFallback;
+        console.log('[useMegaMenu] Tree item not found for:', identifier);
+        return null;
       }
 
       // Transform to mega menu structure
       const megaMenu = transformToMegaMenu(topLevelTreeItem, pagesMap);
       console.log('[useMegaMenu] Transformed mega menu:', megaMenu ? `found with ${megaMenu.sections?.length || 0} sections` : 'null');
       
-      // If transformation returns null or empty, return static config fallback
+      // If transformation returns null or empty, return null
       if (!megaMenu || !megaMenu.sections || megaMenu.sections.length === 0) {
-        console.log('[useMegaMenu] Transformation returned empty, using static config for:', identifier);
-        return staticFallback;
+        console.log('[useMegaMenu] Transformation returned empty for:', identifier);
+        return null;
       }
       
       console.log('[useMegaMenu] Returning database mega menu with', megaMenu.sections.length, 'sections');

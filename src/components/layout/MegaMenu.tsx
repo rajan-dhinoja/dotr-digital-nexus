@@ -29,7 +29,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, isActive }: MegaMenuPr
   };
 
   // Use menuItemId, slug (from prop or extracted from href), or normalized label to identify the menu item
-  // Prefer slug over label for better matching with static config
+  // Prefer slug over label for better matching with database menu items
   const extractedSlug = slug || extractSlugFromHref(href);
   const identifier = menuItemId || extractedSlug || label.toLowerCase();
 
