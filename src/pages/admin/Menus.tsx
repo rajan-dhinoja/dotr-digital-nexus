@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -446,7 +447,8 @@ export default function AdminMenus() {
     }
 
     const linkType = form.get("link_type")?.toString() ?? "page";
-    const pageId = form.get("page_id")?.toString() || null;
+    const pageIdRaw = form.get("page_id")?.toString();
+    const pageId = pageIdRaw && pageIdRaw !== "none" ? pageIdRaw : null;
     const externalUrl = form.get("url")?.toString() || null;
 
     // Allow menu items without links (for parent items or placeholders)
@@ -470,7 +472,8 @@ export default function AdminMenus() {
       url = externalUrl;
     }
 
-    const parentId = form.get("parent_id")?.toString() || null;
+    const parentIdRaw = form.get("parent_id")?.toString();
+    const parentId = parentIdRaw && parentIdRaw !== "none" ? parentIdRaw : null;
     const currentMenuType = form.get("menu_type")?.toString() ?? "simple";
     
     // Calculate item level
@@ -719,6 +722,11 @@ export default function AdminMenus() {
             <DialogTitle>
               {editingItem ? "Edit Menu Item" : "Add Menu Item"}
             </DialogTitle>
+            <DialogDescription>
+              {editingItem 
+                ? "Update the menu item details below. Changes will be reflected in the navigation menu."
+                : "Create a new menu item for your navigation. You can link it to a page or external URL, or leave it as a parent item."}
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleItemSubmit} className="space-y-4">
@@ -772,12 +780,12 @@ export default function AdminMenus() {
 
             <div className="space-y-2">
               <Label htmlFor="page_id">Page (if internal) - Optional</Label>
-              <Select name="page_id" defaultValue={editingItem?.page_id ?? ""}>
+              <Select name="page_id" defaultValue={editingItem?.page_id || "none"} key={`page-${editingItem?.id || "new"}`}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a page (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None (no link)</SelectItem>
+                  <SelectItem value="none">None (no link)</SelectItem>
                   {pages.map((page) => (
                     <SelectItem key={page.id} value={page.id}>
                       {page.title}
@@ -811,14 +819,15 @@ export default function AdminMenus() {
               <Label htmlFor="parent_id">Parent Item (optional)</Label>
               <Select
                 name="parent_id"
-                value={selectedParentId ?? ""}
-                onValueChange={(value) => setSelectedParentId(value || null)}
+                value={selectedParentId ?? "none"}
+                onValueChange={(value) => setSelectedParentId(value === "none" ? null : value)}
+                key={`parent-${editingItem?.id || "new"}-${selectedParentId || "none"}`}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="None (top level)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None (top level)</SelectItem>
+                  <SelectItem value="none">None (top level)</SelectItem>
                   {flatItems
                     .filter((item) => item.id !== editingItem?.id)
                     .map((item) => (
