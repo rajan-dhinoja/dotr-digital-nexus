@@ -278,9 +278,10 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                 // Responsive grid: mobile stacks, tablet/desktop uses columns
                 "grid-cols-1 md:grid-cols-12",
                 // Adjust column spans based on whether summary panel exists
+                // Right panel (sub-services) should be more prominent
                 megaMenuData.summaryTitle || megaMenuData.summaryText
-                  ? "md:grid-cols-[1fr_auto_2fr]"
-                  : "md:grid-cols-[auto_2fr]"
+                  ? "md:grid-cols-[1fr_auto_3fr]"
+                  : "md:grid-cols-[auto_3fr]"
               )}>
                 {/* Left Panel: Summary Panel with Gradient Background */}
                 {(megaMenuData.summaryTitle || megaMenuData.summaryText) && (
@@ -419,7 +420,7 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
 
                     {/* Right Panel: Sub-categories Grid */}
                     <div className={cn(
-                      "md:col-span-2 bg-white p-4 md:p-6 lg:p-8 rounded-br-3xl rounded-bl-3xl md:rounded-bl-none",
+                      "bg-white p-6 lg:p-8 rounded-br-3xl rounded-bl-3xl md:rounded-bl-none",
                       // Mobile: show selected category title
                       "md:block"
                     )}>
@@ -434,29 +435,24 @@ export const MegaMenu = ({ label, href, slug, menuItemId, menuItem, isActive }: 
                         <div>
                           {megaMenuData.sections[selectedCategoryIndex].items && 
                            megaMenuData.sections[selectedCategoryIndex].items!.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                               {megaMenuData.sections[selectedCategoryIndex].items!.map((item) => {
                                 const ItemIcon = item.icon || resolveIcon(item.iconName || undefined);
                                 return (
                                   <Link
                                     key={item.title}
                                     to={item.href}
-                                    className="group flex flex-col items-center text-center p-3 md:p-4 rounded-xl hover:bg-muted/50 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                    className="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-cyan-50/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                                     role="menuitem"
                                   >
                                     {ItemIcon && (
-                                      <div className="mb-2 md:mb-3 p-2 md:p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                                        {React.createElement(ItemIcon, { className: "h-5 w-5 md:h-6 md:w-6" })}
+                                      <div className="mb-3 p-3 rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 text-cyan-600 group-hover:from-cyan-200 group-hover:to-teal-200 group-hover:scale-110 transition-all duration-300 shadow-sm">
+                                        {React.createElement(ItemIcon, { className: "h-8 w-8 lg:h-10 lg:w-10" })}
                                       </div>
                                     )}
-                                    <p className="text-xs md:text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                                    <p className="text-sm lg:text-base font-semibold text-foreground group-hover:text-cyan-700 transition-colors">
                                       {item.title}
                                     </p>
-                                    {item.description && (
-                                      <p className="mt-1 text-[10px] md:text-xs text-muted-foreground line-clamp-2">
-                                        {item.description}
-                                      </p>
-                                    )}
                                   </Link>
                                 );
                               })}
