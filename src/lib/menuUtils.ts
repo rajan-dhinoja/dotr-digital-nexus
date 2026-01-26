@@ -12,7 +12,6 @@ import {
   Zap,
   Building,
   LucideIcon,
-  // Additional common icons
   Briefcase,
   Users,
   FileText,
@@ -39,7 +38,6 @@ import {
   Workflow,
   Search,
   PenTool,
-  // Navigation icons
   Home,
   Menu,
   ArrowLeft,
@@ -50,7 +48,6 @@ import {
   ChevronUp,
   Navigation,
   Compass,
-  // Communication icons
   MessageCircle,
   MessageSquare,
   Send,
@@ -58,7 +55,6 @@ import {
   BellRing,
   Headphones,
   Mic,
-  // File & Document icons
   Folder,
   FolderOpen,
   File,
@@ -70,7 +66,6 @@ import {
   Trash,
   Copy,
   Clipboard,
-  // Business & Finance icons
   DollarSign,
   CreditCard,
   Package,
@@ -78,13 +73,11 @@ import {
   TrendingDown,
   PieChart,
   LineChart,
-  // Social & Media icons
   Share2,
   ThumbsUp,
   ThumbsDown,
   Bookmark,
   Share,
-  // Technology icons
   Wifi,
   Bluetooth,
   Cloud,
@@ -92,7 +85,6 @@ import {
   CloudDownload,
   Server,
   HardDrive,
-  // Action icons
   Plus,
   Minus,
   X,
@@ -104,7 +96,6 @@ import {
   Unlock,
   Eye,
   EyeOff,
-  // Utility icons
   Filter,
   Grid,
   List,
@@ -113,7 +104,6 @@ import {
   ExternalLink,
   RefreshCw,
   Power,
-  // Additional icons
   Camera,
   Music,
   Film,
@@ -125,7 +115,6 @@ import {
   Sun,
   Moon,
   Sparkles,
-  // Service & Business icons
   Handshake,
   UserCheck,
   UserCog,
@@ -155,7 +144,6 @@ import {
   MousePointerClick,
   Keyboard,
   Printer,
-  // Development & Tech icons
   Terminal,
   GitBranch,
   GitCommit,
@@ -167,7 +155,6 @@ import {
   Bug,
   TestTube,
   FlaskConical,
-  // Design & Creative icons
   Paintbrush,
   Paintbrush2,
   Brush,
@@ -178,12 +165,10 @@ import {
   Layers2,
   Layers3,
   Frame,
-  // Marketing & Analytics icons
   Activity,
   Signal,
   Volume2,
   VolumeX,
-  // E-commerce & Shopping icons
   ShoppingBag,
   ShoppingBasket,
   Receipt,
@@ -194,14 +179,12 @@ import {
   QrCode,
   Barcode,
   ScanLine,
-  // Support & Help icons
   LifeBuoy,
   PhoneCall,
   PhoneIncoming,
   PhoneOutgoing,
   PhoneMissed,
   PhoneOff,
-  // Location & Travel icons
   Plane,
   Car,
   Bike,
@@ -212,33 +195,27 @@ import {
   Map,
   MapPinned,
   Route,
-  // Health & Fitness icons
   HeartPulse,
   Dumbbell,
   Stethoscope,
   Pill,
-  // Food & Restaurant icons
   Utensils,
   UtensilsCrossed,
   ChefHat,
   Wine,
   Beer,
-  // Real Estate & Property icons
   Building2,
   Factory,
   Warehouse,
   Hotel,
-  // Education & Learning icons
   Book,
   BookOpenCheck,
   School2,
-  // Finance & Banking icons
   Wallet,
   Banknote,
   Coins,
   ReceiptText,
   Calculator,
-  // Legal & Document icons
   Scale,
   Gavel,
   FileJson,
@@ -247,7 +224,6 @@ import {
   FilePlus,
   FileMinus,
   FileEdit,
-  // Social & Community icons
   Users2,
   UserPlus,
   UserMinus,
@@ -255,7 +231,6 @@ import {
   UserCircle,
   UserSquare,
   UserRound,
-  // Time & Calendar icons
   Timer,
   TimerReset,
   TimerOff,
@@ -263,14 +238,12 @@ import {
   CalendarCheck,
   CalendarClock,
   CalendarX,
-  // Weather & Nature icons
   CloudRain,
   CloudSnow,
   CloudLightning,
   Sunrise,
   Sunset,
   Wind,
-  // Tools & Utilities icons
   Wrench,
   Hammer,
   Nut,
@@ -279,7 +252,6 @@ import {
   SlidersHorizontal,
   ToggleLeft,
   ToggleRight,
-  // Security & Privacy icons
   ShieldCheck,
   ShieldAlert,
   ShieldOff,
@@ -287,7 +259,6 @@ import {
   KeyRound,
   Fingerprint,
   Scan,
-  // Media & Entertainment icons
   Play,
   Pause,
   SkipForward,
@@ -297,14 +268,12 @@ import {
   Volume1,
   VideoOff,
   MicOff,
-  // Communication & Social icons
   AtSign,
   MailOpen,
   MailCheck,
   MailX,
   MessageSquareReply,
   MessageSquareText,
-  // Files & Folders icons
   FolderPlus,
   FolderMinus,
   FolderX,
@@ -312,18 +281,15 @@ import {
   FolderSearch,
   FolderKanban,
   FolderTree,
-  // Charts & Data icons
   BarChart2,
   BarChart3,
   BarChart4,
   AreaChart,
-  // Status & Feedback icons
   CheckCircle2,
   XCircle,
   AlertTriangle,
   Circle,
   CircleDot,
-  // Arrows & Navigation icons
   ArrowUpDown,
   ArrowLeftRight,
   ArrowUpRight,
@@ -335,7 +301,6 @@ import {
   MoveDown,
   MoveLeft,
   MoveRight,
-  // Shapes & Symbols icons
   Diamond,
   Gem,
   Crown,
@@ -345,7 +310,6 @@ import {
   BadgeCheck,
   BadgeAlert,
   BadgeInfo,
-  // Additional service icons
   ClipboardPen,
   ClipboardCopy,
   ClipboardPaste,
@@ -358,981 +322,16 @@ import {
   FileHeart,
   FileLock,
   FileKey,
-  // Development & Tech icons
-  Terminal,
-  GitBranch,
-  GitCommit,
-  GitMerge,
-  GitPullRequest,
-  Code2,
-  Brackets,
-  Braces,
   Hash,
-  Bug,
-  TestTube,
-  FlaskConical,
-  // Design & Creative icons
-  Paintbrush,
-  Paintbrush2,
-  Brush,
-  Eraser,
-  Ruler,
-  Scissors,
-  Crop,
-  Layers2,
-  Layers3,
-  Frame,
   Square,
-  Circle,
   Triangle,
   Hexagon,
-  // Marketing & Analytics icons
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  Signal,
-  Megaphone,
-  Volume2,
-  VolumeX,
-  // E-commerce & Shopping icons
-  ShoppingBag,
-  ShoppingBasket,
-  Receipt,
-  Tag,
-  Tags,
-  Percent,
-  Ticket,
-  QrCode,
-  Barcode,
-  ScanLine,
-  // Support & Help icons
-  LifeBuoy,
-  HelpCircle,
-  PhoneCall,
-  PhoneIncoming,
-  PhoneOutgoing,
-  PhoneMissed,
-  PhoneOff,
-  // Location & Travel icons
-  Plane,
-  Car,
-  Bike,
-  Ship,
-  Train,
-  Bus,
-  Navigation2,
-  Map,
-  MapPinned,
-  Route,
-  // Health & Fitness icons
-  Activity,
-  HeartPulse,
-  Dumbbell,
-  Stethoscope,
-  Pill,
   Cross,
-  // Food & Restaurant icons
-  Utensils,
-  UtensilsCrossed,
-  ChefHat,
-  Wine,
-  Beer,
-  // Real Estate & Property icons
-  Home,
-  Building2,
-  Factory,
-  Warehouse,
-  Hotel,
-  // Education & Learning icons
-  Book,
-  BookOpenCheck,
-  GraduationCap,
-  School2,
-  // Finance & Banking icons
-  Wallet,
-  Banknote,
-  Coins,
-  ReceiptText,
-  Calculator,
-  // Legal & Document icons
-  Scale,
-  Gavel,
-  FileText,
-  FileJson,
-  FileType,
-  FileX,
-  FilePlus,
-  FileMinus,
-  FileEdit,
-  // Social & Community icons
-  Users2,
-  UserPlus,
-  UserMinus,
-  UserX,
-  UserCircle,
-  UserSquare,
-  UserRound,
-  // Time & Calendar icons
-  Timer,
-  TimerReset,
-  TimerOff,
-  CalendarDays,
-  CalendarCheck,
-  CalendarClock,
-  CalendarX,
-  // Weather & Nature icons
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  CloudLightning,
-  Sun,
-  Moon,
-  Sunrise,
-  Sunset,
-  Wind,
-  // Tools & Utilities icons
-  Wrench,
-  Hammer,
-  Nut,
-  Cog,
-  Sliders,
-  SlidersHorizontal,
-  ToggleLeft,
-  ToggleRight,
-  // Security & Privacy icons
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
-  Lock,
-  Unlock,
-  Key,
-  KeyRound,
-  Fingerprint,
-  Scan,
-  // Media & Entertainment icons
-  Play,
-  Pause,
-  SkipForward,
-  SkipBack,
-  Repeat,
-  Shuffle,
-  Volume1,
-  // Communication & Social icons
-  AtSign,
-  Hash,
-  Mail,
-  MailOpen,
-  MailCheck,
-  MailX,
-  MessageCircle,
-  MessageSquare,
-  MessageSquareReply,
-  MessageSquareText,
-  // Files & Folders icons
-  FolderPlus,
-  FolderMinus,
-  FolderX,
-  FolderCheck,
-  FolderSearch,
-  FolderOpen,
-  FolderKanban,
-  FolderTree,
-  // Charts & Data icons
-  BarChart2,
-  BarChart3,
-  BarChart4,
-  LineChart,
-  AreaChart,
-  PieChart,
-  TrendingUp,
-  TrendingDown,
-  // Status & Feedback icons
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  HelpCircle,
-  Circle,
-  CircleDot,
-  // Arrows & Navigation icons
-  ArrowUpDown,
-  ArrowLeftRight,
-  ArrowUpRight,
-  ArrowDownRight,
-  ArrowDownLeft,
-  ArrowUpLeft,
-  Move,
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight,
-  // Shapes & Symbols icons
-  Star,
-  Heart,
-  Diamond,
-  Gem,
-  Crown,
-  Trophy,
-  Medal,
-  Badge,
-  BadgeCheck,
-  BadgeAlert,
-  BadgeInfo,
-  // Miscellaneous icons
-  Zap,
-  Sparkles,
-  Flame,
-  Droplet,
-  Snowflake,
-  Leaf,
-  TreePine,
-  Flower2,
-  // Additional service icons
-  Briefcase,
-  ClipboardPen,
-  ClipboardCopy,
-  ClipboardPaste,
-  ClipboardX,
-  FilePen,
-  FileBarChart,
-  FileStack,
-  FileSymlink,
-  FileWarning,
-  FileHeart,
-  FileLock,
-  FileKey,
-  FileCheck,
-  FileX,
-  FilePlus,
-  FileMinus,
-  FileEdit,
-  FileSearch,
-  FileQuestion,
-  FileCode,
-  FileImage,
-  FileVideo,
-  FileMusic,
-  FileSpreadsheet,
-  FileJson,
-  FileType,
-  FileText,
-  File,
-  Folder,
-  FolderOpen,
-  FolderPlus,
-  FolderMinus,
-  FolderX,
-  FolderCheck,
-  FolderSearch,
-  FolderKanban,
-  FolderTree,
-  // Business process icons
-  Workflow,
-  GitBranch,
-  GitCommit,
-  GitMerge,
-  GitPullRequest,
-  // Design tools icons
-  Paintbrush,
-  Paintbrush2,
-  Brush,
-  Eraser,
-  Ruler,
-  Scissors,
-  Crop,
-  Layers2,
-  Layers3,
-  Frame,
-  Square,
-  Circle,
-  Triangle,
-  Hexagon,
-  // Communication tools
-  MessageCircle,
-  MessageSquare,
-  MessageSquareReply,
-  MessageSquareText,
-  Phone,
-  PhoneCall,
-  PhoneIncoming,
-  PhoneOutgoing,
-  PhoneMissed,
-  PhoneOff,
-  Video,
-  VideoOff,
-  Mic,
-  MicOff,
-  Headphones,
-  Radio,
-  // Social media & sharing
-  Share,
-  Share2,
-  AtSign,
-  Hash,
-  // E-commerce specific
-  ShoppingCart,
-  ShoppingBag,
-  ShoppingBasket,
-  Receipt,
-  Tag,
-  Tags,
-  Percent,
-  Ticket,
-  QrCode,
-  Barcode,
-  ScanLine,
-  // Analytics & reporting
-  BarChart,
-  BarChart2,
-  BarChart3,
-  BarChart4,
-  LineChart,
-  AreaChart,
-  PieChart,
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  Signal,
-  // Support & help
-  LifeBuoy,
-  HelpCircle,
-  PhoneCall,
-  PhoneIncoming,
-  PhoneOutgoing,
-  PhoneMissed,
-  PhoneOff,
-  // Location & maps
-  Map,
-  MapPinned,
-  Route,
-  Navigation,
-  Navigation2,
-  Compass,
-  MapPin,
-  // Time management
-  Timer,
-  TimerReset,
-  TimerOff,
-  Calendar,
-  CalendarDays,
-  CalendarCheck,
-  CalendarClock,
-  CalendarX,
-  Clock,
-  // Security
-  Shield,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
-  Lock,
-  Unlock,
-  Key,
-  KeyRound,
-  Fingerprint,
-  Scan,
-  // Status indicators
-  CheckCircle,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  HelpCircle,
-  Circle,
-  CircleDot,
-  // Files & documents
-  File,
-  FileText,
-  FileCheck,
-  FileCheck2,
-  FileX,
-  FilePlus,
-  FileMinus,
-  FileEdit,
-  FileSearch,
-  FileQuestion,
-  FileCode,
-  FileCode2,
-  FileImage,
-  FileVideo,
-  FileMusic,
-  FileSpreadsheet,
-  FileJson,
-  FileType,
-  FilePen,
-  FileBarChart,
-  FileStack,
-  FileSymlink,
-  FileWarning,
-  FileHeart,
-  FileLock,
-  FileKey,
-  Presentation,
-  // Folders
-  Folder,
-  FolderOpen,
-  FolderPlus,
-  FolderMinus,
-  FolderX,
-  FolderCheck,
-  FolderSearch,
-  FolderKanban,
-  FolderTree,
-  // Development
-  Code,
-  Code2,
-  Terminal,
-  Brackets,
-  Braces,
-  Bug,
-  TestTube,
-  FlaskConical,
-  // Design
-  Palette,
-  Paintbrush,
-  Paintbrush2,
-  Brush,
-  Eraser,
-  Ruler,
-  Scissors,
-  Crop,
-  Layers,
-  Layers2,
-  Layers3,
-  Frame,
-  Square,
-  Circle,
-  Triangle,
-  Hexagon,
-  // Business
-  Briefcase,
-  BriefcaseBusiness,
-  Handshake,
-  UserCheck,
-  UserCog,
-  ClipboardCheck,
-  ClipboardList,
-  ClipboardPen,
-  ClipboardCopy,
-  ClipboardPaste,
-  ClipboardX,
-  CheckSquare,
-  // Marketing
-  Megaphone,
-  Radio,
-  Podcast,
-  Tv,
-  MonitorSpeaker,
-  Volume2,
-  Volume1,
-  VolumeX,
-  // E-commerce
-  ShoppingCart,
-  ShoppingBag,
-  ShoppingBasket,
-  Receipt,
-  ReceiptText,
-  Tag,
-  Tags,
-  Percent,
-  Ticket,
-  QrCode,
-  Barcode,
-  ScanLine,
-  // Analytics
-  BarChart,
-  BarChart2,
-  BarChart3,
-  BarChart4,
-  LineChart,
-  AreaChart,
-  PieChart,
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  Signal,
-  // Support
-  LifeBuoy,
-  HelpCircle,
-  PhoneCall,
-  PhoneIncoming,
-  PhoneOutgoing,
-  PhoneMissed,
-  PhoneOff,
-  // Location
-  Map,
-  MapPinned,
-  Route,
-  Navigation,
-  Navigation2,
-  Compass,
-  MapPin,
-  Plane,
-  Car,
-  Bike,
-  Ship,
-  Train,
-  Bus,
-  // Health
-  Activity,
-  HeartPulse,
-  Dumbbell,
-  Stethoscope,
-  Pill,
-  Cross,
-  // Food
-  Utensils,
-  UtensilsCrossed,
-  ChefHat,
-  Wine,
-  Beer,
-  Coffee,
-  // Real Estate
-  Home,
-  Building,
-  Building2,
-  Factory,
-  Warehouse,
-  Hotel,
-  // Education
-  Book,
-  BookOpen,
-  BookOpenCheck,
-  BookMarked,
-  GraduationCap,
-  School,
-  School2,
-  // Finance
-  Wallet,
-  Banknote,
-  Coins,
-  ReceiptText,
-  Calculator,
-  DollarSign,
-  CreditCard,
-  // Legal
-  Scale,
-  Gavel,
-  FileText,
-  FileJson,
-  FileType,
-  // Social
-  Users,
-  Users2,
-  UserPlus,
-  UserMinus,
-  UserX,
-  UserCircle,
-  UserSquare,
-  UserRound,
-  // Time
-  Timer,
-  TimerReset,
-  TimerOff,
-  Calendar,
-  CalendarDays,
-  CalendarCheck,
-  CalendarClock,
-  CalendarX,
-  Clock,
-  // Weather
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  CloudLightning,
-  Sun,
-  Moon,
-  Sunrise,
-  Sunset,
-  Wind,
-  // Tools
-  Wrench,
-  Hammer,
-  Nut,
-  Cog,
-  Settings,
-  Sliders,
-  SlidersHorizontal,
-  ToggleLeft,
-  ToggleRight,
-  // Security
-  Shield,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
-  Lock,
-  Unlock,
-  Key,
-  KeyRound,
-  Fingerprint,
-  Scan,
-  // Media
-  Play,
-  Pause,
-  SkipForward,
-  SkipBack,
-  Repeat,
-  Shuffle,
-  Volume2,
-  Volume1,
-  VolumeX,
-  Camera,
-  Video,
-  VideoOff,
-  Film,
-  Music,
-  // Communication
-  AtSign,
-  Hash,
-  Mail,
-  MailOpen,
-  MailCheck,
-  MailX,
-  MessageCircle,
-  MessageSquare,
-  MessageSquareReply,
-  MessageSquareText,
-  Send,
-  // Status
-  CheckCircle,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  HelpCircle,
-  Circle,
-  CircleDot,
-  Check,
-  X,
-  Plus,
-  Minus,
-  // Arrows
-  ArrowRight,
-  ArrowLeft,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
-  ArrowLeftRight,
-  ArrowUpRight,
-  ArrowDownRight,
-  ArrowDownLeft,
-  ArrowUpLeft,
-  ChevronRight,
-  ChevronLeft,
-  ChevronUp,
-  ChevronDown,
-  Move,
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight,
-  // Shapes
-  Star,
-  Heart,
-  Diamond,
-  Gem,
-  Crown,
-  Trophy,
-  Medal,
-  Award,
-  Badge,
-  BadgeCheck,
-  BadgeAlert,
-  BadgeInfo,
-  // Misc
-  Zap,
-  Sparkles,
-  Flame,
-  Droplet,
-  Snowflake,
-  Leaf,
-  TreePine,
-  Flower2,
-  Gift,
-  Gamepad2,
-  Laptop,
-  Tablet,
-  Monitor,
-  Smartphone,
-  MousePointerClick,
-  Keyboard,
-  Printer,
-  Wifi,
-  Bluetooth,
-  Server,
-  HardDrive,
-  Database,
-  Cpu,
-  Terminal,
-  Code,
-  Code2,
-  GitBranch,
-  GitCommit,
-  GitMerge,
-  GitPullRequest,
-  Bug,
-  TestTube,
-  FlaskConical,
-  Paintbrush,
-  Paintbrush2,
-  Brush,
-  Eraser,
-  Ruler,
-  Scissors,
-  Crop,
-  Layers,
-  Layers2,
-  Layers3,
-  Frame,
-  Square,
-  Circle,
-  Triangle,
-  Hexagon,
-  Briefcase,
-  BriefcaseBusiness,
-  Handshake,
-  UserCheck,
-  UserCog,
-  ClipboardCheck,
-  ClipboardList,
-  ClipboardPen,
-  ClipboardCopy,
-  ClipboardPaste,
-  ClipboardX,
-  CheckSquare,
-  Megaphone,
-  Radio,
-  Podcast,
-  Tv,
-  MonitorSpeaker,
-  Volume2,
-  Volume1,
-  VolumeX,
-  ShoppingCart,
-  ShoppingBag,
-  ShoppingBasket,
-  Receipt,
-  ReceiptText,
-  Tag,
-  Tags,
-  Percent,
-  Ticket,
-  QrCode,
-  Barcode,
-  ScanLine,
-  BarChart,
-  BarChart2,
-  BarChart3,
-  BarChart4,
-  LineChart,
-  AreaChart,
-  PieChart,
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  Signal,
-  LifeBuoy,
-  HelpCircle,
-  PhoneCall,
-  PhoneIncoming,
-  PhoneOutgoing,
-  PhoneMissed,
-  PhoneOff,
-  Map,
-  MapPinned,
-  Route,
-  Navigation,
-  Navigation2,
-  Compass,
-  MapPin,
-  Plane,
-  Car,
-  Bike,
-  Ship,
-  Train,
-  Bus,
-  Activity,
-  HeartPulse,
-  Dumbbell,
-  Stethoscope,
-  Pill,
-  Cross,
-  Utensils,
-  UtensilsCrossed,
-  ChefHat,
-  Wine,
-  Beer,
-  Coffee,
-  Home,
-  Building,
-  Building2,
-  Factory,
-  Warehouse,
-  Hotel,
-  Book,
-  BookOpen,
-  BookOpenCheck,
-  BookMarked,
-  GraduationCap,
-  School,
-  School2,
-  Wallet,
-  Banknote,
-  Coins,
-  ReceiptText,
-  Calculator,
-  DollarSign,
-  CreditCard,
-  Scale,
-  Gavel,
-  FileText,
-  FileJson,
-  FileType,
-  Users,
-  Users2,
-  UserPlus,
-  UserMinus,
-  UserX,
-  UserCircle,
-  UserSquare,
-  UserRound,
-  Timer,
-  TimerReset,
-  TimerOff,
-  Calendar,
-  CalendarDays,
-  CalendarCheck,
-  CalendarClock,
-  CalendarX,
-  Clock,
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  CloudLightning,
-  Sun,
-  Moon,
-  Sunrise,
-  Sunset,
-  Wind,
-  Wrench,
-  Hammer,
-  Nut,
-  Cog,
-  Settings,
-  Sliders,
-  SlidersHorizontal,
-  ToggleLeft,
-  ToggleRight,
-  Shield,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
-  Lock,
-  Unlock,
-  Key,
-  KeyRound,
-  Fingerprint,
-  Scan,
-  Play,
-  Pause,
-  SkipForward,
-  SkipBack,
-  Repeat,
-  Shuffle,
-  Volume2,
-  Volume1,
-  VolumeX,
-  Camera,
-  Video,
-  VideoOff,
-  Film,
-  Music,
-  AtSign,
-  Hash,
-  Mail,
-  MailOpen,
-  MailCheck,
-  MailX,
-  MessageCircle,
-  MessageSquare,
-  MessageSquareReply,
-  MessageSquareText,
-  Send,
-  CheckCircle,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  HelpCircle,
-  Circle,
-  CircleDot,
-  Check,
-  X,
-  Plus,
-  Minus,
-  ArrowRight,
-  ArrowLeft,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
-  ArrowLeftRight,
-  ArrowUpRight,
-  ArrowDownRight,
-  ArrowDownLeft,
-  ArrowUpLeft,
-  ChevronRight,
-  ChevronLeft,
-  ChevronUp,
-  ChevronDown,
-  Move,
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight,
-  Star,
-  Heart,
-  Diamond,
-  Gem,
-  Crown,
-  Trophy,
-  Medal,
-  Award,
-  Badge,
-  BadgeCheck,
-  BadgeAlert,
-  BadgeInfo,
-  Zap,
-  Sparkles,
-  Flame,
-  Droplet,
-  Snowflake,
-  Leaf,
-  TreePine,
-  Flower2,
-  Gift,
-  Gamepad2,
-  Laptop,
-  Tablet,
-  Monitor,
-  Smartphone,
-  MousePointerClick,
-  Keyboard,
-  Printer,
-  Wifi,
-  Bluetooth,
-  Server,
-  HardDrive,
-  Database,
-  Cpu,
-} from "lucide-react";
-import type { Tables } from "@/integrations/supabase/types";
+} from 'lucide-react';
+import type { Tables } from '@/integrations/supabase/types';
 
-// Extended icon map for menu items
-export const menuIconMap: Record<string, LucideIcon> = {
-  // Original icons
+// Comprehensive icon map for menu items
+export const iconMap: Record<string, LucideIcon> = {
   Globe,
   Smartphone,
   Palette,
@@ -1345,7 +344,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Settings,
   Zap,
   Building,
-  // Additional icons
   Briefcase,
   Users,
   FileText,
@@ -1372,7 +370,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Workflow,
   Search,
   PenTool,
-  // Navigation icons
   Home,
   Menu,
   ArrowLeft,
@@ -1383,7 +380,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   ChevronUp,
   Navigation,
   Compass,
-  // Communication icons
   MessageCircle,
   MessageSquare,
   Send,
@@ -1391,7 +387,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   BellRing,
   Headphones,
   Mic,
-  // File & Document icons
   Folder,
   FolderOpen,
   File,
@@ -1403,7 +398,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Trash,
   Copy,
   Clipboard,
-  // Business & Finance icons
   DollarSign,
   CreditCard,
   Package,
@@ -1411,13 +405,11 @@ export const menuIconMap: Record<string, LucideIcon> = {
   TrendingDown,
   PieChart,
   LineChart,
-  // Social & Media icons
   Share2,
   ThumbsUp,
   ThumbsDown,
   Bookmark,
   Share,
-  // Technology icons
   Wifi,
   Bluetooth,
   Cloud,
@@ -1425,7 +417,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   CloudDownload,
   Server,
   HardDrive,
-  // Action icons
   Plus,
   Minus,
   X,
@@ -1437,7 +428,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Unlock,
   Eye,
   EyeOff,
-  // Utility icons
   Filter,
   Grid,
   List,
@@ -1446,7 +436,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   ExternalLink,
   RefreshCw,
   Power,
-  // Additional icons
   Camera,
   Music,
   Film,
@@ -1458,161 +447,6 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Sun,
   Moon,
   Sparkles,
-  // Lowercase variants for flexibility (only for commonly used ones)
-  globe: Globe,
-  smartphone: Smartphone,
-  palette: Palette,
-  megaphone: Megaphone,
-  shield: Shield,
-  monitor: Monitor,
-  shoppingcart: ShoppingCart,
-  shopping_cart: ShoppingCart,
-  code: Code,
-  layout: Layout,
-  settings: Settings,
-  zap: Zap,
-  building: Building,
-  briefcase: Briefcase,
-  users: Users,
-  filetext: FileText,
-  file_text: FileText,
-  image: Image,
-  video: Video,
-  mail: Mail,
-  phone: Phone,
-  mappin: MapPin,
-  map_pin: MapPin,
-  calendar: Calendar,
-  clock: Clock,
-  checkcircle: CheckCircle,
-  check_circle: CheckCircle,
-  arrowright: ArrowRight,
-  arrow_right: ArrowRight,
-  chevronright: ChevronRight,
-  chevron_right: ChevronRight,
-  star: Star,
-  heart: Heart,
-  target: Target,
-  rocket: Rocket,
-  trendingup: TrendingUp,
-  trending_up: TrendingUp,
-  database: Database,
-  cpu: Cpu,
-  barchart: BarChart,
-  bar_chart: BarChart,
-  lightbulb: Lightbulb,
-  light_bulb: Lightbulb,
-  award: Award,
-  workflow: Workflow,
-  search: Search,
-  pentool: PenTool,
-  pen_tool: PenTool,
-  home: Home,
-  menu: Menu,
-  arrowleft: ArrowLeft,
-  arrow_left: ArrowLeft,
-  arrowdown: ArrowDown,
-  arrow_down: ArrowDown,
-  arrowup: ArrowUp,
-  arrow_up: ArrowUp,
-  chevronleft: ChevronLeft,
-  chevron_left: ChevronLeft,
-  chevrondown: ChevronDown,
-  chevron_down: ChevronDown,
-  chevronup: ChevronUp,
-  chevron_up: ChevronUp,
-  navigation: Navigation,
-  compass: Compass,
-  messagecircle: MessageCircle,
-  message_circle: MessageCircle,
-  messagesquare: MessageSquare,
-  message_square: MessageSquare,
-  send: Send,
-  bell: Bell,
-  bellring: BellRing,
-  bell_ring: BellRing,
-  headphones: Headphones,
-  mic: Mic,
-  folder: Folder,
-  folderopen: FolderOpen,
-  folder_open: FolderOpen,
-  file: File,
-  filecheck: FileCheck,
-  file_check: FileCheck,
-  download: Download,
-  upload: Upload,
-  save: Save,
-  edit: Edit,
-  trash: Trash,
-  copy: Copy,
-  clipboard: Clipboard,
-  dollarsign: DollarSign,
-  dollar_sign: DollarSign,
-  creditcard: CreditCard,
-  credit_card: CreditCard,
-  package: Package,
-  store: Store,
-  trendingdown: TrendingDown,
-  trending_down: TrendingDown,
-  piechart: PieChart,
-  pie_chart: PieChart,
-  linechart: LineChart,
-  line_chart: LineChart,
-  share2: Share2,
-  share_2: Share2,
-  thumbsup: ThumbsUp,
-  thumbs_up: ThumbsUp,
-  thumbsdown: ThumbsDown,
-  thumbs_down: ThumbsDown,
-  bookmark: Bookmark,
-  share: Share,
-  wifi: Wifi,
-  bluetooth: Bluetooth,
-  cloud: Cloud,
-  cloudupload: CloudUpload,
-  cloud_upload: CloudUpload,
-  clouddownload: CloudDownload,
-  cloud_download: CloudDownload,
-  server: Server,
-  harddrive: HardDrive,
-  hard_drive: HardDrive,
-  plus: Plus,
-  minus: Minus,
-  x: X,
-  check: Check,
-  alertcircle: AlertCircle,
-  alert_circle: AlertCircle,
-  info: Info,
-  helpcircle: HelpCircle,
-  help_circle: HelpCircle,
-  lock: Lock,
-  unlock: Unlock,
-  eye: Eye,
-  eyeoff: EyeOff,
-  eye_off: EyeOff,
-  filter: Filter,
-  grid: Grid,
-  list: List,
-  layers: Layers,
-  link: Link,
-  externallink: ExternalLink,
-  external_link: ExternalLink,
-  refreshcw: RefreshCw,
-  refresh_cw: RefreshCw,
-  power: Power,
-  camera: Camera,
-  music: Music,
-  film: Film,
-  gamepad2: Gamepad2,
-  gamepad_2: Gamepad2,
-  coffee: Coffee,
-  gift: Gift,
-  flame: Flame,
-  droplet: Droplet,
-  sun: Sun,
-  moon: Moon,
-  sparkles: Sparkles,
-  // New service & page icons - uppercase
   Handshake,
   UserCheck,
   UserCog,
@@ -1820,353 +654,30 @@ export const menuIconMap: Record<string, LucideIcon> = {
   FileHeart,
   FileLock,
   FileKey,
-  // Lowercase variants for new icons
-  handshake: Handshake,
-  usercheck: UserCheck,
-  user_check: UserCheck,
-  usercog: UserCog,
-  user_cog: UserCog,
-  clipboardcheck: ClipboardCheck,
-  clipboard_check: ClipboardCheck,
-  clipboardlist: ClipboardList,
-  clipboard_list: ClipboardList,
-  checksquare: CheckSquare,
-  check_square: CheckSquare,
-  filecheck2: FileCheck2,
-  file_check2: FileCheck2,
-  filequestion: FileQuestion,
-  file_question: FileQuestion,
-  filesearch: FileSearch,
-  file_search: FileSearch,
-  filecode: FileCode,
-  file_code: FileCode,
-  fileimage: FileImage,
-  file_image: FileImage,
-  filevideo: FileVideo,
-  file_video: FileVideo,
-  filemusic: FileMusic,
-  file_music: FileMusic,
-  filespreadsheet: FileSpreadsheet,
-  file_spreadsheet: FileSpreadsheet,
-  presentation: Presentation,
-  bookopen: BookOpen,
-  book_open: BookOpen,
-  graduationcap: GraduationCap,
-  graduation_cap: GraduationCap,
-  school: School,
-  bookmarked: BookMarked,
-  book_marked: BookMarked,
-  newspaper: Newspaper,
-  radio: Radio,
-  podcast: Podcast,
-  tv: Tv,
-  monitorspeaker: MonitorSpeaker,
-  monitor_speaker: MonitorSpeaker,
-  laptop: Laptop,
-  tablet: Tablet,
-  mousepointerclick: MousePointerClick,
-  mouse_pointer_click: MousePointerClick,
-  keyboard: Keyboard,
-  printer: Printer,
-  terminal: Terminal,
-  gitbranch: GitBranch,
-  git_branch: GitBranch,
-  gitcommit: GitCommit,
-  git_commit: GitCommit,
-  gitmerge: GitMerge,
-  git_merge: GitMerge,
-  gitpullrequest: GitPullRequest,
-  git_pull_request: GitPullRequest,
-  code2: Code2,
-  brackets: Brackets,
-  braces: Braces,
-  bug: Bug,
-  testtube: TestTube,
-  test_tube: TestTube,
-  flaskconical: FlaskConical,
-  flask_conical: FlaskConical,
-  paintbrush: Paintbrush,
-  paintbrush2: Paintbrush2,
-  paintbrush_2: Paintbrush2,
-  brush: Brush,
-  eraser: Eraser,
-  ruler: Ruler,
-  scissors: Scissors,
-  crop: Crop,
-  layers2: Layers2,
-  layers_2: Layers2,
-  layers3: Layers3,
-  layers_3: Layers3,
-  frame: Frame,
-  activity: Activity,
-  signal: Signal,
-  broadcast: Broadcast,
-  bullhorn: Bullhorn,
-  volume2: Volume2,
-  volume_2: Volume2,
-  volumex: VolumeX,
-  volume_x: VolumeX,
-  shoppingbag: ShoppingBag,
-  shopping_bag: ShoppingBag,
-  shoppingbasket: ShoppingBasket,
-  shopping_basket: ShoppingBasket,
-  receipt: Receipt,
-  tag: Tag,
-  tags: Tags,
-  percent: Percent,
-  ticket: Ticket,
-  qrcode: QrCode,
-  qr_code: QrCode,
-  barcode: Barcode,
-  scanline: ScanLine,
-  scan_line: ScanLine,
-  lifebuoy: LifeBuoy,
-  life_buoy: LifeBuoy,
-  phonecall: PhoneCall,
-  phone_call: PhoneCall,
-  phoneincoming: PhoneIncoming,
-  phone_incoming: PhoneIncoming,
-  phoneoutgoing: PhoneOutgoing,
-  phone_outgoing: PhoneOutgoing,
-  phonemissed: PhoneMissed,
-  phone_missed: PhoneMissed,
-  phoneoff: PhoneOff,
-  phone_off: PhoneOff,
-  plane: Plane,
-  car: Car,
-  bike: Bike,
-  ship: Ship,
-  train: Train,
-  bus: Bus,
-  navigation2: Navigation2,
-  navigation_2: Navigation2,
-  map: Map,
-  mappinned: MapPinned,
-  map_pinned: MapPinned,
-  route: Route,
-  heartpulse: HeartPulse,
-  heart_pulse: HeartPulse,
-  dumbbell: Dumbbell,
-  stethoscope: Stethoscope,
-  pill: Pill,
-  utensils: Utensils,
-  utensilscrossed: UtensilsCrossed,
-  utensils_crossed: UtensilsCrossed,
-  chefhat: ChefHat,
-  chef_hat: ChefHat,
-  wine: Wine,
-  beer: Beer,
-  building2: Building2,
-  building_2: Building2,
-  factory: Factory,
-  warehouse: Warehouse,
-  hotel: Hotel,
-  book: Book,
-  bookopencheck: BookOpenCheck,
-  book_open_check: BookOpenCheck,
-  school2: School2,
-  school_2: School2,
-  wallet: Wallet,
-  banknote: Banknote,
-  coins: Coins,
-  receipttext: ReceiptText,
-  receipt_text: ReceiptText,
-  calculator: Calculator,
-  scale: Scale,
-  gavel: Gavel,
-  filejson: FileJson,
-  file_json: FileJson,
-  filetype: FileType,
-  file_type: FileType,
-  filex: FileX,
-  file_x: FileX,
-  fileplus: FilePlus,
-  file_plus: FilePlus,
-  fileminus: FileMinus,
-  file_minus: FileMinus,
-  fileedit: FileEdit,
-  file_edit: FileEdit,
-  users2: Users2,
-  users_2: Users2,
-  userplus: UserPlus,
-  user_plus: UserPlus,
-  userminus: UserMinus,
-  user_minus: UserMinus,
-  userx: UserX,
-  user_x: UserX,
-  usercircle: UserCircle,
-  user_circle: UserCircle,
-  usersquare: UserSquare,
-  user_square: UserSquare,
-  userround: UserRound,
-  user_round: UserRound,
-  timer: Timer,
-  timerreset: TimerReset,
-  timer_reset: TimerReset,
-  timeroff: TimerOff,
-  timer_off: TimerOff,
-  calendardays: CalendarDays,
-  calendar_days: CalendarDays,
-  calendarcheck: CalendarCheck,
-  calendar_check: CalendarCheck,
-  calendarclock: CalendarClock,
-  calendar_clock: CalendarClock,
-  calendarx: CalendarX,
-  calendar_x: CalendarX,
-  cloudrain: CloudRain,
-  cloud_rain: CloudRain,
-  cloudsnow: CloudSnow,
-  cloud_snow: CloudSnow,
-  cloudlightning: CloudLightning,
-  cloud_lightning: CloudLightning,
-  sunrise: Sunrise,
-  sunset: Sunset,
-  wind: Wind,
-  wrench: Wrench,
-  hammer: Hammer,
-  nut: Nut,
-  cog: Cog,
-  sliders: Sliders,
-  slidershorizontal: SlidersHorizontal,
-  sliders_horizontal: SlidersHorizontal,
-  toggleleft: ToggleLeft,
-  toggle_left: ToggleLeft,
-  toggleright: ToggleRight,
-  toggle_right: ToggleRight,
-  shieldcheck: ShieldCheck,
-  shield_check: ShieldCheck,
-  shieldalert: ShieldAlert,
-  shield_alert: ShieldAlert,
-  shieldoff: ShieldOff,
-  shield_off: ShieldOff,
-  key: Key,
-  keyround: KeyRound,
-  key_round: KeyRound,
-  fingerprint: Fingerprint,
-  scan: Scan,
-  play: Play,
-  pause: Pause,
-  skipforward: SkipForward,
-  skip_forward: SkipForward,
-  skipback: SkipBack,
-  skip_back: SkipBack,
-  repeat: Repeat,
-  shuffle: Shuffle,
-  volume1: Volume1,
-  volume_1: Volume1,
-  videooff: VideoOff,
-  video_off: VideoOff,
-  micoff: MicOff,
-  mic_off: MicOff,
-  atsign: AtSign,
-  at_sign: AtSign,
-  mailopen: MailOpen,
-  mail_open: MailOpen,
-  mailcheck: MailCheck,
-  mail_check: MailCheck,
-  mailx: MailX,
-  mail_x: MailX,
-  messagesquarereply: MessageSquareReply,
-  message_square_reply: MessageSquareReply,
-  messagesquaretext: MessageSquareText,
-  message_square_text: MessageSquareText,
-  folderplus: FolderPlus,
-  folder_plus: FolderPlus,
-  folderminus: FolderMinus,
-  folder_minus: FolderMinus,
-  folderx: FolderX,
-  folder_x: FolderX,
-  foldercheck: FolderCheck,
-  folder_check: FolderCheck,
-  foldersearch: FolderSearch,
-  folder_search: FolderSearch,
-  folderkanban: FolderKanban,
-  folder_kanban: FolderKanban,
-  foldertree: FolderTree,
-  folder_tree: FolderTree,
-  barchart2: BarChart2,
-  bar_chart2: BarChart2,
-  barchart3: BarChart3,
-  bar_chart3: BarChart3,
-  barchart4: BarChart4,
-  bar_chart4: BarChart4,
-  areachart: AreaChart,
-  area_chart: AreaChart,
-  checkcircle2: CheckCircle2,
-  check_circle2: CheckCircle2,
-  xcircle: XCircle,
-  x_circle: XCircle,
-  alerttriangle: AlertTriangle,
-  alert_triangle: AlertTriangle,
-  circle: Circle,
-  circledot: CircleDot,
-  circle_dot: CircleDot,
-  arrowupdown: ArrowUpDown,
-  arrow_up_down: ArrowUpDown,
-  arrowleftright: ArrowLeftRight,
-  arrow_left_right: ArrowLeftRight,
-  arrowupright: ArrowUpRight,
-  arrow_up_right: ArrowUpRight,
-  arrowdownright: ArrowDownRight,
-  arrow_down_right: ArrowDownRight,
-  arrowdownleft: ArrowDownLeft,
-  arrow_down_left: ArrowDownLeft,
-  arrowupleft: ArrowUpLeft,
-  arrow_up_left: ArrowUpLeft,
-  move: Move,
-  moveup: MoveUp,
-  move_up: MoveUp,
-  movedown: MoveDown,
-  move_down: MoveDown,
-  moveleft: MoveLeft,
-  move_left: MoveLeft,
-  moveright: MoveRight,
-  move_right: MoveRight,
-  diamond: Diamond,
-  gem: Gem,
-  crown: Crown,
-  trophy: Trophy,
-  medal: Medal,
-  badge: Badge,
-  badgecheck: BadgeCheck,
-  badge_check: BadgeCheck,
-  badgealert: BadgeAlert,
-  badge_alert: BadgeAlert,
-  badgeinfo: BadgeInfo,
-  badge_info: BadgeInfo,
-  clipboardpen: ClipboardPen,
-  clipboard_pen: ClipboardPen,
-  clipboardcopy: ClipboardCopy,
-  clipboard_copy: ClipboardCopy,
-  clipboardpaste: ClipboardPaste,
-  clipboard_paste: ClipboardPaste,
-  clipboardx: ClipboardX,
-  clipboard_x: ClipboardX,
-  filepen: FilePen,
-  file_pen: FilePen,
-  filebarchart: FileBarChart,
-  file_bar_chart: FileBarChart,
-  filestack: FileStack,
-  file_stack: FileStack,
-  filesymlink: FileSymlink,
-  file_symlink: FileSymlink,
-  filewarning: FileWarning,
-  file_warning: FileWarning,
-  fileheart: FileHeart,
-  file_heart: FileHeart,
-  filelock: FileLock,
-  file_lock: FileLock,
-  filekey: FileKey,
-  file_key: FileKey,
-} as const;
+  Hash,
+  Square,
+  Triangle,
+  Hexagon,
+  Cross,
+};
 
-// MenuItem type from database (now includes mega menu columns)
-export type MenuItem = Tables<"menu_items">;
-
-export interface MenuItemWithChildren extends MenuItem {
-  children?: MenuItemWithChildren[];
+// Helper to get icon component from name
+export function getIconComponent(iconName: string | null | undefined): LucideIcon | null {
+  if (!iconName) return null;
+  return iconMap[iconName] || null;
 }
 
+// Alias for getIconComponent for compatibility
+export function resolveIcon(iconName: string | null | undefined): LucideIcon | null {
+  return getIconComponent(iconName);
+}
+
+// Get list of all available icon names
+export function getAvailableIconNames(): string[] {
+  return Object.keys(iconMap);
+}
+
+// Mega menu types
 export interface MegaMenuLink {
   title: string;
   href: string;
@@ -2192,275 +703,104 @@ export interface MegaMenuDefinition {
   sections: MegaMenuSection[];
 }
 
-/**
- * Resolves an icon name string to a Lucide icon component
- * @param iconName - The icon name (case-insensitive, supports kebab-case and snake_case)
- * @returns The Lucide icon component or null if not found
- */
-export function resolveIcon(iconName: string | null | undefined): LucideIcon | null {
-  if (!iconName) return null;
-  
-  // Try exact match first
-  if (menuIconMap[iconName]) {
-    return menuIconMap[iconName];
-  }
-  
-  // Try case-insensitive match
-  const normalized = iconName
-    .replace(/[-_]/g, '')
-    .toLowerCase();
-  
-  for (const [key, icon] of Object.entries(menuIconMap)) {
-    if (key.replace(/[-_]/g, '').toLowerCase() === normalized) {
-      return icon;
-    }
-  }
-  
-  return null;
-}
+// Type for menu items from database
+export type MenuItem = Tables<"menu_items">;
 
-/**
- * Validates if an icon name exists in the icon map
- */
-export function isValidIconName(iconName: string | null | undefined): boolean {
-  return resolveIcon(iconName) !== null;
-}
+// Extended menu item with children for tree structure
+export type MenuTreeItem = MenuItem & {
+  children?: MenuTreeItem[];
+};
 
-/**
- * Gets a list of all available icon names for the admin panel
- */
-export function getAvailableIconNames(): string[] {
-  return Object.keys(menuIconMap).filter(key => 
-    !key.includes('_') && !key.includes('-') && key[0] === key[0].toUpperCase()
-  );
-}
+// Build hierarchical menu structure from flat list
+export function buildMenuTree(items: MenuItem[]): MenuTreeItem[] {
+  const itemMap: Record<string, MenuTreeItem> = {};
+  const roots: MenuTreeItem[] = [];
 
-/**
- * Transforms a flat list of menu items into a tree structure
- */
-export function buildMenuTree(items: MenuItem[]): MenuItemWithChildren[] {
-  const byId = new Map<string, MenuItemWithChildren>();
-  
-  // Create map of all items
-  items.forEach((item) => {
-    byId.set(item.id, { ...item, children: [] });
+  // First pass: create map of all items
+  items.forEach(item => {
+    itemMap[item.id] = { ...item, children: [] };
   });
-  
-  const roots: MenuItemWithChildren[] = [];
-  
-  // Build tree structure
-  byId.forEach((item) => {
-    if (item.parent_id && byId.has(item.parent_id)) {
-      const parent = byId.get(item.parent_id)!;
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(item);
+
+  // Second pass: build tree structure
+  items.forEach(item => {
+    const mappedItem = itemMap[item.id];
+    if (item.parent_id && itemMap[item.parent_id]) {
+      const parent = itemMap[item.parent_id];
+      if (!parent.children) parent.children = [];
+      parent.children.push(mappedItem);
     } else {
-      roots.push(item);
+      roots.push(mappedItem);
     }
   });
-  
-  // Sort recursively by display_order
-  const sortRecursive = (nodes: MenuItemWithChildren[]) => {
-    nodes.sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
-    nodes.forEach((node) => {
-      if (node.children && node.children.length > 0) {
-        sortRecursive(node.children);
-      }
-    });
-  };
-  
-  sortRecursive(roots);
-  
+
+  // Sort by display_order
+  const sortByOrder = (a: MenuItem, b: MenuItem) => 
+    (a.display_order ?? 0) - (b.display_order ?? 0);
+
+  roots.sort(sortByOrder);
+  roots.forEach(root => {
+    if (root.children) {
+      root.children.sort(sortByOrder);
+    }
+  });
+
   return roots;
 }
 
-/**
- * Transforms a menu item tree into a MegaMenuDefinition structure
- * Expects a 3-level hierarchy: top-level (level 0) -> categories (level 1) -> items (level 2)
- * @param topLevelItem - The top-level menu item with children
- * @param pagesMap - Optional map of page_id to page slug for URL resolution
- */
+// Transform menu tree item to mega menu definition
 export function transformToMegaMenu(
-  topLevelItem: MenuItemWithChildren,
-  pagesMap?: Map<string, string>
+  item: MenuTreeItem, 
+  pagesMap: Map<string, string>
 ): MegaMenuDefinition | null {
-  // Validate that this is a top-level item
-  const itemLevel = topLevelItem.item_level ?? 0;
-  if (itemLevel !== 0) {
-    return null;
-  }
+  if (!item) return null;
 
-  // Check if it's a mega menu type OR has children that could form a mega menu structure
-  const isMegaType = topLevelItem.menu_type === 'mega';
-  const hasChildren = topLevelItem.children && topLevelItem.children.length > 0;
-  
-  // If not explicitly mega type and no children, return null
-  if (!isMegaType && !hasChildren) {
-    return null;
-  }
-  
-  // Get summary data
-  const summaryTitle = topLevelItem.mega_summary_title || topLevelItem.label;
-  const summaryText = topLevelItem.mega_summary_text || topLevelItem.description || '';
-  const ctaLabel = topLevelItem.mega_cta_label || undefined;
-  const ctaHref = topLevelItem.mega_cta_href || topLevelItem.url || undefined;
-  
-  // Get categories (level 1 children, or any direct children if levels aren't set)
-  const categories = (topLevelItem.children || []).filter(
-    child => {
-      const childLevel = child.item_level ?? (hasChildren ? 1 : 0);
-      return childLevel === 1 && child.is_active !== false;
-    }
-  );
-  
-  // If no level 1 children but we have direct children, treat them as categories
-  // Also, if we have level 2 children directly under level 0, create a default category
-  const directChildren = (topLevelItem.children || []).filter(child => child.is_active !== false);
-  const hasLevel2Children = directChildren.some(child => (child.item_level ?? 0) === 2);
-  
-  let effectiveCategories = categories.length > 0 
-    ? categories 
-    : directChildren;
-  
-  // If we have level 2 children but no level 1 categories, create a default "All" category
-  if (hasLevel2Children && categories.length === 0) {
-    // Group level 2 items under their level 1 parents, or create a default category
-    const level2Items = directChildren.filter(child => (child.item_level ?? 0) === 2);
-    if (level2Items.length > 0) {
-      // Create a default category for level 2 items
-      effectiveCategories = [{
-        ...topLevelItem,
-        label: topLevelItem.label,
-        children: level2Items,
-      } as MenuItemWithChildren];
-    }
-  }
-  
-  // Helper to resolve URL from page_id or use direct URL
-  const resolveUrl = (item: MenuItem): string => {
-    if (item.url) {
-      return item.url;
-    }
-    if (item.page_id && pagesMap) {
-      const slug = pagesMap.get(item.page_id);
-      if (slug) {
-        return `/${slug}`;
-      }
+  const getUrl = (menuItem: MenuItem): string => {
+    if (menuItem.url) return menuItem.url;
+    if (menuItem.page_id && pagesMap.has(menuItem.page_id)) {
+      return `/${pagesMap.get(menuItem.page_id)}`;
     }
     return '#';
   };
-  
-  // Transform categories into sections
-  const sections: MegaMenuSection[] = effectiveCategories.map((category) => {
-    // Get items within this category (level 2 children, or direct children if levels aren't set)
-    const categoryLevel = category.item_level ?? 1;
-    const items = (category.children || []).filter(
-      item => {
-        const itemLevel = item.item_level ?? (category.children?.length ? 2 : 1);
-        return itemLevel === 2 && item.is_active !== false;
-      }
-    );
+
+  // Build sections from children (categories)
+  const sections: MegaMenuSection[] = (item.children || []).map(category => {
+    const categoryIcon = resolveIcon(category.icon_name);
     
-    // Transform items
-    const menuItems: MegaMenuLink[] = items.map((item) => {
-      const href = resolveUrl(item);
-      const icon = resolveIcon(item.icon_name || undefined);
-      
-      return {
-        title: item.label,
-        href,
-        description: item.description || undefined,
-        iconName: item.icon_name || undefined,
-        icon: icon || undefined,
-      };
-    });
-    
-    const categoryIcon = resolveIcon(category.icon_name || undefined);
-    
+    // Build items from category children (sub-items)
+    const items: MegaMenuLink[] = (category.children || []).map(subItem => ({
+      title: subItem.label,
+      href: getUrl(subItem),
+      description: subItem.description || undefined,
+      iconName: subItem.icon_name || undefined,
+      icon: resolveIcon(subItem.icon_name) || undefined,
+    }));
+
     return {
       title: category.label,
-      href: resolveUrl(category),
+      href: getUrl(category),
       description: category.description || undefined,
       iconName: category.icon_name || undefined,
       icon: categoryIcon || undefined,
-      items: menuItems.length > 0 ? menuItems : undefined,
+      items: items.length > 0 ? items : undefined,
     };
   });
-  
+
   return {
-    summaryTitle,
-    summaryText,
-    ctaLabel,
-    ctaHref,
-    sections: sections.length > 0 ? sections : [],
+    summaryTitle: item.mega_summary_title || item.label,
+    summaryText: item.mega_summary_text || '',
+    ctaLabel: item.mega_cta_label || undefined,
+    ctaHref: item.mega_cta_href || undefined,
+    sections,
   };
 }
 
-/**
- * Gets the URL for a menu item, handling both page_id and direct URL
- */
+// Filter menu items by location
+export function filterByLocation(items: MenuItem[], location: string): MenuItem[] {
+  return items.filter(item => item.menu_location === location);
+}
+
+// Get URL for menu item (uses page slug or custom URL)
 export function getMenuItemUrl(item: MenuItem): string {
-  if (item.url) {
-    return item.url;
-  }
-  
-  if (item.page_id) {
-    // In a real implementation, you might want to fetch the page slug
-    // For now, return a placeholder that can be resolved later
-    return `#page-${item.page_id}`;
-  }
-  
+  if (item.url) return item.url;
   return '#';
-}
-
-/**
- * Validates menu item data structure
- */
-export function validateMenuStructure(items: MenuItem[]): {
-  valid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-  const byId = new Map<string, MenuItem>();
-  
-  items.forEach(item => byId.set(item.id, item));
-  
-  // Check for circular references
-  items.forEach(item => {
-    if (item.parent_id) {
-      let currentId: string | null = item.parent_id;
-      const visited = new Set<string>([item.id]);
-      
-      while (currentId && byId.has(currentId)) {
-        if (visited.has(currentId)) {
-          errors.push(`Circular reference detected in menu item: ${item.label}`);
-          break;
-        }
-        visited.add(currentId);
-        currentId = byId.get(currentId)?.parent_id || null;
-      }
-    }
-  });
-  
-  // Validate item levels
-  items.forEach(item => {
-    if (item.parent_id) {
-      const parent = byId.get(item.parent_id);
-      if (parent) {
-        const expectedLevel = (parent.item_level ?? 0) + 1;
-        if (item.item_level !== expectedLevel) {
-          errors.push(`Item "${item.label}" has incorrect level. Expected ${expectedLevel}, got ${item.item_level}`);
-        }
-      }
-    } else if (item.item_level !== 0) {
-      errors.push(`Top-level item "${item.label}" should have level 0`);
-    }
-  });
-  
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
 }
